@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { companies, Company, CompanyProblem } from "@/data";
 import { Search, ExternalLink, ArrowLeft, Bookmark, CheckCircle2, ShieldCheck, Flame, Star, Award } from "lucide-react";
 
@@ -11,20 +11,20 @@ export default function CompanyWisePage() {
   const [highFreqOnly, setHighFreqOnly] = useState(false);
 
   // Solved and Bookmarked states
-  const [solvedMap, setSolvedMap] = useState<Record<string, boolean>>({});
-  const [bookmarks, setBookmarks] = useState<Record<string, boolean>>({});
-
-  useEffect(() => {
+  const [solvedMap, setSolvedMap] = useState<Record<string, boolean>>(() => {
+    if (typeof window === "undefined") return {};
     try {
-      const savedSolved = localStorage.getItem("hirenza-company-solved");
-      if (savedSolved) setSolvedMap(JSON.parse(savedSolved));
-
-      const savedBookmarks = localStorage.getItem("hirenza-company-bookmarks");
-      if (savedBookmarks) setBookmarks(JSON.parse(savedBookmarks));
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
+      const saved = localStorage.getItem("hirenza-company-solved");
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  });
+  const [bookmarks, setBookmarks] = useState<Record<string, boolean>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem("hirenza-company-bookmarks");
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  });
 
   const toggleSolved = (id: string) => {
     setSolvedMap(prev => {

@@ -14,6 +14,7 @@ import {
 import { CreatorSection } from "@/components/marketing/CreatorSection";
 import { FAQSection } from "@/components/marketing/FAQSection";
 import { Footer } from "@/components/marketing/Footer";
+import { TOTAL_COMPANIES } from "@/data/stats";
 
 export default function HomePage() {
   return (
@@ -48,7 +49,7 @@ export default function HomePage() {
       <FeatureShowcase
         label="Company Preparation"
         title="Prepare For The Company You Actually Want"
-        description="Practice company-specific questions and focus on patterns that repeatedly matter. Target 43+ top tech companies with curated problem sets."
+        description={`Practice company-specific questions and focus on patterns that repeatedly matter. Target ${TOTAL_COMPANIES} top tech companies with curated problem sets.`}
         reverse
       >
         <CompanyWiseMockup />
@@ -91,7 +92,7 @@ export default function HomePage() {
       <FeatureShowcase
         label="Notes"
         title="Curated Study Notes — All In One Place"
-        description="Computer Networks, AWS, Java, Kubernetes and more — open PDF notes directly in platform, no downloading, no searching."
+        description="Computer Networks, AWS, Java, Kubernetes and more — browse curated study summaries directly in the platform, no downloading or searching."
       >
         <NotesMockup />
       </FeatureShowcase>

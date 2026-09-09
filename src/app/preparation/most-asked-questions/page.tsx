@@ -4,17 +4,20 @@ import { useState } from "react";
 import { technologies, interviewQuestionsData } from "@/data";
 import { Search, Code2, ArrowLeft, Star } from "lucide-react";
 
+// Only show technologies that actually have questions in the data
+const availableTechnologies = technologies.filter(t => interviewQuestionsData[t.id]?.length > 0);
+
 export default function MostAskedQuestionsPage() {
   const [search, setSearch] = useState("");
   const [selectedTech, setSelectedTech] = useState<string | null>(null);
-  const groups = [...new Set(technologies.map(t => t.group))];
-  const filtered = technologies.filter(t => 
+  const groups = [...new Set(availableTechnologies.map(t => t.group))];
+  const filtered = availableTechnologies.filter(t => 
     t.name.toLowerCase().includes(search.toLowerCase()) ||
     t.description.toLowerCase().includes(search.toLowerCase())
   );
 
-  const selectedTechData = selectedTech ? technologies.find(t => t.id === selectedTech) : null;
-  const questions = selectedTech ? interviewQuestionsData[selectedTech] : [];
+  const selectedTechData = selectedTech ? availableTechnologies.find(t => t.id === selectedTech) : null;
+  const questions = (selectedTech && interviewQuestionsData[selectedTech]) ?? [];
 
   if (selectedTech && selectedTechData) {
     return (
@@ -130,7 +133,7 @@ export default function MostAskedQuestionsPage() {
                   <p className="text-xs text-muted line-clamp-2 mb-3">{tech.description}</p>
                   <div className="border-t border-border-soft pt-3 flex items-center gap-2">
                     <Code2 size={12} className="text-muted" />
-                    <span className="text-xs text-secondary">{tech.questions} Questions</span>
+                    <span className="text-xs text-secondary">{interviewQuestionsData[tech.id]?.length ?? 0} Questions</span>
                   </div>
                 </div>
               ))}

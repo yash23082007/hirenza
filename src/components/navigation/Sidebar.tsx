@@ -143,6 +143,17 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
               toggleGroup(`${groupLabel}-${item.label}`);
             }
           }}
+          {...(hasChildren ? {
+            role: "button",
+            tabIndex: 0,
+            "aria-expanded": expanded,
+            onKeyDown: (e: React.KeyboardEvent) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleGroup(`${groupLabel}-${item.label}`);
+              }
+            }
+          } : {})}
         >
           <span className="text-muted shrink-0">{item.icon}</span>
           {!collapsed && <span className="flex-1 truncate">{item.label}</span>}
@@ -274,15 +285,6 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
         </div>
       )}
 
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: var(--border);
-          border-radius: 2px;
-        }
-      `}</style>
     </>
   );
 }

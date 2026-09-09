@@ -1,22 +1,19 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { dsaPatterns, Pattern } from "@/data";
 import { ExternalLink, Search, CheckCircle2, ChevronDown, ChevronUp, Sparkles, BookOpen, Layers } from "lucide-react";
 
 export default function PatternsPage() {
   const [search, setSearch] = useState("");
   const [expandedPattern, setExpandedPattern] = useState<string | null>(null);
-  const [solvedMap, setSolvedMap] = useState<Record<string, boolean>>({});
-
-  useEffect(() => {
+  const [solvedMap, setSolvedMap] = useState<Record<string, boolean>>(() => {
+    if (typeof window === "undefined") return {};
     try {
       const saved = localStorage.getItem("hirenza-patterns-solved");
-      if (saved) setSolvedMap(JSON.parse(saved));
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  });
 
   const toggleSolved = (title: string) => {
     setSolvedMap(prev => {

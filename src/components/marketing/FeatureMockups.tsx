@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Star, ChevronRight, Search } from "lucide-react";
+import { SHEET_COUNTS, COMPANY_COUNTS, TOTAL_ROLES } from "@/data/stats";
 
 // Mini DSA Sheets Mockup
 export function DSASheetsMockup() {
@@ -13,15 +14,15 @@ export function DSASheetsMockup() {
         <span className="ml-3 text-xs text-muted">DSA Sheets</span>
       </div>
       <div className="p-4 space-y-3">
-        {["Striver's A2Z DSA Sheet", "Love Babbar DSA Sheet", "Shradha Khapra DSA Sheet"].map((name, i) => (
-          <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-surface-3 border border-border-soft">
+        {SHEET_COUNTS.slice(0, 3).map((sheet) => (
+          <div key={sheet.id} className="flex items-center justify-between p-3 rounded-lg bg-surface-3 border border-border-soft">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded bg-purple-1/10 flex items-center justify-center">
                 <Check size={14} className="text-purple-1" />
               </div>
-              <span className="text-sm font-medium">{name}</span>
+              <span className="text-sm font-medium">{sheet.name}</span>
             </div>
-            <span className="text-xs text-muted">{[455, 450, 375][i]} problems</span>
+            <span className="text-xs text-muted">{sheet.problemCount} problems</span>
           </div>
         ))}
       </div>
@@ -31,12 +32,15 @@ export function DSASheetsMockup() {
 
 // Mini Company-wise Mockup
 export function CompanyWiseMockup() {
-  const companies = [
-    { name: "Google", q: "55 Questions", color: "#4285f4" },
-    { name: "Amazon", q: "66 Questions", color: "#ff9900" },
-    { name: "Microsoft", q: "55 Questions", color: "#00a4ef" },
-    { name: "Meta", q: "60 Questions", color: "#0668e1" },
-  ];
+  const companyColors: Record<string, string> = {
+    google: "#4285f4", amazon: "#ff9900", microsoft: "#00a4ef",
+    meta: "#0668e1", apple: "#555555", flipkart: "#f8d210",
+  };
+  const displayCompanies = COMPANY_COUNTS.slice(0, 4).map(c => ({
+    name: c.name,
+    q: `${c.questionCount} Questions`,
+    color: companyColors[c.id] || "#7a33f6",
+  }));
   return (
     <div className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
       <div className="p-4">
@@ -45,7 +49,7 @@ export function CompanyWiseMockup() {
           <span className="text-sm text-muted">Search companies...</span>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          {companies.map((c, i) => (
+          {displayCompanies.map((c, i) => (
             <div key={i} className="p-3 rounded-lg bg-surface-3 border border-border-soft flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded flex items-center justify-center text-xs font-bold" style={{ background: `${c.color}20`, color: c.color }}>

@@ -15,24 +15,15 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("dark");
-  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === "undefined") return "dark";
+    return (localStorage.getItem("hirenza-theme") as Theme) || "dark";
+  });
 
   useEffect(() => {
-    setMounted(true);
-    const stored = localStorage.getItem("hirenza-theme") as Theme;
-    if (stored) {
-      setTheme(stored);
-      document.documentElement.classList.toggle("light", stored === "light");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      document.documentElement.classList.toggle("light", theme === "light");
-      localStorage.setItem("hirenza-theme", theme);
-    }
-  }, [theme, mounted]);
+    document.documentElement.classList.toggle("light", theme === "light");
+    localStorage.setItem("hirenza-theme", theme);
+  }, [theme]);
 
   const toggleTheme = () => {
     setTheme(prev => prev === "dark" ? "light" : "dark");

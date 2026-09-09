@@ -20,10 +20,17 @@ const config: Config = {
         border: "var(--border)",
         "border-soft": "var(--border-soft)",
 
-        // Text colors
-        "text-primary": "var(--text-primary)",
-        "text-secondary": "var(--text-secondary)",
-        "text-muted": "var(--text-muted)",
+        // Text colors — named without "text-" prefix so Tailwind
+        // generates correct utilities (text-primary, bg-primary, etc.)
+        primary: "var(--text-primary)",
+        secondary: "var(--text-secondary)",
+        muted: "var(--text-muted)",
+
+        // Surface alias for bg-surface usage
+        surface: "var(--surface-1)",
+
+        // Border hover alias
+        "border-hover": "var(--border)",
 
         // Brand colors (static, don't change with theme)
         "purple-1": "var(--purple-1)",

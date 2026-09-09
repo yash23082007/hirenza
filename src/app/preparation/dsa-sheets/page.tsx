@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState, useEffect, useMemo } from "react";
+import { Suspense, useState, useMemo } from "react";
 
 type ProblemStatus = "unsolved" | "attempted" | "solved" | "review" | "mastered";
 
@@ -30,24 +30,24 @@ function DSASheetsContent() {
   }, [sheetParam]);
 
   // Persistent Problem State & Bookmarks
-  const [problemStatuses, setProblemStatuses] = useState<Record<string, ProblemStatus>>({});
-  const [bookmarks, setBookmarks] = useState<Record<string, boolean>>({});
+  const [problemStatuses, setProblemStatuses] = useState<Record<string, ProblemStatus>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem("hirenza-dsa-status");
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  });
+  const [bookmarks, setBookmarks] = useState<Record<string, boolean>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem("hirenza-dsa-bookmarks");
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState<string>("All");
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [activeTab, setActiveTab] = useState<"problems" | "revision">("problems");
-
-  useEffect(() => {
-    try {
-      const savedStatuses = localStorage.getItem("hirenza-dsa-status");
-      if (savedStatuses) setProblemStatuses(JSON.parse(savedStatuses));
-
-      const savedBookmarks = localStorage.getItem("hirenza-dsa-bookmarks");
-      if (savedBookmarks) setBookmarks(JSON.parse(savedBookmarks));
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
 
   const updateStatus = (problemId: string, status: ProblemStatus) => {
     setProblemStatuses(prev => {

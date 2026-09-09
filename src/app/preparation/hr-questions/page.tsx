@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { hrQuestionsData } from "@/data";
 import { Search, Lightbulb, Timer, Play, Pause, RotateCcw, Target, Sparkles, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 
@@ -12,20 +10,24 @@ export default function HRQuestionsPage() {
   // 90-second Practice Timer State
   const [timerSeconds, setTimerSeconds] = useState(90);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-    if (isTimerRunning && timerSeconds > 0) {
-      interval = setInterval(() => {
-        setTimerSeconds(prev => prev - 1);
+    if (isTimerRunning) {
+      intervalRef.current = setInterval(() => {
+        setTimerSeconds(prev => {
+          if (prev <= 1) {
+            setIsTimerRunning(false);
+            return 0;
+          }
+          return prev - 1;
+        });
       }, 1000);
-    } else if (timerSeconds === 0) {
-      setIsTimerRunning(false);
     }
     return () => {
-      if (interval) clearInterval(interval);
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isTimerRunning, timerSeconds]);
+  }, [isTimerRunning]);
 
   const startTimer = () => setIsTimerRunning(true);
   const pauseTimer = () => setIsTimerRunning(false);

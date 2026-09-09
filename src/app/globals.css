@@ -145,6 +145,7 @@
     transition: all 0.15s ease;
     cursor: pointer;
     text-decoration: none;
+    position: relative; /* A2 fix: positioned ancestor for absolute Link overlay */
   }
 
   .sidebar-item:hover {
@@ -272,6 +273,16 @@
 
   .light .theme-toggle::after {
     transform: translateX(28px);
+  }
+
+  /* Custom scrollbar for scroll containers */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 2px;
   }
 
   /* Reduced motion */
