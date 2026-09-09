@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, Star, ChevronRight, Search } from "lucide-react";
-import { SHEET_COUNTS, COMPANY_COUNTS, TOTAL_ROLES } from "@/data/stats";
+import { SHEET_COUNTS, COMPANY_COUNTS } from "@/data/stats";
 
 // Mini DSA Sheets Mockup
 export function DSASheetsMockup() {

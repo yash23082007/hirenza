@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { notesContent, NoteContent, NoteSection } from "@/data";
-import { FileText, ArrowLeft, BookOpen, Search, Bookmark, Sparkles, Hash, Check } from "lucide-react";
+import { notesContent } from "@/data";
+import { ArrowLeft, BookOpen, Search, Bookmark, Sparkles, Hash } from "lucide-react";
 
 export default function CoolNotesPage() {
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);

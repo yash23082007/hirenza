@@ -17,7 +17,7 @@ export default function MostAskedQuestionsPage() {
   );
 
   const selectedTechData = selectedTech ? availableTechnologies.find(t => t.id === selectedTech) : null;
-  const questions = (selectedTech && interviewQuestionsData[selectedTech]) ?? [];
+  const questions = (selectedTech ? interviewQuestionsData[selectedTech] : []) ?? [];
 
   if (selectedTech && selectedTechData) {
     return (

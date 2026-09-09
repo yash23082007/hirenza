@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { dsaPatterns, Pattern } from "@/data";
-import { ExternalLink, Search, CheckCircle2, ChevronDown, ChevronUp, Sparkles, BookOpen, Layers } from "lucide-react";
+import { dsaPatterns } from "@/data";
+import { ExternalLink, Search, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 
 export default function PatternsPage() {
   const [search, setSearch] = useState("");

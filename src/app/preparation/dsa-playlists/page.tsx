@@ -1,7 +1,7 @@
 "use client";
 
 import { dsaPlaylists } from "@/data";
-import { ExternalLink, Play, Sparkles, Filter } from "lucide-react";
+import { Play, ExternalLink } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useMemo } from "react";
 

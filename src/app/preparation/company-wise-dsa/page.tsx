@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { companies, Company, CompanyProblem } from "@/data";
-import { Search, ExternalLink, ArrowLeft, Bookmark, CheckCircle2, ShieldCheck, Flame, Star, Award } from "lucide-react";
+import { companies, Company } from "@/data";
+import { Search, ExternalLink, ArrowLeft, Bookmark, CheckCircle2, Flame } from "lucide-react";
 
 export default function CompanyWisePage() {
   const [search, setSearch] = useState("");

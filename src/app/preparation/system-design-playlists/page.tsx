@@ -1,7 +1,7 @@
 "use client";
 
 import { systemDesignPlaylists } from "@/data";
-import { ExternalLink, Network, BookOpen, Layers } from "lucide-react";
+import { ExternalLink, Network } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useMemo } from "react";
 

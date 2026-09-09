@@ -10,9 +10,7 @@ import {
   Bookmark,
   Sparkles,
   RotateCcw,
-  Zap,
   Star,
-  Clock,
   Filter,
 } from "lucide-react";
 import Link from "next/link";

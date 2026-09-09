@@ -4,7 +4,6 @@ import { useState } from "react";
 import { packageWiseData, packageRanges } from "@/data/packageWise";
 import { QuestionList } from "@/components/questions/QuestionList";
 import type { Question } from "@/data";
-import { Layers, ShieldAlert, Sparkles, Building, Target } from "lucide-react";
 
 export default function PackageWisePage() {
   const [selectedRange, setSelectedRange] = useState("3-5 LPA");

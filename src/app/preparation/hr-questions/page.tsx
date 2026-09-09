@@ -1,6 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import { hrQuestionsData } from "@/data";
-import { Search, Lightbulb, Timer, Play, Pause, RotateCcw, Target, Sparkles, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Lightbulb, Timer, Play, Pause, RotateCcw, ChevronDown, ChevronUp } from "lucide-react";
 
 export default function HRQuestionsPage() {
   const [search, setSearch] = useState("");

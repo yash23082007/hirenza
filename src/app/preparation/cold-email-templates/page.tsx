@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import { emailTemplates, EmailTemplate } from "@/data";
-import { Mail, Copy, Check, Sparkles, Download, ArrowRight, User, Building, Briefcase } from "lucide-react";
+import { useState, useMemo } from "react";
+import { emailTemplates } from "@/data";
+import { Mail, Copy, Check, Sparkles, Download } from "lucide-react";
 
 export default function ColdEmailTemplatesPage() {
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>("frontend-referral");
@@ -62,7 +62,6 @@ export default function ColdEmailTemplatesPage() {
     URL.revokeObjectURL(url);
   };
 
-  const categories = [...new Set(emailTemplates.map(t => t.category))];
 
   return (
     <div>
