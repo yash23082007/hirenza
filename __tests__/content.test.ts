@@ -21,7 +21,9 @@ describe('Content Validation', () => {
   });
 
   it('roles counts match reality', () => {
-     expect(roleWiseData.length).toBe(TOTAL_ROLES);
+    expect(roleWiseData.length).toBe(TOTAL_ROLES);
+    expect(companies.length).toBe(COMPANY_COUNTS.length);
+    expect(SHEET_COUNTS.length).toBeGreaterThan(0);
   });
   
   it('every problem has at least one working URL', () => {

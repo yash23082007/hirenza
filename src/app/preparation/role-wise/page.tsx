@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { roleWiseData } from "@/data";
 import { Search, Users, Briefcase, Target, ArrowLeft } from "lucide-react";
@@ -8,17 +8,10 @@ import { Search, Users, Briefcase, Target, ArrowLeft } from "lucide-react";
 function RoleWiseContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const queryRole = searchParams.get("role");
   const [search, setSearch] = useState("");
-  const [selectedRole, setSelectedRole] = useState<string | null>(queryRole || null);
-
-  useEffect(() => {
-    const r = searchParams.get("role");
-    setSelectedRole(r || null);
-  }, [searchParams]);
+  const selectedRole = searchParams.get("role") || null;
 
   const handleSelectRole = (roleId: string | null) => {
-    setSelectedRole(roleId);
     if (roleId) {
       router.replace(`/preparation/role-wise?role=${roleId}`, { scroll: false });
     } else {
