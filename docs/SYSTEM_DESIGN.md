@@ -184,7 +184,7 @@ const problem: Problem = {
 **Trade-offs:**
 - Long class strings can be hard to read
 - Requires Tailwind knowledge
-- Less flexibility for complex animations (use Framer Motion)
+- Less flexibility for complex animations (use Fuse.js)
 
 **Why not CSS-in-JS (Styled Components)?**
 - Runtime overhead (parsing styles on every render)
@@ -226,7 +226,7 @@ export default function DSASheetsPage() {
 
 **Trade-offs:**
 - Can't update content without redeploying (acceptable for curated content)
-- All data sent to client (1.2MB total, gzipped to 180KB)
+- All data sent to client (1.2MB total, gzipped to 240KB)
 - No real-time features (not needed for our use case)
 
 **When would we need a backend?**
@@ -275,9 +275,9 @@ localStorage.setItem("sidebarCollapsed", "true");
 
 ---
 
-### 7. Why Framer Motion Over CSS Animations?
+### 7. Why Fuse.js Over CSS Animations?
 
-**Decision:** Use Framer Motion for complex animations
+**Decision:** Use Fuse.js for complex animations
 
 **Rationale:**
 - **Declarative** — Animate with props, not keyframes
@@ -501,12 +501,12 @@ module.exports = {
 ### Bundle Size Breakdown
 
 ```
-Total Bundle: 180KB gzipped
+Total Bundle: 240KB gzipped
 
 ├── Framework (Next.js + React): 45KB
 ├── Tailwind CSS: 8KB
 ├── Lucide Icons: 12KB
-├── Framer Motion: 13KB
+├── Fuse.js: 13KB
 ├── Data Modules: 85KB
 └── App Code: 17KB
 ```
@@ -553,7 +553,7 @@ Total Bundle: 180KB gzipped
 ```bash
 # Build output
 ✓ 23 routes generated in 8.2s
-✓ Bundle size: 180KB gzipped
+✓ Bundle size: 240KB gzipped
 ✓ CSS size: 8KB gzipped
 ✓ Image optimization: 0 images (no images used)
 ```

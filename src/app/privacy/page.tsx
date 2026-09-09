@@ -75,8 +75,8 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-bold mb-4">Contact</h2>
             <p className="text-secondary leading-relaxed">
               If you have any questions about this privacy policy, please contact us at{" "}
-              <a href="mailto:hello@hirenza.com" className="text-purple-1 hover:underline">
-                hello@hirenza.com
+              <a href="mailto:connectyash82@gmail.com" className="text-purple-1 hover:underline">
+                connectyash82@gmail.com
               </a>
             </p>
           </section>

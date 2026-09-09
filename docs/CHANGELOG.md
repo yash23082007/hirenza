@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Added
 - **11 Complete Preparation Modules**
   - DSA Sheets: 7 curated sheets (Striver, Love Babbar, NeetCode, Blind 75, Arsh Goyal, FAANG, Tech Interview Handbook)
-  - Company-wise DSA: 6 companies (Google, Amazon, Microsoft, Meta, Apple, Netflix)
+  - Company-wise DSA: 6 companies (Google, Amazon, Microsoft, Meta, Apple, Uber)
   - 20 DSA Patterns: 104 problems organized by pattern (Grokking methodology)
   - Package-wise DSA: 48 problems mapped to 6 salary ranges (3-6 LPA to 70+ LPA)
   - SQL Sheet: 110 questions (DataLemur, LeetCode SQL, HackerRank)
@@ -56,13 +56,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - TypeScript 5.x (100% coverage)
   - Tailwind CSS 4.x
   - React 19.2.8
-  - Framer Motion 13.2.0 for animations
+  - Fuse.js 13.2.0 for animations
   - Static Site Generation for all 23 routes
   - 15 TypeScript data modules
   - 53 source files
   - Zero TypeScript errors
   - Build time: 8 seconds
-  - Bundle size: 180KB gzipped
+  - Bundle size: 240KB gzipped
 
 - **Performance**
   - Lighthouse score: 98/100
@@ -72,7 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - CDN-ready deployment
 
 - **Content Quality**
-  - 1,200+ total questions/problems
+  - 800+ total questions/problems
   - Real LeetCode/GFG/DataLemur URLs (verified)
   - Industry-standard sources (Striver, NeetCode, Grokking, ByteByteGo)
   - Candidate-submitted interview experiences
@@ -96,7 +96,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatic code splitting and optimization
 
 #### Why TypeScript?
-- Type safety across 53 files and 1,200+ data points
+- Type safety across 53 files and 800+ data points
 - Better developer experience with autocomplete
 - Zero runtime errors (compile-time checking)
 - Self-documenting code with interfaces
@@ -150,7 +150,7 @@ Supported deployment platforms:
 
 | Metric | Value |
 |--------|-------|
-| Total Questions | 1,200+ |
+| Total Questions | 800+ |
 | DSA Problems | 500+ |
 | SQL Questions | 110 |
 | System Design Topics | 25 |
@@ -168,7 +168,7 @@ Supported deployment platforms:
 | Data Modules | 15 |
 | TypeScript Coverage | 100% |
 | Lighthouse Score | 98/100 |
-| Bundle Size | 180KB gzipped |
+| Bundle Size | 240KB gzipped |
 | Build Time | 8 seconds |
 
 ---

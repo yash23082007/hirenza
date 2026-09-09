@@ -175,10 +175,6 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     setData(newData);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
-      // Sync legacy keys for backward-compatibility
-      localStorage.setItem("hirenza-dsa-status", JSON.stringify(newData.statuses));
-      localStorage.setItem("hirenza-dsa-bookmarks", JSON.stringify(newData.bookmarks));
-      localStorage.setItem("hirenza-profile", JSON.stringify(newData.profile));
     } catch {
       // storage unavailable
     }

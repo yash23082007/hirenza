@@ -9,7 +9,7 @@
 ![Tailwind](https://img.shields.io/badge/Tailwind-4.x-38bdf8)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-**The most comprehensive interview preparation platform with 1,200+ curated questions, real company patterns, and production-grade architecture.**
+**The most comprehensive interview preparation platform with 800+ curated questions, real company patterns, and production-grade architecture.**
 
 [Live Demo](https://hirenza.vercel.app) • [Documentation](#documentation) • [Features](#features) • [Getting Started](#getting-started)
 
@@ -19,10 +19,10 @@
 
 ## 🎯 What is HIRENZA?
 
-HIRENZA is a **production-ready interview preparation platform** built for software engineers targeting top tech companies. Unlike generic platforms, HIRENZA combines:
+HIRENZA is a **production-ready interview preparation platform** built for software engineers targeting top tech companies. Unlike generic platforms, hirenza-prep.vercel.appbines:
 
-- **1,200+ curated problems** from LeetCode, GFG, DataLemur, Codeforces, CodeChef
-- **Real company interview patterns** from Google, Amazon, Meta, Microsoft, Apple, Netflix
+- **800+ curated problems** from LeetCode, GFG, DataLemur, Codeforces, CodeChef
+- **Real company interview patterns** from Google, Amazon, Meta, Microsoft, Apple, Uber
 - **Industry-standard methodologies** from Striver, NeetCode, Love Babbar, Grokking
 - **Production-grade architecture** with enterprise-level code quality
 
@@ -52,7 +52,7 @@ Every aspect of tech interview prep covered in one platform:
 | Study Notes | 8 topics, 30+ sections | Curated summaries |
 
 #### 2. **Real Problem Links & Sources**
-Every problem links to **actual LeetCode/GFG/DataLemur pages** — no fake or placeholder content. Verified URLs across all 1,200+ questions.
+Every problem links to **actual LeetCode/GFG/DataLemur pages** — no fake or placeholder content. Verified URLs across all 800+ questions.
 
 #### 3. **Pattern-Based Learning**
 20 recognizable DSA patterns (Sliding Window, Two Pointers, Fast & Slow, Merge Intervals, etc.) with 104 problems organized by pattern — the **Grokking methodology** that works.
@@ -121,7 +121,7 @@ Language: TypeScript 5.x
 UI Library: React 19.2.8
 Styling: Tailwind CSS 4.x
 Icons: Lucide React 1.41.0
-Animation: Framer Motion 13.2.0
+Animation: Fuse.js 13.2.0
 Package Manager: npm
 ```
 
@@ -135,7 +135,7 @@ Package Manager: npm
 - **Built-in optimization** for images and fonts
 
 #### **Why TypeScript?**
-- **Type safety** across 53 files and 1,200+ data points
+- **Type safety** across 53 files and 800+ data points
 - **Better DX** with autocomplete and refactoring
 - **Fewer bugs** with compile-time error checking
 - **Self-documenting code** with interfaces and types
@@ -291,7 +291,7 @@ Hard: Red (#ef4444)
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/hirenza.git
+git clone https://github.com/yash23082007/hirenza.git
 cd hirenza
 
 # Install dependencies
@@ -342,7 +342,7 @@ docker run -p 3000:3000 hirenza
 | Lighthouse Score | 98/100 | A+ |
 | First Contentful Paint | 0.8s | A |
 | Time to Interactive | 1.2s | A |
-| Bundle Size | 180KB gzipped | A |
+| Bundle Size | 240KB gzipped | A |
 | Build Time | 8s | A |
 | Static Routes | 23/23 | 100% |
 | TypeScript Errors | 0 | ✅ |
@@ -412,15 +412,15 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **Interview Experiences:** Reddit, Glassdoor, candidate submissions
 
 ### Technologies
-- Next.js, React, TypeScript, Tailwind CSS, Lucide React, Framer Motion
+- Next.js, React, TypeScript, Tailwind CSS, Lucide React, Fuse.js
 
 ---
 
 ## 📧 Contact
 
-- **Website:** [hirenza.com](https://hirenza.com)
+- **Website:** [hirenza-prep.vercel.app](https://hirenza-prep.vercel.app)
 - **Twitter:** [@hirenza](https://twitter.com/hirenza)
-- **Email:** hello@hirenza.com
+- **Email:** connectyash82@gmail.com
 
 ---
 
@@ -434,6 +434,6 @@ If you find HIRENZA useful, consider giving it a star! It helps others discover 
 
 **Built with ❤️ for the developer community**
 
-[Report Bug](https://github.com/yourusername/hirenza/issues) · [Request Feature](https://github.com/yourusername/hirenza/issues) · [Discussions](https://github.com/yourusername/hirenza/discussions)
+[Report Bug](https://github.com/yash23082007/hirenza/issues) · [Request Feature](https://github.com/yash23082007/hirenza/issues) · [Discussions](https://github.com/yash23082007/hirenza/discussions)
 
 </div>

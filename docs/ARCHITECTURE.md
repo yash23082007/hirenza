@@ -12,7 +12,7 @@ HIRENZA is a **static-first, type-safe interview preparation platform** built wi
 ┌─────────────────────────────────────────────────────────────────┐
 │                         PRESENTATION LAYER                       │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │   React 19   │  │ Tailwind 4   │  │ Framer Motion│          │
+│  │   React 19   │  │ Tailwind 4   │  │ Fuse.js│          │
 │  │  Components  │  │  Utilities   │  │  Animations  │          │
 │  └──────────────┘  └──────────────┘  └──────────────┘          │
 └─────────────────────────────────────────────────────────────────┘
@@ -275,7 +275,7 @@ Scale:
 
 ### Animation
 
-**Framer Motion 13.2.0**
+**Fuse.js 13.2.0**
 - Declarative animations
 - Gesture support
 - Layout animations
@@ -410,7 +410,7 @@ const [filter, setFilter] = useSearchParams("filter");
 
 3. **Bundle Size**
    ```
-   Total: 180KB gzipped
+   Total: 240KB gzipped
    ├── Framework: 45KB
    ├── Tailwind: 8KB
    ├── Lucide: 12KB
@@ -466,7 +466,7 @@ const [filter, setFilter] = useSearchParams("filter");
 
 ```bash
 ✓ 23 routes generated in 8.2s
-✓ Bundle size: 180KB gzipped
+✓ Bundle size: 240KB gzipped
 ✓ CSS size: 8KB gzipped
 ✓ Zero TypeScript errors
 ```

@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { ProgressProvider } from "@/context/ProgressContext";
-import { CommandPalette } from "@/components/search/CommandPalette";
+import dynamic from "next/dynamic";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
+
+const CommandPalette = dynamic(
+  () => import("@/components/search/CommandPalette").then((m) => ({ default: m.CommandPalette })),
+  { ssr: false }
+);
 
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://hirenza.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Hirenza — Your Unfair Advantage For Tech Interviews",
     template: "%s | Hirenza",
@@ -27,18 +33,18 @@ export const metadata: Metadata = {
     "Cold Email Templates",
     "Interview Preparation",
   ],
-  authors: [{ name: "Yash", url: "https://hirenza.com" }],
+  authors: [{ name: "Yash", url: SITE_URL }],
   creator: "Hirenza",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://hirenza.com",
+    url: SITE_URL,
     title: "Hirenza — Your Unfair Advantage For Tech Interviews",
     description: "Structured DSA, company-wise interview preparation, SQL, system design, notes and career resources.",
     siteName: "Hirenza",
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "Hirenza — Your Unfair Advantage For Tech Interviews",
     description: "Structured DSA, company-wise interview preparation, SQL, system design, notes and career resources.",
   },

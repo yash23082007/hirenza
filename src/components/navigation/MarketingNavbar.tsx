@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HirenzaLogo } from "../ui/HirenzaLogo";
 import { useTheme } from "@/hooks/useTheme";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, Search } from "lucide-react";
 
 export function MarketingNavbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -46,6 +46,13 @@ export function MarketingNavbar() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-4">
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("open-command-palette"))}
+            className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-surface-3 border border-border text-secondary hover:text-primary hover:border-purple-1/50 transition-colors"
+            aria-label="Search"
+          >
+            <Search size={16} />
+          </button>
           <button
             onClick={toggleTheme}
             className="theme-toggle scale-90 origin-right"

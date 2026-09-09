@@ -84,8 +84,8 @@ export default function TermsPage() {
             <h2 className="text-2xl font-bold mb-4">Contact</h2>
             <p className="text-secondary leading-relaxed">
               If you have any questions about these terms, please contact us at{" "}
-              <a href="mailto:hello@hirenza.com" className="text-purple-1 hover:underline">
-                hello@hirenza.com
+              <a href="mailto:connectyash82@gmail.com" className="text-purple-1 hover:underline">
+                connectyash82@gmail.com
               </a>
             </p>
           </section>

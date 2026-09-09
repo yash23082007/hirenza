@@ -17,21 +17,28 @@ export function CommandPalette() {
   const router = useRouter();
   const { isCompleted, isBookmarked, toggleComplete, toggleBookmark } = useProgress();
 
-  const allItems = useMemo(() => getAllCatalogItems(), []);
+  const [allItems, setAllItems] = useState<CatalogItem[]>([]);
+  const [fuse, setFuse] = useState<Fuse<CatalogItem> | null>(null);
 
-  const fuse = useMemo(() => {
-    return new Fuse(allItems, {
-      keys: [
-        { name: "title", weight: 0.7 },
-        { name: "topic", weight: 0.2 },
-        { name: "moduleLabel", weight: 0.1 },
-      ],
-      threshold: 0.35,
-      ignoreLocation: true,
-    });
-  }, [allItems]);
+  useEffect(() => {
+    if (!isOpen || fuse) return;
+    const items = getAllCatalogItems();
+    setAllItems(items);
+    setFuse(
+      new Fuse(items, {
+        keys: [
+          { name: "title", weight: 0.7 },
+          { name: "topic", weight: 0.2 },
+          { name: "moduleLabel", weight: 0.1 },
+        ],
+        threshold: 0.35,
+        ignoreLocation: true,
+      })
+    );
+  }, [isOpen, fuse]);
 
   const results = useMemo(() => {
+    if (!fuse) return [];
     if (!deferredQuery.trim()) {
       // Default view: curated mix of high frequency and popular topics
       return allItems.slice(0, 10);

@@ -20,7 +20,6 @@ export function CreatorSection() {
               H
             </div>
             <p className="text-sm text-purple-1 font-semibold">Creator & Developer</p>
-            <p className="text-xs text-muted mt-1">hirenza.in</p>
           </div>
 
           {/* Right - Story */}

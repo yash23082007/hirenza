@@ -55,7 +55,7 @@ Striver's A2Z DSA Sheet
 - **Microsoft** — Clean code emphasis, open-ended problems
 - **Meta** — Speed-focused, Medium-Hard in 45 min
 - **Apple** — Deep technical knowledge, concurrency
-- **Netflix** — System design mastery, culture fit
+- **Uber** — System design mastery, culture fit
 
 **Unique Features:**
 ✅ Company-specific problem sets (100+ problems)  
@@ -274,7 +274,7 @@ Key Concept: DENSE_RANK() vs RANK() vs ROW_NUMBER()
 - Design URL Shortener (bit.ly)
 - Design Twitter Timeline
 - Design Uber Backend
-- Design Netflix Streaming
+- Design Uber Streaming
 - Design WhatsApp Chat
 - Design Instagram Feed
 - Design YouTube Video Platform
@@ -906,7 +906,7 @@ Application pages are compact and information-rich. No wasted space.
 ### 2. Performance
 - Lighthouse: 98/100
 - First Contentful Paint: 0.8s
-- Bundle Size: 180KB gzipped
+- Bundle Size: 240KB gzipped
 - All 23 routes statically generated
 
 ### 3. Accessibility
