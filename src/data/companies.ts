@@ -2,6 +2,7 @@ export interface CompanyProblem {
   id: string;
   title: string;
   leetcodeUrl?: string;
+  gfgUrl?: string;
   difficulty: "Easy" | "Medium" | "Hard";
   topic: string;
   pattern?: string;
@@ -19,14 +20,12 @@ export interface Company {
   problems: CompanyProblem[];
 }
 
-export const companies: Company[] = [
+const rawCompanies: Array<Omit<Company, "totalQuestions" | "difficultyBreakdown"> & { totalQuestions?: number; difficultyBreakdown?: { easy: number; medium: number; hard: number } }> = [
   {
     id: "google",
     name: "Google",
     logo: "G",
     description: "Master Google DSA interviews with high-yield problems from recent candidate experiences.",
-    totalQuestions: 55,
-    difficultyBreakdown: { easy: 12, medium: 30, hard: 13 },
     problems: [
       { id: "g1", title: "Two Sum", leetcodeUrl: "https://leetcode.com/problems/two-sum/", difficulty: "Easy", topic: "Arrays", pattern: "Hash Map", frequency: "High" },
       { id: "g2", title: "Valid Parentheses", leetcodeUrl: "https://leetcode.com/problems/valid-parentheses/", difficulty: "Easy", topic: "Stack", pattern: "Monotonic Stack", frequency: "High" },
@@ -193,3 +192,17 @@ export const companies: Company[] = [
     ],
   },
 ];
+
+export const companies: Company[] = rawCompanies.map(c => ({
+  id: c.id,
+  name: c.name,
+  logo: c.logo,
+  description: c.description,
+  totalQuestions: c.problems.length,
+  difficultyBreakdown: {
+    easy: c.problems.filter(p => p.difficulty === "Easy").length,
+    medium: c.problems.filter(p => p.difficulty === "Medium").length,
+    hard: c.problems.filter(p => p.difficulty === "Hard").length,
+  },
+  problems: c.problems,
+}));

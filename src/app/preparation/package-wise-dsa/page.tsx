@@ -1,20 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { packageWiseData, packageRanges } from "@/data/packageWise";
 import { QuestionList } from "@/components/questions/QuestionList";
 import type { Question } from "@/data";
 
-export default function PackageWisePage() {
-  const [selectedRange, setSelectedRange] = useState("3-5 LPA");
+function PackageWiseContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const r = searchParams.get("range");
+  const selectedRange = (r && packageWiseData[r]) ? r : "3-5 LPA";
 
-  const questions: Question[] = (packageWiseData[selectedRange] || []).map((q) => ({
-    id: parseInt(q.id.replace(/\D/g, "")),
+  const handleSelectRange = (range: string) => {
+    router.replace(`/preparation/package-wise-dsa?range=${encodeURIComponent(range)}`, { scroll: false });
+  };
+
+  const questions: Question[] = (packageWiseData[selectedRange] || []).map(q => ({
+    id: q.id,
     title: q.title,
     difficulty: q.difficulty,
     completed: false,
     bookmarked: false,
-    topic: q.topic,
+    topic: `${q.topic} • ${q.pattern}`,
+    urls: [{ label: "LeetCode", href: q.leetcodeUrl }],
+    hint: `Pattern: ${q.pattern} • Hiring Frequency: ${q.frequency}`,
+    approach: `Focus on the ${q.pattern} algorithmic pattern. Pay attention to edge cases and optimal time/space complexity.`,
   }));
 
   const currentRange = packageRanges.find(r => r.range === selectedRange);
@@ -33,8 +44,10 @@ export default function PackageWisePage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">Interview Complexity Tracks</h1>
-        <p className="text-secondary">Structured problem tracks mapped to engineering hiring bars, from foundational enterprise IT to Tier-1 FAANG and Quant.</p>
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">Package-wise DSA Tracks</h1>
+        <p className="text-secondary">
+          Structured problem tracks mapped to engineering hiring bars, from foundational enterprise IT to Tier-1 FAANG and Quant.
+        </p>
       </div>
 
       {/* Track Selector Tabs */}
@@ -46,10 +59,10 @@ export default function PackageWisePage() {
           return (
             <button
               key={pkg.range}
-              onClick={() => setSelectedRange(pkg.range)}
-              className={`p-3 rounded-xl text-left border transition-all flex flex-col justify-between ${
-                isSelected 
-                  ? "bg-purple-950/30 border-purple-500/50 shadow-sm" 
+              onClick={() => handleSelectRange(pkg.range)}
+              className={`p-3 rounded-xl text-left border transition-all flex flex-col justify-between cursor-pointer ${
+                isSelected
+                  ? "bg-purple-950/30 border-purple-500/50 shadow-sm"
                   : "bg-surface-2 border-border hover:border-purple-500/20"
               }`}
             >
@@ -88,8 +101,16 @@ export default function PackageWisePage() {
         </div>
       )}
 
-      {/* Problem Tracker */}
-      <QuestionList questions={questions} storageKey={`interview-track-${selectedRange}`} />
+      {/* Problem Tracker with verified URLs */}
+      <QuestionList questions={questions} storageKey="package-wise" />
     </div>
+  );
+}
+
+export default function PackageWisePage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-muted">Loading package tracks...</div>}>
+      <PackageWiseContent />
+    </Suspense>
   );
 }

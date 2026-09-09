@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Star, ChevronDown, ChevronRight, Check } from "lucide-react";
+import { useState } from "react";
+import { Star, ChevronDown, ChevronRight, Check, ExternalLink, Lightbulb, Clock, Layers } from "lucide-react";
 import { Question } from "@/data";
+import { useProgress } from "@/hooks/useProgress";
 
 interface QuestionListProps {
   questions: Question[];
@@ -10,68 +11,40 @@ interface QuestionListProps {
   storageKey?: string;
 }
 
-export function QuestionList({ questions: initialQuestions, storageKey = "default" }: QuestionListProps) {
-  const [questions, setQuestions] = useState(initialQuestions);
+export function QuestionList({ questions, storageKey = "default" }: QuestionListProps) {
+  const { isCompleted, isBookmarked, toggleComplete, toggleBookmark } = useProgress();
   const [filter, setFilter] = useState<"All" | "Easy" | "Medium" | "Hard" | "Bookmarked">("All");
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<number | string | null>(null);
 
-  useEffect(() => {
-    let nextQuestions = initialQuestions;
-    try {
-      const stored = localStorage.getItem(`hirenza-questions-state:${storageKey}`);
-      const state = stored ? JSON.parse(stored) : {};
-      nextQuestions = initialQuestions.map(q => ({
-          ...q,
-          completed: state.completed?.[q.id] || false,
-          bookmarked: state.bookmarked?.[q.id] || false,
-        }));
-    } catch {
-      nextQuestions = initialQuestions;
-    }
-    const updateId = window.setTimeout(() => setQuestions(nextQuestions), 0);
-    return () => window.clearTimeout(updateId);
-  }, [initialQuestions, storageKey]);
-
-  const saveState = (updated: Question[]) => {
-    const state = {
-      completed: Object.fromEntries(updated.filter(q => q.completed).map(q => [q.id, true])),
-      bookmarked: Object.fromEntries(updated.filter(q => q.bookmarked).map(q => [q.id, true])),
-    };
-    try {
-      localStorage.setItem(`hirenza-questions-state:${storageKey}`, JSON.stringify(state));
-    } catch {
-      // Progress remains available for the current session when storage is unavailable.
-    }
+  const getFullId = (id: number | string) => {
+    const strId = String(id);
+    if (storageKey === "sql" && !strId.startsWith("sql-")) return `sql-${strId}`;
+    if (storageKey === "package-wise" && !strId.startsWith("pkg-")) return `pkg-${strId}`;
+    if (storageKey === "core-subjects" && !strId.startsWith("cs-")) return `cs-${strId}`;
+    return strId;
   };
 
-  const toggleComplete = (id: number) => {
-    const updated = questions.map(q => q.id === id ? { ...q, completed: !q.completed } : q);
-    setQuestions(updated);
-    saveState(updated);
-  };
-
-  const toggleBookmark = (id: number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    const updated = questions.map(q => q.id === id ? { ...q, bookmarked: !q.bookmarked } : q);
-    setQuestions(updated);
-    saveState(updated);
-  };
+  const completedCount = questions.filter(q => isCompleted(getFullId(q.id))).length;
+  const bookmarkedCount = questions.filter(q => isBookmarked(getFullId(q.id))).length;
+  const progress = questions.length === 0 ? 0 : Math.round((completedCount / questions.length) * 100);
 
   const filtered = questions.filter(q => {
+    const fid = getFullId(q.id);
     if (filter === "All") return true;
-    if (filter === "Bookmarked") return q.bookmarked;
+    if (filter === "Bookmarked") return isBookmarked(fid);
     return q.difficulty === filter;
   });
 
-  const completedCount = questions.filter(q => q.completed).length;
-  const progress = questions.length === 0 ? 0 : Math.round((completedCount / questions.length) * 100);
-
-  const diffColor = (d: string) => {
+  const diffBadge = (d: string) => {
     switch (d) {
-      case "Easy": return "badge-easy";
-      case "Medium": return "badge-medium";
-      case "Hard": return "badge-hard";
-      default: return "";
+      case "Easy":
+        return "bg-green-500/10 text-green-400 border border-green-500/20";
+      case "Medium":
+        return "bg-orange-500/10 text-orange-400 border border-orange-500/20";
+      case "Hard":
+        return "bg-red-500/10 text-red-400 border border-red-500/20";
+      default:
+        return "bg-surface-3 text-secondary";
     }
   };
 
@@ -79,9 +52,11 @@ export function QuestionList({ questions: initialQuestions, storageKey = "defaul
     <div>
       {/* Progress bar */}
       <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-secondary">Overall Progress</span>
-          <span className="text-sm text-secondary">{completedCount}/{questions.length}</span>
+        <div className="flex items-center justify-between mb-2 text-sm">
+          <span className="text-secondary font-medium">Sheet Completion</span>
+          <span className="text-muted font-mono">
+            {completedCount}/{questions.length} ({progress}%)
+          </span>
         </div>
         <div className="h-2 bg-surface-3 rounded-full overflow-hidden">
           <div
@@ -94,101 +69,205 @@ export function QuestionList({ questions: initialQuestions, storageKey = "defaul
       {/* Filters */}
       <div className="flex flex-wrap gap-2 mb-6">
         {(["All", "Easy", "Medium", "Hard", "Bookmarked"] as const).map(f => {
-          const count = f === "All" ? questions.length
-            : f === "Bookmarked" ? questions.filter(q => q.bookmarked).length
-            : questions.filter(q => q.difficulty === f).length;
+          const count =
+            f === "All"
+              ? questions.length
+              : f === "Bookmarked"
+              ? bookmarkedCount
+              : questions.filter(q => q.difficulty === f).length;
+
           return (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                 filter === f
-                  ? "bg-purple-1/15 text-purple-1 border border-purple-1/30"
-                  : "bg-surface-2 text-secondary border border-border hover:border-purple-1/20"
+                  ? "bg-purple-1 text-white shadow-sm"
+                  : "bg-surface-2 text-secondary border border-border hover:border-purple-1/30 hover:text-primary"
               }`}
             >
-              {f}{count > 0 && <span className="ml-1 opacity-60">{count}</span>}
+              {f} {count > 0 && <span className="ml-1 opacity-70">({count})</span>}
             </button>
           );
         })}
       </div>
 
-      {/* Questions */}
-      <div className="border border-border rounded-xl overflow-hidden">
-        {filtered.map(q => (
-          <div key={q.id}>
-            <div
-              className="question-row cursor-pointer"
-              role="button"
-              tabIndex={0}
-              aria-expanded={expandedId === q.id}
-              onClick={() => setExpandedId(expandedId === q.id ? null : q.id)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  setExpandedId(expandedId === q.id ? null : q.id);
-                }
-              }}
-            >
-              {/* Checkbox */}
-              <div className="flex items-center justify-center" onClick={(e) => { e.stopPropagation(); toggleComplete(q.id); }}>
-                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center cursor-pointer transition-all ${
-                  q.completed ? "bg-purple-1 border-purple-1" : "border-border hover:border-purple-1/50"
-                }`}>
-                  {q.completed && <Check size={12} className="text-white" />}
+      {/* Questions list */}
+      <div className="border border-border rounded-xl overflow-hidden divide-y divide-border-soft bg-surface-1">
+        {filtered.map((q, idx) => {
+          const fid = getFullId(q.id);
+          const solved = isCompleted(fid);
+          const starred = isBookmarked(fid);
+          const isExpanded = expandedId === q.id;
+
+          return (
+            <div key={q.id} className="transition-colors">
+              {/* Row Header */}
+              <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 hover:bg-surface-hover/70 transition-colors gap-3">
+                {/* Left: Checkbox + Number + Title */}
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  {/* Accessible Checkbox */}
+                  <button
+                    type="button"
+                    role="checkbox"
+                    aria-checked={solved}
+                    aria-label={`Mark ${q.title} as ${solved ? "unsolved" : "solved"}`}
+                    onClick={() =>
+                      toggleComplete(fid, {
+                        module: storageKey,
+                        topic: q.topic,
+                        difficulty: q.difficulty,
+                      })
+                    }
+                    className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 cursor-pointer transition-all ${
+                      solved
+                        ? "bg-purple-1 border-purple-1"
+                        : "border-border hover:border-purple-1/60 bg-surface-2"
+                    }`}
+                  >
+                    {solved && <Check size={12} className="text-white stroke-[3]" />}
+                  </button>
+
+                  <span className="text-xs text-muted w-6 shrink-0 font-mono">
+                    {idx + 1}.
+                  </span>
+
+                  {/* Title & Clickable Drawer Toggle */}
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={isExpanded}
+                    onClick={() => setExpandedId(isExpanded ? null : q.id)}
+                    onKeyDown={e => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setExpandedId(isExpanded ? null : q.id);
+                      }
+                    }}
+                    className="cursor-pointer min-w-0 flex-1 group"
+                  >
+                    <span
+                      className={`text-sm font-medium transition-colors block truncate ${
+                        solved
+                          ? "text-muted line-through"
+                          : "text-primary group-hover:text-purple-400"
+                      }`}
+                    >
+                      {q.title}
+                    </span>
+                    {q.topic && (
+                      <span className="text-[11px] text-muted block truncate mt-0.5">
+                        {q.topic}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Right: Star + Difficulty + Chevron */}
+                <div className="flex items-center gap-2 shrink-0">
+                  {/* Star Bookmark */}
+                  <button
+                    type="button"
+                    onClick={() => toggleBookmark(fid)}
+                    className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                      starred
+                        ? "text-yellow-400 bg-yellow-400/10"
+                        : "text-muted hover:text-yellow-400 hover:bg-surface-3"
+                    }`}
+                    aria-label={starred ? `Remove bookmark from ${q.title}` : `Bookmark ${q.title}`}
+                  >
+                    <Star size={15} className={starred ? "fill-yellow-400" : ""} />
+                  </button>
+
+                  {/* Difficulty Badge */}
+                  <span
+                    className={`text-[11px] px-2 py-0.5 rounded-md font-medium ${diffBadge(
+                      q.difficulty
+                    )}`}
+                  >
+                    {q.difficulty}
+                  </span>
+
+                  {/* Chevron Toggle */}
+                  <button
+                    type="button"
+                    onClick={() => setExpandedId(isExpanded ? null : q.id)}
+                    className="p-1 text-muted hover:text-primary rounded cursor-pointer"
+                    aria-label={isExpanded ? "Collapse details" : "Expand details"}
+                  >
+                    {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                  </button>
                 </div>
               </div>
 
-              {/* Number */}
-              <span className="text-sm text-muted">{q.id}.</span>
+              {/* Expanded Content Drawer */}
+              {isExpanded && (
+                <div className="px-6 py-4 bg-surface-2/60 border-t border-border-soft/60 text-sm space-y-3 animate-in fade-in duration-150">
+                  {/* Practice Links */}
+                  {q.urls && q.urls.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
+                      <span className="text-xs font-semibold text-muted">Solve on:</span>
+                      {q.urls.map((link, i) => (
+                        <a
+                          key={i}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-surface-3 border border-border hover:border-purple-1/40 hover:text-purple-300 text-xs font-medium text-primary transition-all shadow-sm"
+                        >
+                          <span>{link.label}</span>
+                          <ExternalLink size={12} className="text-muted" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
 
-              {/* Title */}
-              <span className={`text-sm truncate ${q.completed ? "text-muted line-through" : "text-primary"}`}>
-                {q.title}
-              </span>
+                  {/* Hint */}
+                  {q.hint && (
+                    <div className="flex items-start gap-2 text-xs text-amber-300/90 bg-amber-500/10 border border-amber-500/20 p-2.5 rounded-xl">
+                      <Lightbulb size={15} className="shrink-0 mt-0.5 text-amber-400" />
+                      <div>
+                        <strong className="font-semibold block mb-0.5">Hint:</strong>
+                        <span>{q.hint}</span>
+                      </div>
+                    </div>
+                  )}
 
-              {/* Star/Bookmark */}
-              <button
-                onClick={(e) => toggleBookmark(q.id, e)}
-                className="flex items-center justify-center"
-                aria-label={q.bookmarked ? `Remove bookmark from ${q.title}` : `Bookmark ${q.title}`}
-              >
-                <Star
-                  size={16}
-                  className={`transition-colors ${q.bookmarked ? "text-yellow-400 fill-yellow-400" : "text-muted hover:text-yellow-400"}`}
-                />
-              </button>
+                  {/* Approach & Complexity */}
+                  <div className="text-xs text-secondary space-y-2">
+                    <p>
+                      <strong className="text-primary font-medium">Approach & Strategy:</strong>{" "}
+                      {q.approach ||
+                        "Identify the fundamental data structure or algorithmic pattern. Formulate the brute-force baseline, then eliminate redundant iterations through hashing, two pointers, or memoization."}
+                    </p>
 
-              {/* Difficulty */}
-              <span className={`text-xs px-2 py-1 rounded-full text-center ${diffColor(q.difficulty)}`}>
-                {q.difficulty}
-              </span>
-
-              {/* Chevron */}
-              <div className="flex items-center justify-center text-muted">
-                {expandedId === q.id ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-              </div>
+                    {q.complexity && (
+                      <div className="flex items-center gap-4 text-muted pt-1">
+                        <span className="flex items-center gap-1">
+                          <Clock size={13} className="text-purple-400" />
+                          <span>Time: <strong className="text-primary font-mono">{q.complexity.time}</strong></span>
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Layers size={13} className="text-cyan-400" />
+                          <span>Space: <strong className="text-primary font-mono">{q.complexity.space}</strong></span>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-
-            {/* Expanded Content */}
-            <div
-              className="overflow-hidden transition-all duration-300 bg-surface-2/50"
-              style={{ maxHeight: expandedId === q.id ? "200px" : "0" }}
-            >
-              <div className="px-24 py-4 text-sm text-secondary">
-                <p className="mb-2"><strong>Topic:</strong> {q.topic || "General"}</p>
-                <p className="mb-2"><strong>Difficulty:</strong> {q.difficulty}</p>
-                <p><strong>Approach:</strong> Review the relevant concept and practice with examples before attempting.</p>
-              </div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {filtered.length === 0 && (
-        <div className="text-center py-16 text-secondary">
-          <p className="mb-2">No questions match this filter.</p>
-          <button onClick={() => setFilter("All")} className="text-purple-1 hover:underline text-sm">
+        <div className="text-center py-16 text-secondary border border-border rounded-xl bg-surface-1">
+          <p className="mb-2 text-sm">No questions match this filter.</p>
+          <button
+            onClick={() => setFilter("All")}
+            className="text-purple-400 hover:underline text-xs font-medium cursor-pointer"
+          >
             Show all questions
           </button>
         </div>

@@ -16,12 +16,16 @@ export { interviewExperiencesData, type InterviewExperience as InterviewExperien
 
 // Question type for QuestionList component
 export interface Question {
-  id: number;
+  id: number | string;
   title: string;
   difficulty: "Easy" | "Medium" | "Hard";
   completed: boolean;
   bookmarked: boolean;
   topic?: string;
+  urls?: { label: string; href: string }[];
+  approach?: string;
+  complexity?: { time: string; space: string };
+  hint?: string;
 }
 
 // Roles data
@@ -218,25 +222,16 @@ export interface Technology {
 }
 
 export const technologies: Technology[] = [
-  { id: "dbms", name: "DBMS", questions: 120, description: "Database management systems, SQL, normalization, transactions", color: "#4479A1", group: "Core Subjects" },
-  { id: "os", name: "OS", questions: 95, description: "Operating systems concepts, processes, memory management", color: "#F5A623", group: "Core Subjects" },
-  { id: "oops", name: "OOPS", questions: 80, description: "Object-oriented programming principles and patterns", color: "#7B68EE", group: "Core Subjects" },
-  { id: "cn", name: "Computer Networks", questions: 110, description: "Networking protocols, OSI model, TCP/IP", color: "#00BCD4", group: "Core Subjects" },
-  { id: "javascript", name: "JavaScript", questions: 210, description: "Core JS, ES6+, async/await, closures, prototypes", color: "#F7DF1E", group: "Web Development" },
-  { id: "typescript", name: "TypeScript", questions: 150, description: "Type safety, generics, utility types, advanced patterns", color: "#3178C6", group: "Web Development" },
-  { id: "react", name: "React.js", questions: 180, description: "Hooks, state management, patterns, performance optimization", color: "#61DAFB", group: "Web Development" },
-  { id: "node", name: "Node.js", questions: 140, description: "Backend development, Express, middleware, streams", color: "#339933", group: "Web Development" },
-  { id: "react-native", name: "React Native", questions: 120, description: "Cross-platform mobile development", color: "#61DAFB", group: "Mobile Development" },
-  { id: "swift", name: "Swift", questions: 95, description: "iOS development with Swift and SwiftUI", color: "#F05138", group: "Mobile Development" },
-  { id: "flutter", name: "Flutter", questions: 110, description: "Flutter and Dart for cross-platform mobile apps", color: "#02569B", group: "Mobile Development" },
-  { id: "android", name: "Android", questions: 130, description: "Android development with Kotlin and Jetpack Compose", color: "#3DDC84", group: "Mobile Development" },
-  { id: "aws", name: "AWS", questions: 160, description: "Amazon Web Services: EC2, S3, Lambda, DynamoDB", color: "#FF9900", group: "DevOps" },
-  { id: "docker", name: "Docker", questions: 85, description: "Containerization, Docker Compose, multi-stage builds", color: "#2496ED", group: "DevOps" },
-  { id: "kubernetes", name: "Kubernetes", questions: 120, description: "Container orchestration, pods, services, deployments", color: "#326CE5", group: "DevOps" },
-  { id: "terraform", name: "Terraform", questions: 75, description: "Infrastructure as code, modules, state management", color: "#7B42BC", group: "DevOps" },
-  { id: "postgresql", name: "PostgreSQL", questions: 100, description: "Advanced PostgreSQL features, indexing, query optimization", color: "#4169E1", group: "Databases" },
-  { id: "mongodb", name: "MongoDB", questions: 80, description: "NoSQL database, aggregation framework, indexing", color: "#47A248", group: "Databases" },
-  { id: "redis", name: "Redis", questions: 65, description: "In-memory data store, caching, pub-sub, streams", color: "#DC382D", group: "Databases" },
+  { id: "javascript", name: "JavaScript", questions: 15, description: "Core JS, ES6+, async/await, closures, prototypes", color: "#F7DF1E", group: "Web Development" },
+  { id: "typescript", name: "TypeScript", questions: 15, description: "Type safety, generics, utility types, advanced patterns", color: "#3178C6", group: "Web Development" },
+  { id: "react", name: "React.js", questions: 15, description: "Hooks, state management, patterns, performance optimization", color: "#61DAFB", group: "Web Development" },
+  { id: "node", name: "Node.js", questions: 15, description: "Backend development, Express, middleware, streams", color: "#339933", group: "Web Development" },
+  { id: "python", name: "Python", questions: 15, description: "Pythonic syntax, decorators, generators, OOP, internals", color: "#3776AB", group: "Programming Languages" },
+  { id: "dbms", name: "DBMS", questions: 10, description: "Database management systems, SQL, normalization, transactions", color: "#4479A1", group: "Core Subjects" },
+  { id: "os", name: "OS", questions: 10, description: "Operating systems concepts, processes, memory management", color: "#F5A623", group: "Core Subjects" },
+  { id: "cn", name: "Computer Networks", questions: 10, description: "Networking protocols, OSI model, TCP/IP", color: "#00BCD4", group: "Core Subjects" },
+  { id: "aws", name: "AWS", questions: 10, description: "Amazon Web Services: EC2, S3, Lambda, DynamoDB", color: "#FF9900", group: "DevOps & Cloud" },
+  { id: "docker", name: "Docker", questions: 10, description: "Containerization, Docker Compose, multi-stage builds", color: "#2496ED", group: "DevOps & Cloud" },
 ];
 
 // Email templates data

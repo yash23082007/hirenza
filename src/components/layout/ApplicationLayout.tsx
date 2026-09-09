@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { Sidebar } from "@/components/navigation/Sidebar";
 import { TopBar } from "@/components/navigation/TopBar";
+import { Menu } from "lucide-react";
 import { ReactNode } from "react";
 
 export function ApplicationLayout({ children }: { children: ReactNode }) {
@@ -23,8 +24,8 @@ export function ApplicationLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Suspense fallback={null}>
+    <div className="min-h-screen bg-background text-primary">
+      <Suspense fallback={<aside className="w-[285px] border-r border-border hidden md:block" />}>
         <Sidebar
           collapsed={sidebarCollapsed}
           mobileOpen={mobileOpen}
@@ -40,13 +41,13 @@ export function ApplicationLayout({ children }: { children: ReactNode }) {
       >
         <TopBar onToggleSidebar={toggleSidebar} />
 
-        {/* Mobile menu button */}
+        {/* Mobile floating menu button (right-handed thumb zone) */}
         <button
           onClick={() => setMobileOpen(true)}
-          className="md:hidden fixed bottom-6 left-6 z-40 w-12 h-12 rounded-full bg-purple-1 text-white flex items-center justify-center shadow-lg"
-          aria-label="Open menu"
+          className="md:hidden fixed bottom-6 right-6 z-40 w-13 h-13 rounded-full bg-purple-1 text-white flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          aria-label="Open navigation menu"
         >
-          ☰
+          <Menu size={22} />
         </button>
 
         <main className="w-full min-w-0 max-w-[1350px] p-6 md:p-10">

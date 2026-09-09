@@ -1,30 +1,40 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { Suspense, useState, useMemo } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { notesContent } from "@/data";
 import { ArrowLeft, BookOpen, Search, Bookmark, Sparkles, Hash } from "lucide-react";
+import { useProgress } from "@/hooks/useProgress";
 
-export default function CoolNotesPage() {
-  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
+function CoolNotesContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const selectedNoteId = searchParams.get("note") || null;
   const [search, setSearch] = useState("");
   const [revisionMode, setRevisionMode] = useState(false);
-  const [bookmarkedPoints, setBookmarkedPoints] = useState<Record<string, boolean>>({});
+
+  const { isBookmarked, toggleBookmark } = useProgress();
+
+  const handleSelectNote = (id: string | null) => {
+    if (id) {
+      router.replace(`/preparation/cool-notes?note=${id}`, { scroll: false });
+    } else {
+      router.replace("/preparation/cool-notes", { scroll: false });
+    }
+  };
 
   const selectedNote = useMemo(() => {
     return selectedNoteId ? notesContent.find(n => n.id === selectedNoteId) : null;
   }, [selectedNoteId]);
 
-  const toggleBookmark = (id: string) => {
-    setBookmarkedPoints(prev => ({ ...prev, [id]: !prev[id] }));
-  };
-
   const filteredSections = useMemo(() => {
     if (!selectedNote) return [];
     if (!search) return selectedNote.sections;
-    return selectedNote.sections.filter(s => 
-      s.title.toLowerCase().includes(search.toLowerCase()) ||
-      s.keyPoints.some(k => k.toLowerCase().includes(search.toLowerCase())) ||
-      (s.importantTerms && s.importantTerms.some(t => t.toLowerCase().includes(search.toLowerCase())))
+    return selectedNote.sections.filter(
+      s =>
+        s.title.toLowerCase().includes(search.toLowerCase()) ||
+        s.keyPoints.some(k => k.toLowerCase().includes(search.toLowerCase())) ||
+        (s.importantTerms && s.importantTerms.some(t => t.toLowerCase().includes(search.toLowerCase())))
     );
   }, [selectedNote, search]);
 
@@ -34,20 +44,20 @@ export default function CoolNotesPage() {
         <div className="flex items-center justify-between gap-4 mb-6">
           <button
             onClick={() => {
-              setSelectedNoteId(null);
+              handleSelectNote(null);
               setSearch("");
               setRevisionMode(false);
             }}
-            className="text-xs font-bold text-purple-1 hover:underline flex items-center gap-1.5"
+            className="text-xs font-bold text-purple-1 hover:underline flex items-center gap-1.5 cursor-pointer"
           >
             <ArrowLeft size={14} /> Back to all study notes
           </button>
 
           <button
             onClick={() => setRevisionMode(!revisionMode)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-              revisionMode 
-                ? "bg-amber-500/20 text-amber-300 border border-amber-500/30" 
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              revisionMode
+                ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
                 : "bg-surface-2 hover:bg-surface-hover text-secondary border border-border"
             }`}
           >
@@ -63,8 +73,12 @@ export default function CoolNotesPage() {
               {selectedNote.icon}
             </div>
             <div className="flex-1">
-              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">{selectedNote.title}</h1>
-              <p className="text-xs text-muted mt-1">{selectedNote.sections.length} Core Modules • Fast Revision & Concept Notes</p>
+              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-primary">
+                {selectedNote.title}
+              </h1>
+              <p className="text-xs text-muted mt-1">
+                {selectedNote.sections.length} Core Modules • Fast Revision & Concept Notes
+              </p>
             </div>
           </div>
         </div>
@@ -97,14 +111,14 @@ export default function CoolNotesPage() {
                 type="text"
                 placeholder="Search keywords in this note..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="bg-transparent flex-1 text-xs outline-none placeholder:text-muted"
+                onChange={e => setSearch(e.target.value)}
+                className="bg-transparent flex-1 text-xs outline-none placeholder:text-muted text-primary"
               />
             </div>
 
             {filteredSections.map((section, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 id={`sec-${idx}`}
                 className={`card p-6 border transition-all ${
                   revisionMode ? "bg-surface-2/80 border-purple-500/30" : "bg-surface-2 border-border"
@@ -127,19 +141,22 @@ export default function CoolNotesPage() {
                   </span>
                   <ul className="space-y-2.5">
                     {section.keyPoints.map((point, pIdx) => {
-                      const pointId = `${selectedNote.id}-${idx}-${pIdx}`;
-                      const isBookmarked = !!bookmarkedPoints[pointId];
+                      const pointId = `note-${selectedNote.id}-${idx}-${pIdx}`;
+                      const starred = isBookmarked(pointId);
 
                       return (
-                        <li key={pIdx} className="flex items-start gap-3 text-xs text-secondary leading-relaxed bg-surface-3/50 p-2.5 rounded-xl border border-border-soft">
+                        <li
+                          key={pIdx}
+                          className="flex items-start gap-3 text-xs text-secondary leading-relaxed bg-surface-3/50 p-2.5 rounded-xl border border-border-soft"
+                        >
                           <button
                             onClick={() => toggleBookmark(pointId)}
-                            className={`mt-0.5 transition-colors ${
-                              isBookmarked ? "text-amber-400" : "text-muted hover:text-secondary"
+                            className={`mt-0.5 transition-colors cursor-pointer ${
+                              starred ? "text-amber-400" : "text-muted hover:text-secondary"
                             }`}
-                            title={isBookmarked ? "Bookmarked Insight" : "Bookmark Insight"}
+                            title={starred ? "Remove Bookmark" : "Save Bookmark"}
                           >
-                            <Bookmark size={13} fill={isBookmarked ? "currentColor" : "none"} />
+                            <Bookmark size={13} fill={starred ? "currentColor" : "none"} />
                           </button>
                           <span className="flex-1">{point}</span>
                         </li>
@@ -156,8 +173,8 @@ export default function CoolNotesPage() {
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {section.importantTerms.map((term, tIdx) => (
-                        <span 
-                          key={tIdx} 
+                        <span
+                          key={tIdx}
                           className="px-2.5 py-1 text-[11px] bg-surface-3 border border-border rounded-lg text-primary font-medium"
                         >
                           {term}
@@ -178,22 +195,28 @@ export default function CoolNotesPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">Technical Study Notes</h1>
-        <p className="text-secondary">Concise revision guides for Core CS, System Design, and Cloud Architecture with quick flashcards and bookmarks.</p>
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">
+          Technical Study Notes
+        </h1>
+        <p className="text-secondary">
+          Concise revision guides for Core CS, System Design, and Cloud Architecture with quick flashcards and persistent bookmarks.
+        </p>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {notesContent.map(note => (
-          <div 
-            key={note.id} 
-            onClick={() => setSelectedNoteId(note.id)}
+          <div
+            key={note.id}
+            onClick={() => handleSelectNote(note.id)}
             className="card p-6 cursor-pointer hover:border-purple-500/40 transition-all flex flex-col justify-between group"
           >
             <div>
               <div className="bg-surface-3/60 border border-border-soft rounded-2xl p-6 mb-4 aspect-square flex items-center justify-center group-hover:scale-[1.02] transition-transform shadow-inner">
                 <div className="text-5xl">{note.icon}</div>
               </div>
-              <h3 className="font-bold text-base mb-1 group-hover:text-purple-1 transition-colors">{note.title}</h3>
+              <h3 className="font-bold text-base mb-1 group-hover:text-purple-1 transition-colors">
+                {note.title}
+              </h3>
               <p className="text-xs text-muted">{note.sections.length} In-Depth Modules</p>
             </div>
 
@@ -205,5 +228,13 @@ export default function CoolNotesPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function CoolNotesPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-muted">Loading study notes...</div>}>
+      <CoolNotesContent />
+    </Suspense>
   );
 }

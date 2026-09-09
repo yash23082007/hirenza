@@ -1,30 +1,51 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-
-// Deterministic activity data
-function generateActivityData(range: string): number[] {
-  const counts: Record<string, number> = { "7 Days": 7, "30 Days": 30, "3 Months": 90, "6 Months": 180 };
-  const n = counts[range] || 30;
-  const data: number[] = [];
-  // Use a seeded pattern for deterministic data
-  for (let i = 0; i < n; i++) {
-    const seed = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
-    data.push(Math.max(0, Math.round((seed - Math.floor(seed)) * 12)));
-  }
-  return data;
-}
+import { useState, useEffect, useRef, useMemo } from "react";
+import { useProgress } from "@/hooks/useProgress";
+import { Flame, Trophy, Sparkles } from "lucide-react";
 
 export function ActivityChart() {
+  const { heatmapData, streak, data } = useProgress();
   const [range, setRange] = useState("30 Days");
   const [progress, setProgress] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ranges = ["6 Months", "3 Months", "30 Days", "7 Days"];
 
+  const rangeDays = useMemo(() => {
+    switch (range) {
+      case "7 Days": return 7;
+      case "30 Days": return 30;
+      case "3 Months": return 90;
+      case "6 Months": return 180;
+      default: return 30;
+    }
+  }, [range]);
+
+  // Compute real daily activity data for the chosen range
+  const activityData = useMemo(() => {
+    const list: { date: string; count: number; dayLabel: string }[] = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = rangeDays - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      const count = heatmapData[dateStr] || 0;
+      const dayLabel = d.toLocaleDateString("en-US", { weekday: "short" });
+      list.push({ date: dateStr, count, dayLabel });
+    }
+    return list;
+  }, [rangeDays, heatmapData]);
+
+  const totalInPeriod = useMemo(() => {
+    return activityData.reduce((acc, d) => acc + d.count, 0);
+  }, [activityData]);
+
   useEffect(() => {
     let start: number;
     let animationFrameId: number;
-    const duration = 1000;
+    const duration = 600;
 
     const animate = (time: number) => {
       if (!start) {
@@ -55,120 +76,102 @@ export function ActivityChart() {
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
 
-    const data = generateActivityData(range);
     const w = rect.width;
     const h = rect.height;
-    const padding = { top: 20, right: 10, bottom: 30, left: 10 };
-    const chartW = w - padding.left - padding.right;
-    const chartH = h - padding.top - padding.bottom;
-    const maxVal = Math.max(...data, 1);
 
     ctx.clearRect(0, 0, w, h);
 
+    const counts = activityData.map(d => d.count);
+    const maxVal = Math.max(...counts, 4); // minimum ceiling of 4
+
+    const padLeft = 32;
+    const padRight = 16;
+    const padTop = 20;
+    const padBottom = 30;
+    const chartW = w - padLeft - padRight;
+    const chartH = h - padTop - padBottom;
+
     // Grid lines
-    ctx.strokeStyle = "rgba(120, 120, 140, 0.08)";
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
     ctx.lineWidth = 1;
-    for (let i = 0; i <= 4; i++) {
-      const y = padding.top + (chartH / 4) * i;
+    const gridLines = 4;
+    for (let i = 0; i <= gridLines; i++) {
+      const y = padTop + (chartH / gridLines) * i;
       ctx.beginPath();
-      ctx.setLineDash([2, 4]);
-      ctx.moveTo(padding.left, y);
-      ctx.lineTo(w - padding.right, y);
+      ctx.moveTo(padLeft, y);
+      ctx.lineTo(w - padRight, y);
       ctx.stroke();
+
+      const labelVal = Math.round(maxVal - (maxVal / gridLines) * i);
+      ctx.fillStyle = "rgba(150, 150, 150, 0.6)";
+      ctx.font = "10px sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText(String(labelVal), padLeft - 6, y + 3);
     }
-    ctx.setLineDash([]);
 
-    // Draw line with animation
-    if (data.length === 0 || progress === 0) return;
+    if (activityData.length === 0) return;
 
-    const maxIndex = (data.length - 1) * progress;
-    const pointsToDraw = Math.ceil(maxIndex);
+    const barWidth = Math.max(2, Math.min(18, (chartW / activityData.length) * 0.65));
+    const step = chartW / activityData.length;
 
-    ctx.beginPath();
-    ctx.strokeStyle = "#f5f5f7";
-    ctx.lineWidth = 2;
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
+    // Draw bars
+    activityData.forEach((item, i) => {
+      const x = padLeft + i * step + (step - barWidth) / 2;
+      const barHeight = (item.count / maxVal) * chartH * progress;
+      const y = padTop + chartH - barHeight;
 
-    for (let i = 0; i <= pointsToDraw && i < data.length; i++) {
-      let x = padding.left + (i / (data.length - 1)) * chartW;
-      let y = padding.top + chartH - (data[i] / maxVal) * chartH;
-      
-      if (i === pointsToDraw && i > 0 && i > maxIndex) {
-        const prevIdx = i - 1;
-        const remainder = maxIndex - prevIdx;
-        const prevX = padding.left + (prevIdx / (data.length - 1)) * chartW;
-        const prevY = padding.top + chartH - (data[prevIdx] / maxVal) * chartH;
-        x = prevX + (x - prevX) * remainder;
-        y = prevY + (y - prevY) * remainder;
+      if (item.count > 0) {
+        // Gradient bar for active days
+        const grad = ctx.createLinearGradient(0, y, 0, padTop + chartH);
+        grad.addColorStop(0, "#a855f7");
+        grad.addColorStop(1, "rgba(168, 85, 247, 0.2)");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.roundRect(x, y, barWidth, barHeight, [3, 3, 0, 0]);
+        ctx.fill();
+      } else {
+        // Baseline pip for inactive days
+        ctx.fillStyle = "rgba(255, 255, 255, 0.06)";
+        ctx.beginPath();
+        ctx.roundRect(x, padTop + chartH - 2, barWidth, 2, [1, 1, 0, 0]);
+        ctx.fill();
       }
 
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-
-    // Gradient fill under line
-    const gradient = ctx.createLinearGradient(0, padding.top, 0, h - padding.bottom);
-    gradient.addColorStop(0, "rgba(122, 51, 246, 0.15)");
-    gradient.addColorStop(1, "rgba(122, 51, 246, 0)");
-
-    ctx.beginPath();
-    let lastX = padding.left;
-    for (let i = 0; i <= pointsToDraw && i < data.length; i++) {
-      let x = padding.left + (i / (data.length - 1)) * chartW;
-      let y = padding.top + chartH - (data[i] / maxVal) * chartH;
-      
-      if (i === pointsToDraw && i > 0 && i > maxIndex) {
-        const prevIdx = i - 1;
-        const remainder = maxIndex - prevIdx;
-        const prevX = padding.left + (prevIdx / (data.length - 1)) * chartW;
-        const prevY = padding.top + chartH - (data[prevIdx] / maxVal) * chartH;
-        x = prevX + (x - prevX) * remainder;
-        y = prevY + (y - prevY) * remainder;
+      // X-axis dates
+      if (rangeDays <= 14 || i % Math.ceil(activityData.length / 7) === 0 || i === activityData.length - 1) {
+        ctx.fillStyle = "rgba(150, 150, 150, 0.6)";
+        ctx.font = "9px sans-serif";
+        ctx.textAlign = "center";
+        const [,, dayNum] = item.date.split("-");
+        ctx.fillText(`${item.dayLabel} ${Number(dayNum)}`, x + barWidth / 2, h - 8);
       }
-
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-      lastX = x;
-    }
-    if (pointsToDraw > 0) {
-      ctx.lineTo(lastX, h - padding.bottom);
-      ctx.lineTo(padding.left, h - padding.bottom);
-      ctx.closePath();
-      ctx.fillStyle = gradient;
-      ctx.fill();
-    }
-
-    // X-axis labels
-    ctx.fillStyle = "rgba(112, 114, 126, 0.8)";
-    ctx.font = "11px Inter, sans-serif";
-    ctx.textAlign = "center";
-    const labelCount = Math.min(data.length, 6);
-    for (let i = 0; i < labelCount; i++) {
-      const idx = Math.floor((i / (labelCount - 1)) * (data.length - 1));
-      const x = padding.left + (idx / (data.length - 1)) * chartW;
-      const date = new Date();
-      date.setDate(date.getDate() - (data.length - 1 - idx));
-      const label = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-      ctx.fillText(label, x, h - 8);
-    }
-  }, [range, progress]);
+    });
+  }, [activityData, rangeDays, progress]);
 
   return (
-    <div className="min-w-0 border border-border rounded-2xl bg-surface-2 p-6">
-      <div className="flex min-w-0 flex-wrap items-center justify-between gap-3 mb-6">
+    <div className="border border-border rounded-2xl bg-surface-2 p-6 flex flex-col justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div>
-          <h3 className="text-lg font-bold">Activity</h3>
-          <p className="text-sm text-muted">Total of last {range.toLowerCase()}</p>
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-bold text-primary">Solving Velocity</h3>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-purple-1/10 text-purple-400 font-medium">
+              Real Activity
+            </span>
+          </div>
+          <p className="text-xs text-muted mt-0.5">
+            {totalInPeriod} problem{totalInPeriod === 1 ? "" : "s"} completed in the past {range.toLowerCase()}
+          </p>
         </div>
-        <div className="flex max-w-full shrink-0 items-center gap-1 overflow-x-auto bg-surface-3 rounded-lg p-1">
+
+        <div className="flex items-center gap-1 bg-surface-3 p-1 rounded-xl border border-border">
           {ranges.map(r => (
             <button
               key={r}
               onClick={() => setRange(r)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                range === r ? "bg-surface-1 text-primary" : "text-muted hover:text-secondary"
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                range === r
+                  ? "bg-purple-1 text-white shadow-sm"
+                  : "text-secondary hover:text-primary hover:bg-surface-hover"
               }`}
             >
               {r}
@@ -176,29 +179,49 @@ export function ActivityChart() {
           ))}
         </div>
       </div>
-      <canvas
-        ref={canvasRef}
-        className="w-full"
-        style={{ height: "220px" }}
-      />
+
+      <div className="relative">
+        <canvas
+          ref={canvasRef}
+          className="w-full"
+          style={{ height: "200px" }}
+        />
+        {totalInPeriod === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none bg-surface-2/40 backdrop-blur-[1px] rounded-xl">
+            <div className="text-center p-4">
+              <Sparkles size={20} className="mx-auto text-purple-400 mb-1 animate-pulse" />
+              <p className="text-xs font-medium text-secondary">No problems solved in this window yet.</p>
+              <p className="text-[11px] text-muted">Solve a problem from DSA Sheets or SQL to start your chart!</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-4 pt-4 border-t border-border flex items-center justify-between text-xs text-muted">
+        <span>Current Streak: <strong className="text-brand-orange">{streak.current} days</strong></span>
+        <span>Longest: <strong className="text-primary">{streak.longest} days</strong></span>
+        <span>Total Solved: <strong className="text-purple-400">{data.events.length}</strong></span>
+      </div>
     </div>
   );
 }
 
-// Streak Calendar
+// Real Streak Calendar
 export function StreakCalendar() {
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 8, 6)); // September 2026
-  
+  const { streak, heatmapData } = useProgress();
+  const [currentDate, setCurrentDate] = useState(() => new Date());
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const monthName = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
-  // Deterministic streak days
-  const streakDays = new Set([1, 2, 3, 4, 5, 8, 9, 10, 15, 16, 17, 18, 19, 22, 23, 24]);
+  const today = new Date();
+  const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+  const todayDateNum = today.getDate();
 
-  const days = [];
+  const days: (number | null)[] = [];
   for (let i = 0; i < firstDay; i++) days.push(null);
   for (let i = 1; i <= daysInMonth; i++) days.push(i);
 
@@ -206,45 +229,87 @@ export function StreakCalendar() {
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
 
   return (
-    <div className="min-w-0 border border-border rounded-2xl bg-surface-2 p-6">
-      <div className="text-center mb-4">
-        <span className="text-lg">🔥</span>
-        <span className="text-xs font-bold uppercase tracking-wider text-muted ml-2">STREAK</span>
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <button onClick={prevMonth} className="p-1 text-muted hover:text-primary transition-colors">←</button>
-        <span className="text-sm font-semibold">{monthName}</span>
-        <button onClick={nextMonth} className="p-1 text-muted hover:text-primary transition-colors">→</button>
-      </div>
-
-      {/* Week headers */}
-      <div className="grid grid-cols-7 gap-1 mb-2">
-        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(d => (
-          <div key={d} className="text-center text-[10px] text-muted font-medium">{d}</div>
-        ))}
-      </div>
-
-      {/* Days */}
-      <div className="grid grid-cols-7 gap-1">
-        {days.map((day, i) => (
-          <div
-            key={i}
-            className={`aspect-square flex items-center justify-center rounded-lg text-xs font-medium transition-colors ${
-              day === null ? "" :
-              day === 6 ? "ring-2 ring-brand-orange" :
-              streakDays.has(day) ? "bg-brand-orange/20 text-brand-orange" :
-              "text-secondary hover:bg-surface-hover cursor-pointer"
-            }`}
-          >
-            {day}
+    <div className="min-w-0 border border-border rounded-2xl bg-surface-2 p-6 flex flex-col justify-between">
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Flame className="text-brand-orange animate-bounce" size={20} />
+            <span className="text-xs font-bold uppercase tracking-wider text-muted">STREAK CALENDAR</span>
           </div>
-        ))}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={prevMonth}
+              className="p-1 rounded text-muted hover:text-primary hover:bg-surface-3 transition-colors"
+              aria-label="Previous month"
+            >
+              ←
+            </button>
+            <span className="text-xs font-semibold px-1">{monthName}</span>
+            <button
+              onClick={nextMonth}
+              className="p-1 rounded text-muted hover:text-primary hover:bg-surface-3 transition-colors"
+              aria-label="Next month"
+            >
+              →
+            </button>
+          </div>
+        </div>
+
+        {/* Week headers */}
+        <div className="grid grid-cols-7 gap-1 mb-2">
+          {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(d => (
+            <div key={d} className="text-center text-[10px] text-muted font-medium">
+              {d}
+            </div>
+          ))}
+        </div>
+
+        {/* Days Grid */}
+        <div className="grid grid-cols-7 gap-1">
+          {days.map((day, i) => {
+            if (day === null) {
+              return <div key={`empty-${i}`} className="aspect-square" />;
+            }
+
+            const dayStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+            const count = heatmapData[dayStr] || 0;
+            const hasActivity = count > 0;
+            const isToday = isCurrentMonth && day === todayDateNum;
+
+            return (
+              <div
+                key={day}
+                title={hasActivity ? `${dayStr}: ${count} problem(s) solved` : `${dayStr}`}
+                className={`aspect-square flex flex-col items-center justify-center rounded-lg text-xs font-medium transition-all ${
+                  hasActivity
+                    ? "bg-brand-orange/20 text-brand-orange font-bold border border-brand-orange/40"
+                    : "text-secondary hover:bg-surface-hover"
+                } ${isToday ? "ring-2 ring-purple-1 ring-offset-1 ring-offset-surface-2" : ""}`}
+              >
+                <span>{day}</span>
+                {count > 0 && <span className="text-[8px] opacity-70">+{count}</span>}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="mt-4 text-center">
-        <span className="text-2xl font-extrabold text-brand-orange">12</span>
-        <span className="text-xs text-muted ml-2">Day Streak</span>
+      <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-3xl font-extrabold text-brand-orange">{streak.current}</span>
+          <div className="text-left leading-tight">
+            <span className="text-xs font-bold block text-primary">Day Streak</span>
+            <span className="text-[10px] text-muted">
+              {streak.activeToday ? "Active today 🔥" : "Complete a question today"}
+            </span>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="flex items-center gap-1 justify-end text-xs text-muted">
+            <Trophy size={14} className="text-yellow-400" />
+            <span>Best: <strong className="text-primary">{streak.longest}d</strong></span>
+          </div>
+        </div>
       </div>
     </div>
   );
