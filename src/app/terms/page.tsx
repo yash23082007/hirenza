@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description: "Hirenza terms of service and usage guidelines.",
+};
+
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-background">

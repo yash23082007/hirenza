@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description: "Get in touch with the Hirenza team.",
+};
+
 import { Mail, MessageSquare } from "lucide-react";
 
 export default function ContactPage() {

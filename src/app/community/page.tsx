@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Community",
+  description: "Join the Hirenza community — share interview experiences, ask questions, and grow together.",
+};
+
 import Link from "next/link";
 import { MarketingNavbar } from "@/components/navigation/MarketingNavbar";
 import { Footer } from "@/components/marketing/Footer";

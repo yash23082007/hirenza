@@ -1,3 +1,11 @@
+import { TOTAL_ALL_PROBLEMS, TOTAL_PATTERNS } from "@/data/stats";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About",
+  description: "Learn about Hirenza — your unfair advantage for tech interviews.",
+};
+
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
@@ -7,7 +15,7 @@ export default function AboutPage() {
           <p className="text-xl text-secondary">Your unfair advantage for tech interviews</p>
         </div>
 
-        <div className="prose prose-invert max-w-none space-y-8">
+        <div className="max-w-none space-y-8">
           <section>
             <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
             <p className="text-secondary leading-relaxed">
@@ -20,7 +28,7 @@ export default function AboutPage() {
             <ul className="space-y-3 text-secondary">
               <li className="flex items-start gap-3">
                 <span className="text-purple-1 font-bold">→</span>
-                <span><strong className="text-primary">1,200+ curated problems</strong> from LeetCode, GeeksforGeeks, and DataLemur organized by sheets, patterns, and companies</span>
+                <span><strong className="text-primary">{TOTAL_ALL_PROBLEMS}+ curated problems</strong> from LeetCode, GeeksforGeeks, and DataLemur organized by sheets, patterns, and companies</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-purple-1 font-bold">→</span>
@@ -28,7 +36,7 @@ export default function AboutPage() {
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-purple-1 font-bold">→</span>
-                <span><strong className="text-primary">20 DSA patterns</strong> with 104 problems following the Grokking methodology</span>
+                <span><strong className="text-primary">{TOTAL_PATTERNS} DSA patterns</strong> with practice problems following the Grokking methodology</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-purple-1 font-bold">→</span>

@@ -26,11 +26,16 @@ describe('Content Validation', () => {
     expect(SHEET_COUNTS.length).toBeGreaterThan(0);
   });
   
-  it('every problem has at least one working URL', () => {
-    // In a real scenario we'd do a fetch check, but for now we just make sure
-    // the structure is correct where URLs are present
-    // Currently Question doesn't have URLs across the board, but this is a stub
-    // for part E where we expand URLs.
-    expect(true).toBe(true);
+  it('every problem with URLs has valid URL format', () => {
+    for (const c of companies) {
+      for (const p of c.problems) {
+        if (p.leetcodeUrl) {
+          expect(p.leetcodeUrl.startsWith('http'), `Bad LeetCode URL for ${p.title}`).toBe(true);
+        }
+        if (p.gfgUrl) {
+          expect(p.gfgUrl.startsWith('http'), `Bad GFG URL for ${p.title}`).toBe(true);
+        }
+      }
+    }
   });
 });

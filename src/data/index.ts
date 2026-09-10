@@ -28,38 +28,6 @@ export interface Question {
   hint?: string;
 }
 
-// Roles data
-export interface Role {
-  id: string;
-  name: string;
-  questions: number;
-  description: string;
-  group: string;
-  skills?: string[];
-}
-
-export const roles: Role[] = [
-  { id: "frontend", name: "Frontend Developer", questions: 210, description: "React, Next.js, TypeScript, CSS, and modern web technologies", group: "Development", skills: ["HTML/CSS", "JavaScript", "React", "Next.js", "TypeScript", "Tailwind CSS", "Redux"] },
-  { id: "backend", name: "Backend Developer", questions: 150, description: "APIs, databases, server-side architecture, and system design", group: "Development", skills: ["Node.js", "Express", "REST APIs", "GraphQL", "PostgreSQL", "MongoDB", "Redis"] },
-  { id: "fullstack", name: "Fullstack Developer", questions: 510, description: "Complete frontend and backend development skills", group: "Development", skills: ["React", "Node.js", "TypeScript", "Databases", "API Design", "Deployment"] },
-  { id: "mobile", name: "Mobile Developer", questions: 500, description: "Android, iOS, React Native, Flutter development", group: "Development", skills: ["React Native", "Swift", "Kotlin", "Flutter", "Dart", "Mobile Architecture"] },
-  { id: "game-dev", name: "Game Developer", questions: 600, description: "Unity, Unreal Engine, game physics, and AAA development", group: "Development", skills: ["Unity", "Unreal Engine", "C#", "C++", "Game Physics", "3D Math"] },
-  { id: "web3", name: "Web3 Developer", questions: 570, description: "Blockchain, smart contracts, DeFi, and decentralized apps", group: "Development", skills: ["Solidity", "Ethereum", "Smart Contracts", "Web3.js", "IPFS", "DeFi Protocols"] },
-  { id: "embedded", name: "Embedded Systems Engineer", questions: 450, description: "IoT, microcontrollers, RTOS, and embedded software", group: "Development", skills: ["C/C++", "RTOS", "ARM", "IoT Protocols", "Hardware Interfaces", "Debugging"] },
-  { id: "data-analyst", name: "Data Analyst", questions: 225, description: "SQL, data visualization, statistics, and business intelligence", group: "Data & AI/ML", skills: ["SQL", "Python", "Tableau", "Statistics", "Excel", "Power BI"] },
-  { id: "data-engineer", name: "Data Engineer", questions: 300, description: "ETL pipelines, data warehousing, Apache Spark, and big data", group: "Data & AI/ML", skills: ["Apache Spark", "Airflow", "Kafka", "Data Warehousing", "ETL", "Python/Scala"] },
-  { id: "data-scientist", name: "Data Scientist", questions: 450, description: "Machine learning, statistics, Python, and predictive modeling", group: "Data & AI/ML", skills: ["Python", "R", "Machine Learning", "Statistics", "TensorFlow", "Data Analysis"] },
-  { id: "ai-engineer", name: "AI Engineer", questions: 150, description: "Deep learning, neural networks, computer vision, NLP", group: "Data & AI/ML", skills: ["PyTorch", "TensorFlow", "Deep Learning", "NLP", "Computer Vision", "MLOps"] },
-  { id: "ml-engineer", name: "ML/AI Engineer", questions: 400, description: "ML systems, model deployment, MLOps, production systems", group: "Data & AI/ML", skills: ["ML Pipelines", "Model Deployment", "Feature Engineering", "A/B Testing", "MLflow"] },
-  { id: "llm-engineer", name: "LLM / GenAI Engineer", questions: 260, description: "Large language models, prompt engineering, RAG, generative AI", group: "Data & AI/ML", skills: ["LLMs", "Prompt Engineering", "RAG", "LangChain", "Fine-tuning", "Vector Databases"] },
-  { id: "devops", name: "DevOps Engineer", questions: 400, description: "CI/CD, Docker, Kubernetes, infrastructure automation", group: "DevOps & Cloud", skills: ["Docker", "Kubernetes", "CI/CD", "Terraform", "Ansible", "Linux"] },
-  { id: "cloud", name: "Cloud Engineer", questions: 550, description: "AWS, Azure, GCP, cloud architecture, cloud-native apps", group: "DevOps & Cloud", skills: ["AWS", "Azure", "GCP", "Cloud Architecture", "Serverless", "VPC"] },
-  { id: "sre", name: "Site Reliability Engineer", questions: 400, description: "System reliability, monitoring, incident response, operations", group: "DevOps & Cloud", skills: ["Monitoring", "Incident Response", "Automation", "Performance Tuning", "Capacity Planning"] },
-  { id: "security", name: "Cloud Security Engineer", questions: 580, description: "Cloud security, IAM, compliance, threat detection", group: "Security & QA", skills: ["IAM", "Encryption", "Compliance", "Threat Detection", "SIEM", "Zero Trust"] },
-  { id: "cybersecurity", name: "Cybersecurity Analyst", questions: 475, description: "Network security, penetration testing, vulnerability assessment", group: "Security & QA", skills: ["Pen Testing", "Firewalls", "IDS/IPS", "Vulnerability Scanning", "SIEM", "Incident Response"] },
-  { id: "qa", name: "QA / SDET Engineer", questions: 565, description: "Test automation, Selenium, API testing, quality assurance", group: "Security & QA", skills: ["Selenium", "Cypress", "Jest", "API Testing", "Performance Testing", "Test Strategy"] },
-];
-
 // Playlists data
 export interface Playlist {
   id: string;

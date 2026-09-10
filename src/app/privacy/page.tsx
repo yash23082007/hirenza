@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "Hirenza privacy policy — how we handle your data.",
+};
+
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-background">
