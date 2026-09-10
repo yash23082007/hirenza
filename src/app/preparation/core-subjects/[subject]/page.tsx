@@ -1,12 +1,13 @@
 "use client";
 
-import { Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { coreSubjectsData } from "@/data/coreSubjects";
 import { QuestionList } from "@/components/questions/QuestionList";
 import type { Question } from "@/data";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
-const subjectByParam: Record<string, string> = {
+const slugToSubject: Record<string, string> = {
   dbms: "DBMS",
   os: "Operating Systems",
   cn: "Computer Networks",
@@ -20,13 +21,12 @@ const subjectToSlug: Record<string, string> = {
   OOP: "oop",
 };
 
-function CoreSubjectsContent() {
-  const searchParams = useSearchParams();
+export default function CoreSubjectDetailPage() {
+  const params = useParams();
   const router = useRouter();
+  const subjectSlug = params.subject as string;
   const subjects = ["DBMS", "Operating Systems", "Computer Networks", "OOP"];
-  // Support legacy ?subject= param for backwards compatibility, default to DBMS
-  const querySubject = searchParams.get("subject");
-  const selectedSubject = (querySubject && subjectByParam[querySubject]) ? subjectByParam[querySubject] : "DBMS";
+  const selectedSubject = slugToSubject[subjectSlug] || "DBMS";
 
   const handleSelectSubject = (sub: string) => {
     const slug = subjectToSlug[sub] || "dbms";
@@ -52,6 +52,12 @@ function CoreSubjectsContent() {
   return (
     <div>
       <div className="mb-8">
+        <Link
+          href="/preparation/core-subjects"
+          className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-purple-1 transition-colors mb-4"
+        >
+          <ArrowLeft size={14} /> All Core Subjects
+        </Link>
         <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">Core CS Subjects</h1>
         <p className="text-secondary">
           Master computer science foundations for tech interviews with verified GeeksforGeeks links across DBMS, OS, Networks, and OOP.
@@ -82,12 +88,3 @@ function CoreSubjectsContent() {
     </div>
   );
 }
-
-export default function CoreSubjectsPage() {
-  return (
-    <Suspense fallback={<div className="p-8 text-center text-muted">Loading core subjects...</div>}>
-      <CoreSubjectsContent />
-    </Suspense>
-  );
-}
-

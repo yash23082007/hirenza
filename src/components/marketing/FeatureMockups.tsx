@@ -1,25 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Check, Star, ChevronRight, Search } from "lucide-react";
 import { SHEET_COUNTS, COMPANY_COUNTS } from "@/data/stats";
+import { useOncePerView, useOncePerViewTypewriter } from "@/hooks/useOncePerView";
 
 // 1. Mini DSA Sheets Mockup (Animated Solve & Progress Bar)
 export function DSASheetsMockup() {
-  const [solvedIndices, setSolvedIndices] = useState<number[]>([0]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSolvedIndices(prev => {
-        if (prev.length >= 3) return [0];
-        return [...prev, prev.length];
-      });
-    }, 2200);
-    return () => clearInterval(interval);
-  }, []);
+  const sheets = SHEET_COUNTS.slice(0, 3);
+  const { ref, currentStep, prefersReducedMotion } = useOncePerView(sheets.length, 2200);
+  // currentStep 0→1→2 = progressively solve each sheet
+  const solvedCount = prefersReducedMotion ? 1 : currentStep + 1;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
+    <div ref={ref} className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-red-500/50" />
@@ -28,12 +21,12 @@ export function DSASheetsMockup() {
           <span className="ml-3 text-xs text-muted">DSA Sheets</span>
         </div>
         <span className="text-[10px] font-mono text-purple-400 font-semibold">
-          {solvedIndices.length}/3 tracked
+          {solvedCount}/{sheets.length} tracked
         </span>
       </div>
       <div className="p-4 space-y-3">
-        {SHEET_COUNTS.slice(0, 3).map((sheet, idx) => {
-          const isSolved = solvedIndices.includes(idx);
+        {sheets.map((sheet, idx) => {
+          const isSolved = idx < solvedCount;
           return (
             <div
               key={sheet.id}
@@ -89,55 +82,24 @@ export function CompanyWiseMockup() {
     color: companyColors[c.id] || "#7a33f6",
   }));
 
-  const [queryIndex, setQueryIndex] = useState(0);
-  const [charCount, setCharCount] = useState(COMPANY_QUERIES[0].length);
-
-  useEffect(() => {
-    let currentIdx = 0;
-    let char = COMPANY_QUERIES[0].length;
-    let isDeleting = false;
-
-    const timer = setInterval(() => {
-      const target = COMPANY_QUERIES[currentIdx];
-      if (!isDeleting) {
-        if (char < target.length) {
-          char++;
-          setCharCount(char);
-        } else {
-          // Pause at full word before deleting
-          isDeleting = true;
-        }
-      } else {
-        if (char > 0) {
-          char--;
-          setCharCount(char);
-        } else {
-          isDeleting = false;
-          currentIdx = (currentIdx + 1) % COMPANY_QUERIES.length;
-          setQueryIndex(currentIdx);
-        }
-      }
-    }, 180);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  const displayedText = COMPANY_QUERIES[queryIndex].slice(0, charCount);
+  const { ref, wordIndex, displayedText, prefersReducedMotion } = useOncePerViewTypewriter(COMPANY_QUERIES, 180);
+  // If reduced motion, show first query fully
+  const searchText = prefersReducedMotion ? COMPANY_QUERIES[0] : displayedText;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
+    <div ref={ref} className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
       <div className="p-4">
         <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-surface-3 border border-border-soft">
           <Search size={14} className="text-muted" />
           <span className="text-sm text-primary font-mono flex-1">
-            {displayedText}
-            <span className="animate-pulse text-purple-400">|</span>
+            {searchText}
+            {!prefersReducedMotion && <span className="animate-pulse text-purple-400">|</span>}
           </span>
           <span className="text-[10px] text-muted uppercase font-mono">live filter</span>
         </div>
         <div className="grid grid-cols-2 gap-3">
           {displayCompanies.map((c, i) => {
-            const isMatch = c.name.toLowerCase().includes(displayedText.toLowerCase());
+            const isMatch = c.name.toLowerCase().includes(searchText.toLowerCase());
             return (
               <div
                 key={i}
@@ -170,17 +132,11 @@ export function CompanyWiseMockup() {
 export function RoleWiseMockup() {
   const roles = ["Frontend", "Backend", "Fullstack", "DevOps", "Data Scientist", "AI/ML"];
   const questions = [210, 150, 510, 400, 450, 150];
-  const [activeIdx, setActiveIdx] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIdx(prev => (prev + 1) % roles.length);
-    }, 2200);
-    return () => clearInterval(interval);
-  }, [roles.length]);
+  const { ref, currentStep, prefersReducedMotion } = useOncePerView(roles.length, 2200);
+  const activeIdx = prefersReducedMotion ? 0 : currentStep;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
+    <div ref={ref} className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
       <div className="p-4">
         <div className="grid grid-cols-3 gap-2">
           {roles.map((role, i) => {
@@ -213,17 +169,11 @@ export function RoleWiseMockup() {
 export function InterviewQuestionsMockup() {
   const techs = ["JavaScript", "React", "Node.js", "Python", "AWS", "Docker"];
   const colors = ["#f7df1e", "#61dafb", "#339933", "#3776ab", "#ff9900", "#2496ed"];
-  const [activeTech, setActiveTech] = useState(1);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveTech(prev => (prev + 1) % techs.length);
-    }, 2400);
-    return () => clearInterval(interval);
-  }, [techs.length]);
+  const { ref, currentStep, prefersReducedMotion } = useOncePerView(techs.length, 2400);
+  const activeTech = prefersReducedMotion ? 1 : currentStep;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
+    <div ref={ref} className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
       <div className="p-4">
         <div className="flex items-center gap-2 mb-4 px-2 py-2 rounded-lg bg-surface-3 border border-border-soft">
           <Search size={14} className="text-muted ml-2" />
@@ -271,18 +221,9 @@ export function SQLSheetMockup() {
     { id: 74, title: "Find top 3 salaries per department", diff: "Hard" },
     { id: 81, title: "Use CTE for hierarchy", diff: "Hard" },
   ];
-  const [tickedId, setTickedId] = useState<number>(42);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTickedId(prev => {
-        const ids = [1, 42, 74, 81];
-        const nextIdx = (ids.indexOf(prev) + 1) % ids.length;
-        return ids[nextIdx];
-      });
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
+  const ids = [1, 42, 74, 81];
+  const { ref, currentStep, prefersReducedMotion } = useOncePerView(ids.length, 2000);
+  const tickedId = prefersReducedMotion ? 42 : ids[currentStep];
 
   const diffColor: Record<string, string> = {
     Easy: "text-green-400 bg-green-500/10",
@@ -291,7 +232,7 @@ export function SQLSheetMockup() {
   };
 
   return (
-    <div className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
+    <div ref={ref} className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
       <div className="p-3 space-y-1">
         {questions.map((q) => {
           const isTicked = q.id === tickedId;
@@ -336,17 +277,11 @@ export function SystemDesignMockup() {
     { title: "Rate Limiter", type: "HLD" },
     { title: "Snake & Ladder", type: "LLD" },
   ];
-  const [activeItem, setActiveItem] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveItem(prev => (prev + 1) % items.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, [items.length]);
+  const { ref, currentStep, prefersReducedMotion } = useOncePerView(items.length, 2500);
+  const activeItem = prefersReducedMotion ? 0 : currentStep;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
+    <div ref={ref} className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
       <div className="p-4 grid grid-cols-3 gap-2">
         {items.map((item, i) => {
           const isActive = activeItem === i;
@@ -378,17 +313,11 @@ export function SystemDesignMockup() {
 // 7. Mini Notes Mockup (Animated Shimmering Note Cards)
 export function NotesMockup() {
   const notes = ["Computer Networks", "AWS Architecture", "Java Concurrency", "Kubernetes Clusters"];
-  const [activeIdx, setActiveIdx] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIdx(prev => (prev + 1) % notes.length);
-    }, 2600);
-    return () => clearInterval(interval);
-  }, [notes.length]);
+  const { ref, currentStep, prefersReducedMotion } = useOncePerView(notes.length, 2600);
+  const activeIdx = prefersReducedMotion ? 0 : currentStep;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
+    <div ref={ref} className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
       <div className="p-4 grid grid-cols-2 gap-3">
         {notes.map((note, i) => {
           const isActive = activeIdx === i;
@@ -423,17 +352,11 @@ export function ColdEmailMockup() {
     { title: "DevOps Engineer Referral", category: "Cloud & DevOps", snippet: "Hi [Team], noticed your team is migrating to K8s..." },
     { title: "Data Engineer Referral", category: "Data & AI/ML", snippet: "Hi [Manager], followed your real-time pipeline tech blog..." },
   ];
-  const [activeIdx, setActiveIdx] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIdx(prev => (prev + 1) % emails.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [emails.length]);
+  const { ref, currentStep, prefersReducedMotion } = useOncePerView(emails.length, 3000);
+  const activeIdx = prefersReducedMotion ? 0 : currentStep;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
+    <div ref={ref} className="rounded-2xl border border-border bg-surface-2 overflow-hidden shadow-2xl">
       <div className="p-4 space-y-2.5">
         {emails.map((email, i) => {
           const isActive = activeIdx === i;

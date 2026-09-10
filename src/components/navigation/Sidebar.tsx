@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HirenzaLogo } from "../ui/HirenzaLogo";
 import { dsaSheets } from "@/data/dsaSheets";
@@ -74,7 +74,7 @@ const learningItems: NavItem[] = [
     icon: <PlaySquare size={16} />,
     children: dsaPlaylists.map(playlist => ({
       label: playlist.author ? `${playlist.author} Course` : playlist.title,
-      href: `/preparation/dsa-playlists?playlist=${playlist.id}`,
+      href: `/preparation/dsa-playlists/${playlist.id}`,
     })),
   },
   {
@@ -82,7 +82,7 @@ const learningItems: NavItem[] = [
     icon: <Brain size={16} />,
     children: Object.keys(coreSubjectsData).map(subject => ({
       label: subject,
-      href: `/preparation/core-subjects?subject=${SUBJECT_SLUGS[subject] || subject.toLowerCase()}`,
+      href: `/preparation/core-subjects/${SUBJECT_SLUGS[subject] || subject.toLowerCase()}`,
     })),
   },
   {
@@ -90,7 +90,7 @@ const learningItems: NavItem[] = [
     icon: <GraduationCap size={16} />,
     children: systemDesignPlaylists.map(playlist => ({
       label: playlist.author ? `${playlist.author} Track` : playlist.title,
-      href: `/preparation/system-design-playlists?playlist=${playlist.id}`,
+      href: `/preparation/system-design-playlists/${playlist.id}`,
     })),
   },
 ];
@@ -108,7 +108,6 @@ const resourceItems: NavItem[] = [
 
 export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -129,21 +128,7 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
 
   const isActive = (href?: string) => {
     if (!href) return false;
-    // Check if href has query params
-    if (href.includes('?')) {
-      const [path, queryString] = href.split('?');
-      const targetParams = new URLSearchParams(queryString);
-      
-      // Check if current pathname matches
-      if (pathname !== path) return false;
-      
-      // Check if all query params match
-      for (const [key, value] of targetParams.entries()) {
-        if (searchParams?.get(key) !== value) return false;
-      }
-      return true;
-    }
-    return pathname === href;
+    return pathname === href || pathname.startsWith(href + '/');
   };
 
   const isChildActive = (children?: { href: string }[]) =>
