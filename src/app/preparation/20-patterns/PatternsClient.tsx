@@ -4,9 +4,9 @@ import { useState, useMemo } from "react";
 import { dsaPatterns } from "@/data";
 import { ExternalLink, Search, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 
-export default function PatternsPage() {
+export function PatternsClient({ patternId }: { patternId?: string }) {
   const [search, setSearch] = useState("");
-  const [expandedPattern, setExpandedPattern] = useState<string | null>(null);
+  const [expandedPattern, setExpandedPattern] = useState<string | null>(patternId || null);
   const [solvedMap, setSolvedMap] = useState<Record<string, boolean>>(() => {
     if (typeof window === "undefined") return {};
     try {

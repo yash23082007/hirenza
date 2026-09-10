@@ -221,4 +221,5 @@ export function MostAskedQuestionsClient({ techId }: { techId?: string }) {
         );
       })}
     </div>
+  );
 }

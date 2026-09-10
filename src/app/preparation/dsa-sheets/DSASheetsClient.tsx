@@ -20,7 +20,7 @@ import { useProgress } from "@/hooks/useProgress";
 type ProblemStatus = "unsolved" | "attempted" | "solved" | "review" | "mastered";
 
 export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
-  const { statuses, bookmarks, toggleBookmark, updateStatus } = useProgress();
+  const { getStatus, setStatus, isBookmarked, toggleBookmark } = useProgress();
 
   const selectedSheet = useMemo(() => {
     return sheetId ? dsaSheets.find(s => s.id === sheetId) : null;
@@ -39,16 +39,16 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
 
   // Overall Stats
   const solvedCount = useMemo(() => {
-    return allSheetProblems.filter(p => statuses[p.id] === "solved" || statuses[p.id] === "mastered").length;
-  }, [allSheetProblems, statuses]);
+    return allSheetProblems.filter(p => getStatus(p.id) === "solved" || getStatus(p.id) === "mastered").length;
+  }, [allSheetProblems, getStatus]);
 
   const masteredCount = useMemo(() => {
-    return allSheetProblems.filter(p => statuses[p.id] === "mastered").length;
-  }, [allSheetProblems, statuses]);
+    return allSheetProblems.filter(p => getStatus(p.id) === "mastered").length;
+  }, [allSheetProblems, getStatus]);
 
   const reviewCount = useMemo(() => {
-    return allSheetProblems.filter(p => statuses[p.id] === "review").length;
-  }, [allSheetProblems, statuses]);
+    return allSheetProblems.filter(p => getStatus(p.id) === "review").length;
+  }, [allSheetProblems, getStatus]);
 
   const progressPercent = allSheetProblems.length > 0 
     ? Math.round((solvedCount / allSheetProblems.length) * 100) 
@@ -57,9 +57,9 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
   // Find next problem to continue
   const nextProblem = useMemo(() => {
     return allSheetProblems.find(
-      p => !statuses[p.id] || statuses[p.id] === "unsolved" || statuses[p.id] === "attempted"
+      p => { const s = getStatus(p.id); return !s || s === "unsolved" || s === "attempted"; }
     );
-  }, [allSheetProblems, statuses]);
+  }, [allSheetProblems, getStatus]);
 
   if (selectedSheet) {
     const isProblemMatching = (p: Problem) => {
@@ -67,7 +67,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                             p.topic.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             (p.pattern && p.pattern.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesDifficulty = difficultyFilter === "All" || p.difficulty === difficultyFilter;
-      const status = statuses[p.id] || "unsolved";
+      const status = getStatus(p.id) || "unsolved";
       const matchesStatus = statusFilter === "All" || status === statusFilter;
       const isReviewTab = activeTab === "revision" ? status === "review" : true;
 
@@ -163,7 +163,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                     href={nextProblem.leetcodeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => updateStatus(nextProblem.id, "attempted")}
+                    onClick={() => setStatus(nextProblem.id, "attempted")}
                     className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-purple-1 text-white rounded-lg text-xs font-bold hover:opacity-90 transition-opacity"
                   >
                     Solve on LeetCode <ExternalLink size={12} />
@@ -174,7 +174,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                     href={nextProblem.gfgUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => updateStatus(nextProblem.id, "attempted")}
+                    onClick={() => setStatus(nextProblem.id, "attempted")}
                     className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:opacity-90 transition-opacity"
                   >
                     Solve on GFG <ExternalLink size={12} />
@@ -259,7 +259,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
               return null;
             }
 
-            const topicSolved = topic.problems.filter(p => problemStatuses[p.id] === "solved" || problemStatuses[p.id] === "mastered").length;
+            const topicSolved = topic.problems.filter(p => getStatus(p.id) === "solved" || getStatus(p.id) === "mastered").length;
 
             return (
               <div key={topicIdx} className="card p-5">
@@ -276,8 +276,8 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                 {matchingProblems.length > 0 ? (
                   <div className="space-y-2.5">
                     {matchingProblems.map((problem) => {
-                      const status = problemStatuses[problem.id] || "unsolved";
-                      const isBookmarked = !!bookmarks[problem.id];
+                      const status = getStatus(problem.id) || "unsolved";
+                      const bookmarked = isBookmarked(problem.id);
 
                       return (
                         <div
@@ -294,11 +294,11 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                             <button
                               onClick={() => toggleBookmark(problem.id)}
                               className={`p-1 mt-0.5 rounded-md transition-colors ${
-                                isBookmarked ? "text-amber-400 bg-amber-500/10" : "text-muted hover:text-secondary"
+                                bookmarked ? "text-amber-400 bg-amber-500/10" : "text-muted hover:text-secondary"
                               }`}
-                              title={isBookmarked ? "Bookmarked" : "Bookmark Problem"}
+                              title={bookmarked ? "Bookmarked" : "Bookmark Problem"}
                             >
-                              <Bookmark size={15} fill={isBookmarked ? "currentColor" : "none"} />
+                              <Bookmark size={15} fill={bookmarked ? "currentColor" : "none"} />
                             </button>
 
                             <div className="min-w-0 flex-1">
@@ -346,7 +346,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                           {/* Status Selector Button Group */}
                           <div className="flex items-center gap-1 shrink-0 bg-surface-3 p-1 rounded-xl border border-border">
                             <button
-                              onClick={() => updateStatus(problem.id, "unsolved")}
+                              onClick={() => setStatus(problem.id, "unsolved")}
                               className={`px-2 py-1 rounded-lg text-[11px] font-medium transition-colors ${
                                 status === "unsolved" ? "bg-surface-hover text-white" : "text-muted hover:text-secondary"
                               }`}
@@ -355,7 +355,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                               Unsolved
                             </button>
                             <button
-                              onClick={() => updateStatus(problem.id, "attempted")}
+                              onClick={() => setStatus(problem.id, "attempted")}
                               className={`px-2 py-1 rounded-lg text-[11px] font-medium transition-colors ${
                                 status === "attempted" ? "bg-blue-600 text-white font-bold" : "text-muted hover:text-secondary"
                               }`}
@@ -364,7 +364,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                               Attempted
                             </button>
                             <button
-                              onClick={() => updateStatus(problem.id, "solved")}
+                              onClick={() => setStatus(problem.id, "solved")}
                               className={`px-2 py-1 rounded-lg text-[11px] font-medium transition-colors flex items-center gap-1 ${
                                 status === "solved" ? "bg-emerald-600 text-white font-bold" : "text-muted hover:text-secondary"
                               }`}
@@ -373,7 +373,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                               <CheckCircle2 size={12} /> Solved
                             </button>
                             <button
-                              onClick={() => updateStatus(problem.id, "review")}
+                              onClick={() => setStatus(problem.id, "review")}
                               className={`px-2 py-1 rounded-lg text-[11px] font-medium transition-colors flex items-center gap-1 ${
                                 status === "review" ? "bg-amber-600 text-white font-bold" : "text-muted hover:text-secondary"
                               }`}
@@ -382,7 +382,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                               <RotateCcw size={12} /> Review
                             </button>
                             <button
-                              onClick={() => updateStatus(problem.id, "mastered")}
+                              onClick={() => setStatus(problem.id, "mastered")}
                               className={`px-2 py-1 rounded-lg text-[11px] font-medium transition-colors flex items-center gap-1 ${
                                 status === "mastered" ? "bg-purple-600 text-white font-bold" : "text-muted hover:text-secondary"
                               }`}
@@ -418,7 +418,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
         {dsaSheets.map(sheet => {
           const totalProblems = sheet.topics.reduce((sum, t) => sum + t.problems.length, 0);
           const solvedInThisSheet = sheet.topics.flatMap(t => t.problems).filter(
-            p => problemStatuses[p.id] === "solved" || problemStatuses[p.id] === "mastered"
+            p => getStatus(p.id) === "solved" || getStatus(p.id) === "mastered"
           ).length;
           const percent = totalProblems > 0 ? Math.round((solvedInThisSheet / totalProblems) * 100) : 0;
 
@@ -476,7 +476,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
 
               <div className="flex items-center gap-3 pt-4 border-t border-border">
                 <Link
-                  href={`/preparation/dsa-sheets?sheet=${sheet.id}`}
+                  href={`/preparation/dsa-sheets/${sheet.id}`}
                   className="flex-1 text-center py-2 bg-purple-1 text-white rounded-xl text-xs font-bold hover:opacity-90 transition-opacity"
                 >
                   Open Sheet & Tracker →

@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { ProgressProvider } from "@/context/ProgressContext";
-import dynamic from "next/dynamic";
+import { ClientCommandPalette } from "@/components/search/ClientCommandPalette";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
-
-const CommandPalette = dynamic(
-  () => import("@/components/search/CommandPalette").then((m) => ({ default: m.CommandPalette })),
-  { ssr: false }
-);
 
 import { Inter } from "next/font/google";
 
@@ -70,7 +65,7 @@ export default function RootLayout({
         <ThemeProvider>
           <ProgressProvider>
             {children}
-            <CommandPalette />
+            <ClientCommandPalette />
           </ProgressProvider>
         </ThemeProvider>
       </body>
