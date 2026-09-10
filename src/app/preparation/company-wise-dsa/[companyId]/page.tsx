@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ companyId
   const company = companies.find((c) => c.id === companyId);
   if (!company) notFound();
   return {
-    title: `${company.name} Interview Questions`,
+    title: `Top ${company.problems.length} ${company.name} Coding Interview Questions (2026)`,
     description: company.description,
   };
 }

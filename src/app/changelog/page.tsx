@@ -5,7 +5,7 @@ import { Footer } from "@/components/marketing/Footer";
 import { GitCommit, Tag, Sparkles, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Changelog — What's New in Hirenza",
+  title: "Changelog — Platform Architecture & Feature Releases (2026)",
   description: "Detailed release notes and platform architecture updates across Hirenza's offline-first preparation engine.",
 };
 

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Hirenza privacy policy — how we handle your data.",
+  title: "Privacy Policy & Local Storage Architecture (2026)",
+  description: "Hirenza privacy policy: zero trackers, zero cloud database storage, and 100% private local-first persistence.",
 };
 
 export default function PrivacyPage() {

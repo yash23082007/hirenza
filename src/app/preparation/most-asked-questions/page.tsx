@@ -1,8 +1,10 @@
 import { MostAskedQuestionsClient } from "./MostAskedQuestionsClient";
 import type { Metadata } from "next";
 
+import { TOTAL_TECH_QUESTIONS } from "@/data/stats";
+
 export const metadata: Metadata = {
-  title: "Top 210 Most Asked Tech Interview Questions for SDE & DevOps (2026) | HIRENZA",
+  title: `Top ${TOTAL_TECH_QUESTIONS} Tech Interview Questions for SDE & DevOps (2026)`,
   description: "Curated high-frequency technical interview questions across Core CS, Web, Mobile, DevOps, and Databases with structured answers.",
 };
 

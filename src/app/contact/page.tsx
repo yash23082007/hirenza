@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact",
-  description: "Get in touch with the Hirenza team.",
+  title: "Contact & Community Feedback (2026)",
+  description: "Get in touch with the Hirenza engineering team for problem corrections, feedback, and platform suggestions.",
 };
 
 import { Mail, MessageSquare } from "lucide-react";

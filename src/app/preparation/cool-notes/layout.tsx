@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 
+import { TOTAL_NOTES } from "@/data/stats";
+
 export const metadata: Metadata = {
-  title: "Study Notes",
-  description: "Curated study notes covering key interview topics and concepts.",
+  title: `Top ${TOTAL_NOTES} CS & Engineering Revision Notes for Interviews (2026)`,
+  description: "Concise handwritten revision notes covering operating systems, DBMS, system design, and computer networks.",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

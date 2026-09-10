@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service",
-  description: "Hirenza terms of service and usage guidelines.",
+  title: "Terms of Service & Usage Guidelines (2026)",
+  description: "Hirenza terms of service and usage guidelines for the offline-first interview preparation workspace.",
 };
 
 export default function TermsPage() {

@@ -13,8 +13,9 @@ export async function generateMetadata({ params }: { params: Promise<{ sheetId: 
   const { sheetId } = await params;
   const sheet = dsaSheets.find((s) => s.id === sheetId);
   if (!sheet) notFound();
+  const problemCount = sheet.topics.reduce((sum, t) => sum + t.problems.length, 0);
   return {
-    title: sheet.name,
+    title: `Top ${problemCount} Problems — ${sheet.name} (2026)`,
     description: sheet.description,
   };
 }

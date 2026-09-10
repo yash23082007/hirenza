@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { CompanyCompareClient } from "./CompanyCompareClient";
 
 export const metadata: Metadata = {
-  title: "Company DSA Comparison — Shared Problems & Hiring Bars",
+  title: "Top Company DSA Comparison & Overlap Analyzer for Job Seekers (2026)",
   description: "Compare interview formats, topic distributions, and overlapping high-frequency problems between tier-1 tech companies.",
 };
 

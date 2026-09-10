@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Zap, Tag, ShieldCheck, X, ArrowRight } from "lucide-react";
+import { Zap, Tag, ShieldCheck, X, ArrowRight, Sparkles } from "lucide-react";
 
 interface Announcement {
   id: string;
@@ -14,6 +14,13 @@ interface Announcement {
 }
 
 const ANNOUNCEMENTS: Announcement[] = [
+  {
+    id: "placement-checklist",
+    icon: <Sparkles size={13} className="text-amber-300 fill-amber-300/40" />,
+    text: "Get the 90-day placement checklist: curated roadmap, pattern weights & weekly milestones.",
+    linkText: "Get Free Checklist",
+    href: "/onboarding",
+  },
   {
     id: "daily-challenge",
     icon: <Zap size={13} className="text-purple-400 fill-purple-400/30" />,

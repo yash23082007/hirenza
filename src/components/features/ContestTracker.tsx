@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useSyncExternalStore } from "react";
+import { useState, useMemo, useSyncExternalStore, useEffect } from "react";
 import { Calendar, Clock, ExternalLink, Download, Trophy } from "lucide-react";
 
 export interface ContestItem {
@@ -106,12 +106,88 @@ function getServerTime() {
 
 export function ContestTracker({ className = "" }: { className?: string }) {
   const [platformFilter, setPlatformFilter] = useState<string>("All");
+  const [contests, setContests] = useState<ContestItem[]>(() => {
+    if (typeof window === "undefined") return UPCOMING_CONTESTS;
+    try {
+      const cached = localStorage.getItem("hirenza-contests-cache");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed.items) && parsed.items.length > 0) {
+          return parsed.items;
+        }
+      }
+    } catch {
+      // Fall through to UPCOMING_CONTESTS
+    }
+    return UPCOMING_CONTESTS;
+  });
+
   const now = useSyncExternalStore(subscribeTime, getClientTime, getServerTime);
 
+  // Fetch live Codeforces upcoming rounds with 1-hour localStorage caching and offline degrade
+  useEffect(() => {
+    const fetchLiveContests = async () => {
+      try {
+        const cachedRaw = localStorage.getItem("hirenza-contests-cache");
+        if (cachedRaw) {
+          const cached = JSON.parse(cachedRaw);
+          // 1 hour cache validity
+          if (Date.now() - (cached.timestamp || 0) < 3600000 && cached.items?.length) {
+            return;
+          }
+        }
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 4000);
+
+        const response = await fetch("https://codeforces.com/api/contest.list?gym=false", {
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+
+        if (!response.ok) return;
+        const data = await response.json();
+
+        if (data.status === "OK" && Array.isArray(data.result)) {
+          // Filter upcoming contests (phase === "BEFORE")
+          const upcomingCf: ContestItem[] = data.result
+            .filter((c: { phase: string; startTimeSeconds: number }) => c.phase === "BEFORE" && c.startTimeSeconds)
+            .slice(0, 5)
+            .map((c: { id: number; name: string; startTimeSeconds: number; durationSeconds: number }) => ({
+              id: `cf-${c.id}`,
+              platform: "Codeforces" as const,
+              title: c.name,
+              startTime: new Date(c.startTimeSeconds * 1000).toISOString(),
+              durationMinutes: Math.round(c.durationSeconds / 60),
+              url: `https://codeforces.com/contest/${c.id}`,
+            }));
+
+          if (upcomingCf.length > 0) {
+            // Merge with non-Codeforces deterministic contests
+            const nonCf = UPCOMING_CONTESTS.filter(c => c.platform !== "Codeforces");
+            const merged = [...upcomingCf, ...nonCf].sort(
+              (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+            );
+
+            setContests(merged);
+            localStorage.setItem(
+              "hirenza-contests-cache",
+              JSON.stringify({ timestamp: Date.now(), items: merged })
+            );
+          }
+        }
+      } catch {
+        // Offline or API unreachable: gracefully stay on default deterministic schedule
+      }
+    };
+
+    fetchLiveContests();
+  }, []);
+
   const filteredContests = useMemo(() => {
-    if (platformFilter === "All") return UPCOMING_CONTESTS;
-    return UPCOMING_CONTESTS.filter(c => c.platform === platformFilter);
-  }, [platformFilter]);
+    if (platformFilter === "All") return contests;
+    return contests.filter(c => c.platform === platformFilter);
+  }, [platformFilter, contests]);
 
   const platformBadgeColor = (platform: ContestItem["platform"]) => {
     switch (platform) {

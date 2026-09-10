@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ patternId
   const pattern = dsaPatterns.find((p) => p.id === patternId);
   if (!pattern) notFound();
   return {
-    title: `${pattern.name} - DSA Pattern`,
+    title: `Top ${pattern.problems.length} ${pattern.name} Pattern Coding Problems (2026)`,
     description: pattern.description,
   };
 }
