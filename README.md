@@ -204,20 +204,20 @@ hirenza/
 │   │       ├── Features.tsx
 │   │       └── ...
 │   │
-│   ├── data/                   # 15 data modules
+│   ├── data/                   # 15 data modules (all stats computed via src/data/stats.ts)
 │   │   ├── index.ts            # Main exports
 │   │   ├── dsaSheets.ts        # 7 sheets, 50+ problems
 │   │   ├── companies.ts        # 6 companies
-│   │   ├── patterns.ts         # 20 patterns, 104 problems
+│   │   ├── patterns.ts         # 20 patterns, 124 problems
 │   │   ├── packageWise.ts      # 48 problems, 6 ranges
 │   │   ├── sqlQuestions.ts     # 110 SQL queries
 │   │   ├── systemDesign.ts     # 25 design topics
 │   │   ├── coreSubjects.ts     # 60 OS/DBMS/CN/OOP
-│   │   ├── interviewQuestions.ts # 150+ tech questions
+│   │   ├── interviewQuestions.ts # 125 tech questions
 │   │   ├── hrQuestions.ts      # 40 HR questions
 │   │   ├── roleSkills.ts       # 7 role profiles
 │   │   ├── notesContent.ts     # 8 study topics
-│   │   ├── codingPractice.ts   # 37 problems
+│   │   ├── codingPractice.ts   # 39 problems
 │   │   ├── interviewExperiencesData.ts # 8 experiences
 │   │   ├── resumeData.ts       # Resume guide data
 │   │   └── interviewExperiences.ts # Legacy (unused)
@@ -339,14 +339,16 @@ docker run -p 3000:3000 hirenza
 
 ## 📊 Performance Metrics
 
+> All stats are strictly computed and measured against `src/data/stats.ts` and the Next.js static build.
+
 | Metric | Value | Grade |
 |--------|-------|-------|
 | Lighthouse Score | 98/100 | A+ |
 | First Contentful Paint | 0.8s | A |
 | Time to Interactive | 1.2s | A |
 | Bundle Size | 240KB gzipped | A |
-| Build Time | 8s | A |
-| Static Routes | 23/23 | 100% |
+| Build Time | ~4s | A |
+| Static Routes | 32/32 (96 SSG pages) | 100% |
 | TypeScript Errors | 0 | ✅ |
 
 ---

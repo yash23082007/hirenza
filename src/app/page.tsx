@@ -6,9 +6,8 @@ import { PrivacyPanel } from "@/components/marketing/PrivacyPanel";
 import { PaletteDemo } from "@/components/marketing/PaletteDemo";
 import { ATSLinterDemo } from "@/components/marketing/ATSLinterDemo";
 import { FeatureShowcase, RevealSection } from "@/components/marketing/FeatureShowcase";
+import { TwoColumnShowcase } from "@/components/marketing/TwoColumnShowcase";
 import {
-  DSASheetsMockup,
-  CompanyWiseMockup,
   RoleWiseMockup,
   InterviewQuestionsMockup,
   SQLSheetMockup,
@@ -19,7 +18,6 @@ import {
 import { CreatorSection } from "@/components/marketing/CreatorSection";
 import { FAQSection } from "@/components/marketing/FAQSection";
 import { Footer } from "@/components/marketing/Footer";
-import { TOTAL_COMPANIES } from "@/data/stats";
 
 export default function HomePage() {
   return (
@@ -50,23 +48,8 @@ export default function HomePage() {
         </div>
       </RevealSection>
 
-      {/* Feature Showcases */}
-      <FeatureShowcase
-        label="DSA Sheets"
-        title="Systematic DSA with 4-State Tracking"
-        description="Move beyond binary checklists. Track problems through Unsolved, In Review, Solved, and Mastered states with automated Leitner spaced repetition."
-      >
-        <DSASheetsMockup />
-      </FeatureShowcase>
-
-      <FeatureShowcase
-        label="Company Preparation"
-        title="Live Company Readiness Engine"
-        description={`Weighted readiness scores computed against high-frequency OA and onsite interview questions from ${TOTAL_COMPANIES} tech leaders.`}
-        reverse
-      >
-        <CompanyWiseMockup />
-      </FeatureShowcase>
+      {/* Flagship Two-Column Showcase (Hynts §§6–10 Parity) */}
+      <TwoColumnShowcase />
 
       <FeatureShowcase
         label="Role Wise Sheets"

@@ -3,6 +3,7 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import { ProgressProvider } from "@/hooks/useProgress";
 import { ClientCommandPalette } from "@/components/search/ClientCommandPalette";
 import { AnnouncementBar } from "@/components/navigation/AnnouncementBar";
+import { PwaRegistrar } from "@/components/features/PwaRegistrar";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -38,13 +39,28 @@ export const metadata: Metadata = {
     title: "HIRENZA — The Offline-First Prep OS for Power Users",
     description: "Offline-first interview preparation workspace: Curated DSA sheets, company tracks, algorithmic patterns, system design, and production SQL.",
     siteName: "HIRENZA",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "HIRENZA — The Offline-First Prep OS for Power Users",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "HIRENZA — The Offline-First Prep OS for Power Users",
     description: "Offline-first interview preparation workspace: Curated DSA sheets, company tracks, algorithmic patterns, and system design.",
+    images: ["/og.png"],
   },
-  icons: { icon: "/favicon.ico" },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({
@@ -68,6 +84,7 @@ export default function RootLayout({
             <AnnouncementBar />
             {children}
             <ClientCommandPalette />
+            <PwaRegistrar />
           </ProgressProvider>
         </ThemeProvider>
       </body>

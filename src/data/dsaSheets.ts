@@ -16,6 +16,7 @@ export interface DSASheet {
   description: string;
   sourceUrl: string;
   level: "Beginner" | "Intermediate" | "Advanced";
+  banner?: string;
   topics: { name: string; problems: Problem[] }[];
 }
 
@@ -27,6 +28,7 @@ export const dsaSheets: DSASheet[] = [
     description: "Complete A-to-Z DSA course covering 40+ topics. Best structured progression for placement prep.",
     sourceUrl: "https://takeuforward.org/strivers-a2z-dsa-course-sheet-2",
     level: "Beginner",
+    banner: "/banners/striver-a2z.webp",
     topics: [
       {
         name: "Arrays - Easy",
@@ -97,6 +99,7 @@ export const dsaSheets: DSASheet[] = [
     description: "150 problems organized by the 20 essential patterns. Gold standard for pattern-based prep.",
     sourceUrl: "https://neetcode.io/practice",
     level: "Advanced",
+    banner: "/banners/neetcode-150.webp",
     topics: [
       {
         name: "Arrays & Hashing",
@@ -150,6 +153,7 @@ export const dsaSheets: DSASheet[] = [
     description: "450 curated problems organized by topic. Classic placement-focused sheet trusted by thousands.",
     sourceUrl: "https://www.geeksforgeeks.org/dsa-sheet-by-love-babbar/",
     level: "Beginner",
+    banner: "/banners/love-babbar.webp",
     topics: [
       {
         name: "Arrays",
@@ -173,6 +177,7 @@ export const dsaSheets: DSASheet[] = [
     description: "280 high-frequency problems from actual interview experiences at top tech companies.",
     sourceUrl: "https://www.geeksforgeeks.org/dsa-sheet-by-arsh-goyal/",
     level: "Intermediate",
+    banner: "/banners/arsh-goyal.webp",
     topics: [
       {
         name: "High-Frequency Problems",
@@ -195,6 +200,7 @@ export const dsaSheets: DSASheet[] = [
     description: "375 problems for beginners to intermediate. Clear progression with video solutions.",
     sourceUrl: "https://www.apnacollege.in/",
     level: "Beginner",
+    banner: "/banners/shradha-khapra.webp",
     topics: [
       {
         name: "Fundamentals",
@@ -215,6 +221,7 @@ export const dsaSheets: DSASheet[] = [
     description: "300 essential problems with emphasis on pattern recognition and concise focused prep.",
     sourceUrl: "https://coderarmy.in",
     level: "Intermediate",
+    banner: "/banners/rohit-negi.webp",
     topics: [
       {
         name: "Core Problems",
@@ -235,6 +242,7 @@ export const dsaSheets: DSASheet[] = [
     description: "120 must-do problems for maximum coverage with minimum problems.",
     sourceUrl: "https://www.youtube.com/@coderfraz",
     level: "Intermediate",
+    banner: "/banners/fraz.webp",
     topics: [
       {
         name: "Essential Problems",

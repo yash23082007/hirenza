@@ -14,6 +14,7 @@ import {
   GitCompare,
   ChevronDown,
   ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 import { useProgress } from "@/hooks/useProgress";
 import { ProgressRing } from "@/components/ui/ProgressRing";
@@ -136,8 +137,11 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                           <h3 className="font-bold text-base group-hover:text-purple-400 transition-colors">
                             {company.name}
                           </h3>
-                          <span className="text-[10px] text-muted font-mono">
+                          <span className="text-[10px] text-muted font-mono block">
                             {company.problems.length} Curated Questions
+                          </span>
+                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400 font-medium mt-0.5">
+                            <ShieldCheck size={11} /> 2026 Verified
                           </span>
                         </div>
                       </div>
@@ -215,6 +219,14 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                   <p className="text-xs text-muted font-medium mt-0.5">
                     Curated Interview Track · {selectedCompany.problems.length} Problems
                   </p>
+                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                      <ShieldCheck size={12} /> Verified for 2026 hiring cycle
+                    </span>
+                    <span className="text-[11px] text-muted">
+                      Triaged from candidate debriefs
+                    </span>
+                  </div>
                   <div className="text-xs text-secondary mt-1 max-w-xl leading-relaxed">
                     <p
                       className={

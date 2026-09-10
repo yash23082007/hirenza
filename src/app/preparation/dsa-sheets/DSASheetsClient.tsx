@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import { useProgress } from "@/hooks/useProgress";
 import { FocusTimer } from "@/components/features/FocusTimer";
 import { ProgressRing } from "@/components/ui/ProgressRing";
@@ -636,30 +637,62 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
           return (
             <div
               key={sheet.id}
-              className="card p-6 flex flex-col justify-between hover:border-purple-500/40 transition-all rounded-2xl bg-surface-1 border border-border"
+              className="card group p-5 flex flex-col justify-between hover:border-purple-500/40 transition-all rounded-2xl bg-surface-1 border border-border"
             >
               <div>
-                <div className="flex items-start justify-between gap-3 mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0">
-                      <BookOpen size={20} className="text-purple-300" />
+                {sheet.banner && (
+                  <div className="relative w-full aspect-[16/9] mb-4 rounded-xl overflow-hidden border border-border bg-surface-2">
+                    <Image
+                      src={sheet.banner}
+                      alt={`${sheet.name} banner`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      priority={sheet.id === "striver-a2z" || sheet.id === "neetcode-150"}
+                    />
+                    <div className="absolute top-3 right-3">
+                      <span
+                        className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold backdrop-blur-md border ${
+                          sheet.level === "Beginner"
+                            ? "bg-green-500/20 text-green-300 border-green-500/40"
+                            : sheet.level === "Intermediate"
+                            ? "bg-orange-500/20 text-orange-300 border-orange-500/40"
+                            : "bg-red-500/20 text-red-300 border-red-500/40"
+                        }`}
+                      >
+                        {sheet.level}
+                      </span>
                     </div>
+                  </div>
+                )}
+
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <div className="flex items-center gap-2.5">
+                    {!sheet.banner && (
+                      <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0">
+                        <BookOpen size={18} className="text-purple-300" />
+                      </div>
+                    )}
                     <div>
-                      <h3 className="text-lg font-bold text-primary">{sheet.name}</h3>
+                      <h3 className="text-lg font-bold text-primary group-hover:text-purple-300 transition-colors">
+                        {sheet.name}
+                      </h3>
                       <p className="text-xs text-muted">by {sheet.educator}</p>
                     </div>
                   </div>
-                  <span
-                    className={`text-xs px-2.5 py-0.5 rounded-full font-bold border ${
-                      sheet.level === "Beginner"
-                        ? "bg-green-500/10 text-green-400 border-green-500/20"
-                        : sheet.level === "Intermediate"
-                        ? "bg-orange-500/10 text-orange-400 border-orange-500/20"
-                        : "bg-red-500/10 text-red-400 border-red-500/20"
-                    }`}
-                  >
-                    {sheet.level}
-                  </span>
+                  {!sheet.banner && (
+                    <span
+                      className={`text-xs px-2.5 py-0.5 rounded-full font-bold border ${
+                        sheet.level === "Beginner"
+                          ? "bg-green-500/10 text-green-400 border-green-500/20"
+                          : sheet.level === "Intermediate"
+                          ? "bg-orange-500/10 text-orange-400 border-orange-500/20"
+                          : "bg-red-500/10 text-red-400 border-red-500/20"
+                      }`}
+                    >
+                      {sheet.level}
+                    </span>
+                  )}
                 </div>
 
                 <p className="text-xs text-secondary mb-5 leading-relaxed line-clamp-2">
