@@ -3,25 +3,12 @@
 import { useState, useMemo } from "react";
 import { dsaPatterns } from "@/data";
 import { ExternalLink, Search, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { useProgress } from "@/hooks/useProgress";
 
 export function PatternsClient({ patternId }: { patternId?: string }) {
   const [search, setSearch] = useState("");
   const [expandedPattern, setExpandedPattern] = useState<string | null>(patternId || null);
-  const [solvedMap, setSolvedMap] = useState<Record<string, boolean>>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const saved = localStorage.getItem("hirenza-patterns-solved");
-      return saved ? JSON.parse(saved) : {};
-    } catch { return {}; }
-  });
-
-  const toggleSolved = (title: string) => {
-    setSolvedMap(prev => {
-      const next = { ...prev, [title]: !prev[title] };
-      localStorage.setItem("hirenza-patterns-solved", JSON.stringify(next));
-      return next;
-    });
-  };
+  const { isCompleted, toggleComplete } = useProgress();
 
   const filteredPatterns = useMemo(() => {
     return dsaPatterns.filter(p => 
@@ -37,8 +24,11 @@ export function PatternsClient({ patternId }: { patternId?: string }) {
   }, []);
 
   const totalSolvedCount = useMemo(() => {
-    return Object.values(solvedMap).filter(Boolean).length;
-  }, [solvedMap]);
+    return dsaPatterns.reduce(
+      (total, pattern) => total + pattern.problems.filter((_, index) => isCompleted(`pat-${pattern.id}-${index}`)).length,
+      0
+    );
+  }, [isCompleted]);
 
   return (
     <div>
@@ -83,7 +73,7 @@ export function PatternsClient({ patternId }: { patternId?: string }) {
       <div className="space-y-4">
         {filteredPatterns.map((pattern, idx) => {
           const isExpanded = expandedPattern === pattern.id || !!search;
-          const solvedInPattern = pattern.problems.filter(p => solvedMap[p.title]).length;
+          const solvedInPattern = pattern.problems.filter((_, problemIndex) => isCompleted(`pat-${pattern.id}-${problemIndex}`)).length;
           const patternPercent = pattern.problems.length > 0 
             ? Math.round((solvedInPattern / pattern.problems.length) * 100) 
             : 0;
@@ -129,7 +119,8 @@ export function PatternsClient({ patternId }: { patternId?: string }) {
                 <div className="px-5 pb-5 pt-2 border-t border-border bg-surface-2/40">
                   <div className="space-y-2 mt-2">
                     {pattern.problems.map((problem, pIdx) => {
-                      const isSolved = !!solvedMap[problem.title];
+                      const progressId = `pat-${pattern.id}-${pIdx}`;
+                      const isSolved = isCompleted(progressId);
 
                       return (
                         <div
@@ -142,7 +133,11 @@ export function PatternsClient({ patternId }: { patternId?: string }) {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                toggleSolved(problem.title);
+                                toggleComplete(progressId, {
+                                  module: "patterns",
+                                  topic: pattern.name,
+                                  difficulty: problem.difficulty,
+                                });
                               }}
                               className={`p-1 rounded-md transition-colors ${
                                 isSolved ? "text-emerald-400 bg-emerald-500/10" : "text-muted hover:text-secondary"

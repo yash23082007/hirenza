@@ -19,13 +19,13 @@ export default function DashboardPage() {
     const companyProblems = matchedCompany.problems;
     const total = companyProblems.length || 1;
     const solved = companyProblems.filter(p => {
-      const s = data.statuses[p.id] || data.statuses[`comp-${p.id}`];
+      const s = data.statuses[`comp-${p.id}`];
       return s === "solved" || s === "mastered";
     }).length;
 
     const highFreq = companyProblems.filter(p => p.frequency === "High");
     const highFreqSolved = highFreq.filter(p => {
-      const s = data.statuses[p.id] || data.statuses[`comp-${p.id}`];
+      const s = data.statuses[`comp-${p.id}`];
       return s === "solved" || s === "mastered";
     }).length;
 

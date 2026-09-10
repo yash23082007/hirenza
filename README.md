@@ -9,7 +9,7 @@
 ![Tailwind](https://img.shields.io/badge/Tailwind-4.x-38bdf8)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-**The most comprehensive interview preparation platform with 800+ curated questions, real company patterns, and production-grade architecture.**
+**An open-source interview preparation workspace with curated questions, real company patterns, and local-first progress tracking.**
 
 [Live Demo](https://hirenza.vercel.app) • [Documentation](#documentation) • [Features](#features) • [Getting Started](#getting-started)
 
@@ -21,8 +21,8 @@
 
 HIRENZA is a **production-ready interview preparation platform** built for software engineers targeting top tech companies. Unlike generic platforms, hirenza-prep.vercel.appbines:
 
-- **800+ curated problems** from LeetCode, GFG, DataLemur, Codeforces, CodeChef
-- **Real company interview patterns** from Google, Amazon, Meta, Microsoft, Apple, Uber
+- **Curated problems** from LeetCode, GFG, DataLemur, Codeforces, and CodeChef
+- **Real company interview patterns** from Google, Amazon, Meta, Microsoft, Apple, and Flipkart
 - **Industry-standard methodologies** from Striver, NeetCode, Love Babbar, Grokking
 - **Production-grade architecture** with enterprise-level code quality
 
@@ -41,12 +41,12 @@ Every aspect of tech interview prep covered in one platform:
 |--------|---------|--------|
 | DSA Sheets | 50+ problems, 7 sheets | Striver, NeetCode, Love Babbar |
 | Company-wise DSA | 6 companies, 100+ problems | LeetCode, GFG, candidate reports |
-| 20 DSA Patterns | 104 problems, pattern-based | Grokking, AlgoMonster |
+| 20 DSA Patterns | 124 problems, pattern-based | Grokking, AlgoMonster |
 | Package-wise DSA | 48 problems, 6 salary ranges | LeetCode + interview data |
 | SQL Questions | 110 queries, 6 categories | DataLemur, HackerRank |
 | System Design | 25 topics, 8 categories | ByteByteGo, System Design Primer |
 | Core Subjects | 60 questions, OS/DBMS/CN/OOP | GFG, InterviewBit |
-| Tech Interview Qs | 150+ questions, 10 technologies | Curated from interviews |
+| Tech Interview Qs | 125 questions, 10 technologies | Curated from interviews |
 | HR Questions | 40 questions, 8 categories | Indeed, HBR |
 | Role-wise Prep | 7 roles, detailed skill maps | preproadmap.sh |
 | Study Notes | 8 topics, 30+ sections | Curated summaries |
@@ -81,7 +81,7 @@ Based on **Jake's Resume** and industry standards:
 - 6 professional templates
 
 #### 8. **Coding Practice from 3 Platforms**
-37 curated problems from LeetCode, Codeforces, and CodeChef with:
+39 curated problems from LeetCode, Codeforces, and CodeChef with:
 - Contest schedules (Weekly, Biweekly, Long Challenge)
 - Practice plans for Beginner/Intermediate/Advanced
 - Frequency indicators (High/Medium/Low)
@@ -121,7 +121,7 @@ Language: TypeScript 5.x
 UI Library: React 19.2.8
 Styling: Tailwind CSS 4.x
 Icons: Lucide React 1.41.0
-Animation: Fuse.js 13.2.0
+Search: Fuse.js 7.x
 Package Manager: npm
 ```
 
@@ -130,7 +130,7 @@ Package Manager: npm
 #### **Why Next.js 16?**
 - **App Router** for modern routing and layouts
 - **Server Components** for optimal performance
-- **Static Site Generation (SSG)** for all 23 routes
+- **Static Site Generation (SSG)** for all public routes
 - **File-based routing** for clean organization
 - **Built-in optimization** for images and fonts
 

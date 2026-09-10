@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/hooks/useTheme";
-import { ProgressProvider } from "@/context/ProgressContext";
+import { ProgressProvider } from "@/hooks/useProgress";
 import { ClientCommandPalette } from "@/components/search/ClientCommandPalette";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";

@@ -30,7 +30,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
   // Real Readiness Score for a company based on unified progress store
   const calculateReadiness = (company: Company) => {
     if (company.problems.length === 0) return 0;
-    const solvedCount = company.problems.filter(p => isCompleted(p.id) || isCompleted(`comp-${p.id}`)).length;
+    const solvedCount = company.problems.filter(p => isCompleted(`comp-${p.id}`)).length;
     return Math.round((solvedCount / company.problems.length) * 100);
   };
 
@@ -70,7 +70,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredCompanies.map(company => {
               const readiness = calculateReadiness(company);
-              const solvedCount = company.problems.filter(p => isCompleted(p.id) || isCompleted(`comp-${p.id}`)).length;
+              const solvedCount = company.problems.filter(p => isCompleted(`comp-${p.id}`)).length;
 
               return (
                 <div
@@ -179,7 +179,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                   <p>
                     Solved:{" "}
                     <strong>
-                      {selectedCompany.problems.filter(p => isCompleted(p.id) || isCompleted(`comp-${p.id}`)).length}
+                      {selectedCompany.problems.filter(p => isCompleted(`comp-${p.id}`)).length}
                     </strong>{" "}
                     / {selectedCompany.problems.length}
                   </p>
@@ -254,8 +254,9 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                 return true;
               })
               .map(problem => {
-                const isSolved = isCompleted(problem.id) || isCompleted(`comp-${problem.id}`);
-                const isStarred = isBookmarked(problem.id) || isBookmarked(`comp-${problem.id}`);
+                const progressId = `comp-${problem.id}`;
+                const isSolved = isCompleted(progressId);
+                const isStarred = isBookmarked(progressId);
 
                 return (
                   <div
@@ -269,7 +270,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                     <div className="flex items-center gap-3 min-w-0 flex-1">
                       <button
                         onClick={() =>
-                          toggleComplete(problem.id, {
+                          toggleComplete(progressId, {
                             module: "companies",
                             topic: problem.topic,
                             difficulty: problem.difficulty,
@@ -284,7 +285,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                       </button>
 
                       <button
-                        onClick={() => toggleBookmark(problem.id)}
+                        onClick={() => toggleBookmark(progressId)}
                         className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                           isStarred ? "text-amber-400 bg-amber-500/10" : "text-muted hover:text-secondary"
                         }`}

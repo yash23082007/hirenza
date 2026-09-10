@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HirenzaLogo } from "../ui/HirenzaLogo";
+import { dsaSheets } from "@/data/dsaSheets";
 import {
   LayoutDashboard,
   BookOpen,
@@ -41,13 +42,10 @@ const sheetsItems: NavItem[] = [
   {
     label: "DSA Sheets",
     icon: <BookOpen size={16} />,
-    children: [
-      { label: "Striver's A2Z DSA Sheet", href: "/preparation/dsa-sheets?sheet=striver-a2z" },
-      { label: "Shradha Khapra DSA Sheet", href: "/preparation/dsa-sheets?sheet=shradha-khapra" },
-      { label: "Rohit Negi DSA Sheet", href: "/preparation/dsa-sheets?sheet=rohit-negi" },
-      { label: "Arsh Goyal DSA Sheet", href: "/preparation/dsa-sheets?sheet=arsh-goyal" },
-      { label: "NeetCode 150 DSA Sheet", href: "/preparation/dsa-sheets?sheet=neetcode-150" },
-    ],
+    children: dsaSheets.map(sheet => ({
+      label: sheet.name,
+      href: `/preparation/dsa-sheets/${sheet.id}`,
+    })),
   },
   { label: "Company Wise DSA", href: "/preparation/company-wise-dsa", icon: <Building2 size={16} /> },
   { label: "20 DSA Patterns", href: "/preparation/20-patterns", icon: <Fingerprint size={16} /> },
@@ -103,6 +101,15 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
   const searchParams = useSearchParams();
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onCloseMobile();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileOpen, onCloseMobile]);
+
   const toggleGroup = (label: string) => {
     setExpandedGroups(prev => ({ ...prev, [label]: !prev[label] }));
   };
@@ -131,7 +138,7 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
 
   const renderNavItem = (item: NavItem, groupLabel: string) => {
     const hasChildren = item.children && item.children.length > 0;
-    const expanded = expandedGroups[`${groupLabel}-${item.label}`] || isChildActive(item.children);
+    const expanded = expandedGroups[`${groupLabel}-${item.label}`] ?? Boolean(isChildActive(item.children));
     const active = isActive(item.href);
 
     return (

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 import { RevealSection } from "./FeatureShowcase";
+import { TOTAL_ROLES } from "@/data/stats";
 
 const faqCategories = [
   "All",
@@ -21,10 +22,14 @@ const faqData = [
   { q: "Can I save and bookmark questions?", a: "Absolutely. You can bookmark any question across all sheets and resources. Bookmarked questions are easily accessible from your saved questions section.", category: "Features & Functionality" },
   { q: "Can I access notes directly?", a: "Yes. All study notes are available directly in the platform — no downloading or searching required. Browse concise summaries on key topics right in the app.", category: "Content & Resources" },
   { q: "How do I use the DSA sheets?", a: "Navigate to the DSA Sheets section, choose an educator's sheet, and start solving problems in order. Mark questions as completed, track progress, and use bookmarks for revision.", category: "Content & Resources" },
-  { q: "Does Hirenza support different roles?", a: "Yes. We have role-wise preparation for 7 tech roles including Frontend, Backend, Fullstack, Mobile, DevOps, Data Science, AI/ML, and more — with skills, responsibilities, and interview focus areas for each.", category: "Career Preparation" },
+  { q: "Does Hirenza support different roles?", a: `Yes. We have role-wise preparation for ${TOTAL_ROLES} tech roles, with skills, responsibilities, and interview focus areas for each.`, category: "Career Preparation" },
   { q: "Can I switch between dark and light mode?", a: "Yes. Use the theme toggle in the navigation bar to switch between dark and light modes. Your preference is saved automatically.", category: "Features & Functionality" },
   { q: "Do you provide resume templates?", a: "Yes. We offer ATS-friendly resume templates with both Markdown and LaTeX formats, designed for different engineering roles. View sample content and access Overleaf links for each template.", category: "Career Preparation" },
   { q: "How can I contribute to Hirenza?", a: "You can contribute by joining our community, sharing interview experiences, suggesting resources, or contributing to open-source features. Visit the Community page to get started.", category: "Community" },
+  { q: "Can I use Hirenza without an account?", a: "Yes. Hirenza works without an account. Your progress and bookmarks stay in this browser unless you export them yourself.", category: "Account" },
+  { q: "Where can I discuss a resource or share an experience?", a: "Use the Community page to find discussion and contribution paths, or open an issue in the public repository.", category: "Community" },
+  { q: "Does Hirenza send my progress to a server?", a: "No. Progress, bookmarks, and preferences are stored in your browser's local storage. The app does not need your preparation data to run.", category: "Security" },
+  { q: "Can I inspect how Hirenza handles my data?", a: "Yes. The project is open source, so the storage and import/export code can be reviewed directly in the repository.", category: "Security" },
 ];
 
 export function FAQSection() {

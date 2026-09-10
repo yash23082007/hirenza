@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { findCatalogItem, getAllCatalogItems, CatalogItem } from "@/data/catalog";
+import { dsaPatterns } from "@/data/patterns";
+import { companies } from "@/data/companies";
 import { 
   ProgressDataSchema, 
   ValidatedProgressData, 
@@ -23,13 +25,15 @@ function getTodayString(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-const REVIEW_INTERVALS = [1, 3, 7, 16, 35];
+function normalizeId(id: string | number): string {
+  return String(id);
+}
 
 function calculateNextReviewAt(stage: number): string {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const daysToAdd = REVIEW_INTERVALS[Math.min(stage, REVIEW_INTERVALS.length - 1)];
-  const nextDate = new Date(today.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+  const intervals = [1, 3, 7, 14, 30]; // Leitner intervals in days
+  const daysToAdd = intervals[Math.min(stage, intervals.length - 1)];
+  const nextDate = new Date();
+  nextDate.setDate(nextDate.getDate() + daysToAdd);
   return nextDate.toISOString();
 }
 
@@ -39,10 +43,86 @@ function loadInitialData(): ProgressData {
   }
 
   const data = StorageService.loadProgress();
-  if (data) return data;
+  if (data) return migratePatternProgress(migrateLegacyIds(data));
   
   // Return default if parsing fails or no data
-  return ProgressDataSchema.parse({ version: 2 });
+  return migratePatternProgress(ProgressDataSchema.parse({ version: 2 }));
+}
+
+function migrateLegacyIds(data: ProgressData): ProgressData {
+  const legacyArshIds = new Set(["a1", "a2", "a3", "a4", "a5", "a6", "a7"]);
+  const companyProblemIds = new Set(companies.flatMap(c => c.problems.map(p => p.id)));
+
+  const statuses = { ...data.statuses };
+  const bookmarks = { ...data.bookmarks };
+  const revisions = { ...data.revisions };
+
+  // 1. T1.1: Arsh IDs were previously ambiguous with Amazon IDs (a1-a7); migrate legacy keys to arsh- namespace.
+  for (const id of legacyArshIds) {
+    const migratedId = `arsh-${id}`;
+    if (statuses[id]) {
+      if (!statuses[migratedId]) statuses[migratedId] = statuses[id];
+      delete statuses[id];
+    }
+    if (bookmarks[id] !== undefined) {
+      if (bookmarks[migratedId] === undefined) bookmarks[migratedId] = bookmarks[id];
+      delete bookmarks[id];
+    }
+    if (revisions[id]) {
+      if (!revisions[migratedId]) revisions[migratedId] = revisions[id];
+      delete revisions[id];
+    }
+  }
+
+  // 2. T1.2: Canonicalize raw company keys (e.g. g1, a1, m1) to comp-${id} for valid company problem IDs.
+  for (const id of companyProblemIds) {
+    const migratedId = `comp-${id}`;
+    if (statuses[id]) {
+      if (!statuses[migratedId]) statuses[migratedId] = statuses[id];
+      delete statuses[id];
+    }
+    if (bookmarks[id] !== undefined) {
+      if (bookmarks[migratedId] === undefined) bookmarks[migratedId] = bookmarks[id];
+      delete bookmarks[id];
+    }
+    if (revisions[id]) {
+      if (!revisions[migratedId]) revisions[migratedId] = revisions[id];
+      delete revisions[id];
+    }
+  }
+
+  const events = data.events.map(event => {
+    if (legacyArshIds.has(event.problemId)) {
+      return { ...event, problemId: `arsh-${event.problemId}` };
+    }
+    if (companyProblemIds.has(event.problemId)) {
+      return { ...event, problemId: `comp-${event.problemId}` };
+    }
+    return event;
+  });
+
+  return { ...data, statuses, bookmarks, revisions, events };
+}
+
+function migratePatternProgress(data: ProgressData): ProgressData {
+  if (typeof window === "undefined") return data;
+
+  const raw = localStorage.getItem("hirenza-patterns-solved");
+  if (!raw) return data;
+
+  try {
+    const legacySolved = JSON.parse(raw) as Record<string, boolean>;
+    const statuses = { ...data.statuses };
+    for (const pattern of dsaPatterns) {
+      pattern.problems.forEach((problem, index) => {
+        if (legacySolved[problem.title]) statuses[`pat-${pattern.id}-${index}`] = "solved";
+      });
+    }
+    localStorage.removeItem("hirenza-patterns-solved");
+    return { ...data, statuses };
+  } catch {
+    return data;
+  }
 }
 
 interface ProgressContextValue {
@@ -78,8 +158,15 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const handleStorage = (e: StorageEvent) => {
       if (e.key === "hirenza-v2-progress" && e.newValue) {
-        const loaded = StorageService.loadProgress();
-        if (loaded) setData(loaded);
+        try {
+          const parsed = JSON.parse(e.newValue);
+          const result = ProgressDataSchema.safeParse(parsed);
+          if (result.success) {
+            setData(migratePatternProgress(migrateLegacyIds(result.data)));
+          }
+        } catch {
+          // Ignore unparseable or malicious storage payloads
+        }
       }
     };
     window.addEventListener("storage", handleStorage);
@@ -198,7 +285,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   }, [data, persistData]);
 
   const resetProgress = useCallback(() => {
-    persistData(ProgressDataSchema.parse({}));
+    persistData(ProgressDataSchema.parse({ version: 2 }));
   }, [persistData]);
 
   const exportData = useCallback((): string => {
@@ -209,7 +296,8 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     try {
       const parsed = JSON.parse(jsonStr);
       const validated = ProgressDataSchema.parse(parsed);
-      persistData(validated);
+      const migrated = migratePatternProgress(migrateLegacyIds(validated));
+      persistData(migrated);
       return true;
     } catch {
       return false;

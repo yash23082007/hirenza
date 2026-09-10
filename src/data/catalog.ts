@@ -46,7 +46,7 @@ export function getAllCatalogItems(): CatalogItem[] {
           topic: p.topic || t.name,
           difficulty: p.difficulty,
           urls,
-          href: `/preparation/dsa-sheets?sheet=${sheet.id}`,
+          href: `/preparation/dsa-sheets/${sheet.id}`,
           frequency: p.frequency,
         });
       });
@@ -144,7 +144,7 @@ export function getAllCatalogItems(): CatalogItem[] {
         topic: p.topic,
         difficulty: p.difficulty,
         urls,
-        href: `/preparation/company-wise-dsa?company=${c.id}`,
+        href: `/preparation/company-wise-dsa/${c.id}`,
         frequency: p.frequency,
       });
     });
@@ -164,7 +164,7 @@ export function getAllCatalogItems(): CatalogItem[] {
         topic: pat.name,
         difficulty: p.difficulty,
         urls,
-        href: `/preparation/20-patterns?pattern=${pat.id}`,
+        href: `/preparation/20-patterns/${pat.id}`,
         hint: pat.description,
       });
     });
@@ -180,7 +180,7 @@ export function getAllCatalogItems(): CatalogItem[] {
         moduleLabel: `Tech Interview (${techId.toUpperCase()})`,
         topic: q.category,
         difficulty: q.difficulty,
-        href: `/preparation/most-asked-questions?tech=${techId}`,
+        href: `/preparation/most-asked-questions/${techId}`,
         hint: `Category: ${q.category} • Frequency: ${q.frequency}`,
       });
     });
