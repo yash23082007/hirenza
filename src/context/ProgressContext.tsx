@@ -2,147 +2,47 @@
 
 import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { findCatalogItem, getAllCatalogItems, CatalogItem } from "@/data/catalog";
+import { 
+  ProgressDataSchema, 
+  ValidatedProgressData, 
+  ValidatedUserProfile, 
+  ValidatedProblemStatus,
+  ValidatedRevisionState,
+  ValidatedProgressEvent
+} from "@/lib/schema";
+import { StorageService } from "@/lib/storage";
 
-export type ProblemStatus = "unsolved" | "attempted" | "solved" | "review" | "mastered";
-
-export interface ProgressEvent {
-  date: string; // "YYYY-MM-DD"
-  problemId: string;
-  module: string;
-  topic?: string;
-  difficulty?: "Easy" | "Medium" | "Hard";
-}
-
-export interface UserProfile {
-  name: string;
-  email: string;
-  bio: string;
-  targetCompany: string;
-  targetDate: string;
-  hoursPerDay: number;
-}
-
-export interface ProgressData {
-  version: 2;
-  statuses: Record<string, ProblemStatus>;
-  bookmarks: Record<string, boolean>;
-  events: ProgressEvent[];
-  profile: UserProfile;
-}
-
-const STORAGE_KEY = "hirenza-v2-progress";
-
-const defaultProfile: UserProfile = {
-  name: "Builder",
-  email: "builder@example.com",
-  bio: "Preparing for Tier-1 Tech & Product Engineering Roles",
-  targetCompany: "Google",
-  targetDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-  hoursPerDay: 2,
-};
+export type ProblemStatus = ValidatedProblemStatus;
+export type UserProfile = ValidatedUserProfile;
+export type ProgressData = ValidatedProgressData;
+export type RevisionState = ValidatedRevisionState;
+export type ProgressEvent = ValidatedProgressEvent;
 
 function getTodayString(): string {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
+const REVIEW_INTERVALS = [1, 3, 7, 16, 35];
+
+function calculateNextReviewAt(stage: number): string {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const daysToAdd = REVIEW_INTERVALS[Math.min(stage, REVIEW_INTERVALS.length - 1)];
+  const nextDate = new Date(today.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+  return nextDate.toISOString();
+}
+
 function loadInitialData(): ProgressData {
   if (typeof window === "undefined") {
-    return { version: 2, statuses: {}, bookmarks: {}, events: [], profile: defaultProfile };
+    return ProgressDataSchema.parse({ version: 2 });
   }
 
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === "object") {
-        return {
-          version: 2,
-          statuses: parsed.statuses || {},
-          bookmarks: parsed.bookmarks || {},
-          events: parsed.events || [],
-          profile: { ...defaultProfile, ...(parsed.profile || {}) },
-        };
-      }
-    }
-  } catch {
-    // fallback to migration
-  }
-
-  // Legacy Migration
-  const migratedStatuses: Record<string, ProblemStatus> = {};
-  const migratedBookmarks: Record<string, boolean> = {};
-  const migratedEvents: ProgressEvent[] = [];
-  let migratedProfile: UserProfile = { ...defaultProfile };
-
-  try {
-    // 1. hirenza-dsa-status
-    const dsaStatus = localStorage.getItem("hirenza-dsa-status");
-    if (dsaStatus) {
-      const parsed = JSON.parse(dsaStatus);
-      Object.entries(parsed).forEach(([k, v]) => {
-        migratedStatuses[k] = v as ProblemStatus;
-        if (v === "solved" || v === "mastered") {
-          migratedEvents.push({ date: getTodayString(), problemId: k, module: "dsa" });
-        }
-      });
-    }
-
-    // 2. hirenza-dsa-bookmarks
-    const dsaBm = localStorage.getItem("hirenza-dsa-bookmarks");
-    if (dsaBm) {
-      const parsed = JSON.parse(dsaBm);
-      Object.entries(parsed).forEach(([k, v]) => {
-        if (v) migratedBookmarks[k] = true;
-      });
-    }
-
-    // 3. QuestionList states
-    ["sql", "package-wise", "core-subjects", "default"].forEach(key => {
-      const raw = localStorage.getItem(`hirenza-questions-state:${key}`);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed.completed) {
-          Object.keys(parsed.completed).forEach(id => {
-            const fullId = key === "sql" ? `sql-${id}` : key === "package-wise" ? `pkg-${id}` : key === "core-subjects" ? `cs-${id}` : String(id);
-            migratedStatuses[fullId] = "solved";
-            migratedEvents.push({ date: getTodayString(), problemId: fullId, module: key });
-          });
-        }
-        if (parsed.bookmarked) {
-          Object.keys(parsed.bookmarked).forEach(id => {
-            const fullId = key === "sql" ? `sql-${id}` : key === "package-wise" ? `pkg-${id}` : key === "core-subjects" ? `cs-${id}` : String(id);
-            migratedBookmarks[fullId] = true;
-          });
-        }
-      }
-    });
-
-    // 4. hirenza-profile
-    const profRaw = localStorage.getItem("hirenza-profile");
-    if (profRaw) {
-      const parsed = JSON.parse(profRaw);
-      if (parsed) migratedProfile = { ...defaultProfile, ...parsed };
-    }
-  } catch {
-    // ignore migration error
-  }
-
-  const result: ProgressData = {
-    version: 2,
-    statuses: migratedStatuses,
-    bookmarks: migratedBookmarks,
-    events: migratedEvents,
-    profile: migratedProfile,
-  };
-
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(result));
-  } catch {
-    // localStorage full or restricted
-  }
-
-  return result;
+  const data = StorageService.loadProgress();
+  if (data) return data;
+  
+  // Return default if parsing fails or no data
+  return ProgressDataSchema.parse({ version: 2 });
 }
 
 interface ProgressContextValue {
@@ -162,7 +62,7 @@ interface ProgressContextValue {
   moduleStats: Record<string, { solved: number; total: number; percent: number }>;
   topicMastery: { topic: string; solved: number; total: number; percent: number; color: string }[];
   allBookmarks: CatalogItem[];
-  revisionQueue: (CatalogItem & { status: ProblemStatus; daysSince: number })[];
+  revisionQueue: (CatalogItem & { status: ProblemStatus; daysSince: number; nextReviewAt: string })[];
 }
 
 const ProgressContext = createContext<ProgressContextValue | null>(null);
@@ -170,26 +70,16 @@ const ProgressContext = createContext<ProgressContextValue | null>(null);
 export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<ProgressData>(loadInitialData);
 
-  // Sync to localStorage
   const persistData = useCallback((newData: ProgressData) => {
     setData(newData);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
-    } catch {
-      // storage unavailable
-    }
+    StorageService.saveProgress(newData);
   }, []);
 
-  // Cross-tab sync
   useEffect(() => {
     const handleStorage = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY && e.newValue) {
-        try {
-          const parsed = JSON.parse(e.newValue);
-          setData(parsed);
-        } catch {
-          // ignore
-        }
+      if (e.key === "hirenza-v2-progress" && e.newValue) {
+        const loaded = StorageService.loadProgress();
+        if (loaded) setData(loaded);
       }
     };
     window.addEventListener("storage", handleStorage);
@@ -215,17 +105,20 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
 
   const setStatus = useCallback((id: string | number, status: ProblemStatus, meta?: { module?: string; topic?: string; difficulty?: "Easy" | "Medium" | "Hard" }) => {
     const strId = normalizeId(id);
-    const today = getTodayString();
+    const todayStr = getTodayString();
+    const todayIso = new Date().toISOString();
 
     const newStatuses = { ...data.statuses, [strId]: status };
     const newEvents = [...data.events];
+    const newRevisions = { ...data.revisions };
 
-    if (status === "solved" || status === "mastered") {
-      // Record event if not already recorded today for this problem
-      const exists = newEvents.some(e => e.problemId === strId && e.date === today);
-      if (!exists) {
+    // Record activity event
+    if (status === "solved" || status === "mastered" || status === "review" || status === "attempted") {
+      // Allow multiple events but let's just push one for today to keep it clean, or update existing for today
+      const existingTodayIndex = newEvents.findIndex(e => e.problemId === strId && e.date.startsWith(todayStr));
+      if (existingTodayIndex === -1) {
         newEvents.push({
-          date: today,
+          date: todayIso,
           problemId: strId,
           module: meta?.module || "dsa",
           topic: meta?.topic,
@@ -234,10 +127,44 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
+    // Handle Revision Engine
+    if (status === "solved") {
+      const currentRev = newRevisions[strId];
+      if (!currentRev) {
+        // Initial solve
+        newRevisions[strId] = {
+          lastReviewedAt: todayIso,
+          nextReviewAt: calculateNextReviewAt(0),
+          reviewStage: 0,
+          reviewCount: 1,
+        };
+      } else {
+        // Repeated solve / review
+        newRevisions[strId] = {
+          ...currentRev,
+          lastReviewedAt: todayIso,
+          nextReviewAt: calculateNextReviewAt(currentRev.reviewStage + 1),
+          reviewStage: currentRev.reviewStage + 1,
+          reviewCount: currentRev.reviewCount + 1,
+        };
+        // Auto-promote to mastered
+        if (currentRev.reviewStage + 1 >= 5) {
+          newStatuses[strId] = "mastered";
+        }
+      }
+    } else if (status === "unsolved") {
+      // User explicitly reverts to unsolved. We don't wipe revision history (as requested), 
+      // but we don't necessarily schedule it for review either unless it's re-solved.
+    }
+
+    // Sort events so latest are always at the end
+    newEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
     persistData({
       ...data,
       statuses: newStatuses,
       events: newEvents,
+      revisions: newRevisions,
     });
   }, [data, persistData]);
 
@@ -271,14 +198,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   }, [data, persistData]);
 
   const resetProgress = useCallback(() => {
-    const fresh: ProgressData = {
-      version: 2,
-      statuses: {},
-      bookmarks: {},
-      events: [],
-      profile: defaultProfile,
-    };
-    persistData(fresh);
+    persistData(ProgressDataSchema.parse({}));
   }, [persistData]);
 
   const exportData = useCallback((): string => {
@@ -288,26 +208,20 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const importData = useCallback((jsonStr: string): boolean => {
     try {
       const parsed = JSON.parse(jsonStr);
-      if (parsed && typeof parsed === "object") {
-        const validated: ProgressData = {
-          version: 2,
-          statuses: parsed.statuses || {},
-          bookmarks: parsed.bookmarks || {},
-          events: Array.isArray(parsed.events) ? parsed.events : [],
-          profile: { ...defaultProfile, ...(parsed.profile || {}) },
-        };
-        persistData(validated);
-        return true;
-      }
+      const validated = ProgressDataSchema.parse(parsed);
+      persistData(validated);
+      return true;
     } catch {
-      // invalid json
+      return false;
     }
-    return false;
   }, [persistData]);
 
-  // Derived: Streaks
   const streak = useMemo(() => {
-    const uniqueDates = Array.from(new Set(data.events.map(e => e.date))).sort();
+    // Extract YYYY-MM-DD from ISO strings
+    const uniqueDates = Array.from(new Set(data.events.map(e => {
+      return e.date.includes("T") ? e.date.split("T")[0] : e.date;
+    }))).sort();
+    
     if (uniqueDates.length === 0) {
       return { current: 0, longest: 0, activeToday: false };
     }
@@ -319,7 +233,6 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     let longest = 0;
     let tempStreak = 0;
 
-    // Calculate streaks by checking consecutive dates
     const dateObjs = uniqueDates.map(d => {
       const [y, m, day] = d.split("-").map(Number);
       return new Date(y, m - 1, day);
@@ -339,7 +252,6 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       if (tempStreak > longest) longest = tempStreak;
     }
 
-    // Check if the streak continues up to today or yesterday
     const lastDate = dateObjs[dateObjs.length - 1];
     const todayObj = new Date();
     todayObj.setHours(0, 0, 0, 0);
@@ -354,16 +266,15 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     return { current, longest: Math.max(longest, current), activeToday };
   }, [data.events]);
 
-  // Derived: Heatmap { "YYYY-MM-DD": count }
   const heatmapData = useMemo(() => {
     const map: Record<string, number> = {};
     data.events.forEach(e => {
-      map[e.date] = (map[e.date] || 0) + 1;
+      const d = e.date.includes("T") ? e.date.split("T")[0] : e.date;
+      map[d] = (map[d] || 0) + 1;
     });
     return map;
   }, [data.events]);
 
-  // Derived: Module Stats
   const moduleStats = useMemo(() => {
     const catalog = getAllCatalogItems();
     const modules = ["dsa", "sql", "system-design", "core-subjects", "package-wise", "companies"] as const;
@@ -371,7 +282,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
 
     modules.forEach(mod => {
       const items = catalog.filter(i => i.module === mod);
-      const total = items.length || 1;
+      const total = items.length || 0; // Fixed empty data logic to 0 / 0
       const solved = items.filter(i => {
         const s = data.statuses[i.id];
         return s === "solved" || s === "mastered";
@@ -379,14 +290,13 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       stats[mod] = {
         solved,
         total,
-        percent: Math.min(100, Math.round((solved / total) * 100)),
+        percent: total === 0 ? 0 : Math.min(100, Math.round((solved / total) * 100)),
       };
     });
 
     return stats;
   }, [data.statuses]);
 
-  // Derived: Topic Mastery
   const topicMastery = useMemo(() => {
     const catalog = getAllCatalogItems();
     const keyTopics = [
@@ -402,7 +312,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
         const top = (item.topic || "").toLowerCase();
         return cat.match.some(m => top.includes(m.toLowerCase()));
       });
-      const total = matchingItems.length || 1;
+      const total = matchingItems.length || 0; // Fix empty logic
       const solved = matchingItems.filter(i => {
         const s = data.statuses[i.id];
         return s === "solved" || s === "mastered";
@@ -412,13 +322,12 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
         topic: cat.name,
         solved,
         total,
-        percent: Math.min(100, Math.round((solved / total) * 100)),
+        percent: total === 0 ? 0 : Math.min(100, Math.round((solved / total) * 100)),
         color: cat.color,
       };
     });
   }, [data.statuses]);
 
-  // Derived: All Bookmarks
   const allBookmarks = useMemo(() => {
     const list: CatalogItem[] = [];
     Object.keys(data.bookmarks).forEach(id => {
@@ -440,37 +349,29 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     return list;
   }, [data.bookmarks]);
 
-  // Derived: Spaced Repetition Revision Queue
   const revisionQueue = useMemo(() => {
     const catalog = getAllCatalogItems();
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    
+    const dueItems: (CatalogItem & { status: ProblemStatus; daysSince: number; nextReviewAt: string })[] = [];
 
-    const dueItems: (CatalogItem & { status: ProblemStatus; daysSince: number })[] = [];
-
-    // 1. Items manually set to "review"
-    // 2. Items solved whose latest event matches Leitner interval (+1, +3, +7, +16, +35 days)
     catalog.forEach(item => {
       const s = data.statuses[item.id];
+      const rev = data.revisions[item.id];
+      
       if (s === "review") {
-        dueItems.push({ ...item, status: "review", daysSince: 0 });
-      } else if (s === "solved") {
-        const itemEvents = data.events.filter(e => e.problemId === item.id);
-        if (itemEvents.length > 0) {
-          const lastEventDate = itemEvents[itemEvents.length - 1].date;
-          const [y, m, day] = lastEventDate.split("-").map(Number);
-          const eventDate = new Date(y, m - 1, day);
-          const diffDays = Math.round((today.getTime() - eventDate.getTime()) / (1000 * 3600 * 24));
-          const intervals = [1, 3, 7, 16, 35];
-          if (intervals.includes(diffDays) || diffDays >= 7) {
-            dueItems.push({ ...item, status: "solved", daysSince: diffDays });
-          }
+        dueItems.push({ ...item, status: "review", daysSince: 0, nextReviewAt: new Date().toISOString() });
+      } else if (s === "solved" && rev) {
+        const nextReviewDate = new Date(rev.nextReviewAt);
+        if (nextReviewDate <= today) {
+          const daysSince = Math.max(0, Math.floor((today.getTime() - new Date(rev.lastReviewedAt).getTime()) / (1000 * 3600 * 24)));
+          dueItems.push({ ...item, status: "solved", daysSince, nextReviewAt: rev.nextReviewAt });
         }
       }
     });
 
     return dueItems;
-  }, [data.statuses, data.events]);
+  }, [data.statuses, data.revisions]);
 
   const value: ProgressContextValue = {
     data,

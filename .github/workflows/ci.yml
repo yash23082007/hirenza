@@ -31,9 +31,9 @@ jobs:
         
       - name: Validate Content
         run: npm run validate-content
-        
-      - name: Audit Tailwind Classes
-        run: npm run audit-classes
-        
+
       - name: Build Next.js
         run: npm run build
+
+      - name: Audit Tailwind Classes
+        run: npm run audit-classes

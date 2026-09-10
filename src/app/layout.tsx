@@ -12,8 +12,8 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Hirenza — Your Unfair Advantage For Tech Interviews",
-    template: "%s | Hirenza",
+    default: "HIRENZA — Your Unfair Advantage For Tech Interviews",
+    template: "%s | HIRENZA",
   },
   description: "Structured DSA, company-wise interview preparation, SQL, system design, cold emails and engineering career resources.",
   keywords: [
@@ -29,18 +29,18 @@ export const metadata: Metadata = {
     "Interview Preparation",
   ],
   authors: [{ name: "Yash", url: SITE_URL }],
-  creator: "Hirenza",
+  creator: "HIRENZA",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    title: "Hirenza — Your Unfair Advantage For Tech Interviews",
+    title: "HIRENZA — Your Unfair Advantage For Tech Interviews",
     description: "Structured DSA, company-wise interview preparation, SQL, system design, notes and career resources.",
-    siteName: "Hirenza",
+    siteName: "HIRENZA",
   },
   twitter: {
     card: "summary",
-    title: "Hirenza — Your Unfair Advantage For Tech Interviews",
+    title: "HIRENZA — Your Unfair Advantage For Tech Interviews",
     description: "Structured DSA, company-wise interview preparation, SQL, system design, notes and career resources.",
   },
   icons: { icon: "/favicon.ico" },

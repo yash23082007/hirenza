@@ -15,7 +15,7 @@ for (const dir of dirs) {
   
   if (!fs.existsSync(oldPagePath)) continue;
 
-  const content = fs.readFileSync(oldPagePath, 'utf8');
+// The content would be parsed here if we were using AST
 
   // We won't try to parse and modify React code via regex, it's too complex.
   // Instead, we will do it manually for these 4 files using the agent's edit tools or a script.

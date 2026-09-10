@@ -17,7 +17,7 @@ import Link from "next/link";
 import { useState, useMemo } from "react";
 import { useProgress } from "@/hooks/useProgress";
 
-type ProblemStatus = "unsolved" | "attempted" | "solved" | "review" | "mastered";
+
 
 export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
   const { getStatus, setStatus, isBookmarked, toggleBookmark } = useProgress();
