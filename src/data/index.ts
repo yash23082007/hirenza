@@ -932,7 +932,7 @@ Phone: +91 98765 43210 | Email: fresher.grad@domain.edu | GitHub: github.com/new
 - Relevant Coursework: Data Structures, Analysis of Algorithms, DBMS, Operating Systems, Computer Networks
 
 ### PROJECTS
-**Hirenza Prep Tracker (Open Source Project)** | *Next.js, TypeScript, Tailwind CSS, LocalStorage*
+**Hirenza Prep Tracker (Prep Platform)** | *Next.js, TypeScript, Tailwind CSS, LocalStorage*
 - Engineered an offline-first interview preparation workspace supporting 600+ problems with zero cloud dependency.
 - Implemented client-side Leitner spaced repetition interval scheduler and deterministic daily problem generator.
 - Achieved perfect 100/100 Lighthouse performance and accessibility scores across all static routes.

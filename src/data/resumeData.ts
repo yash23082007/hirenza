@@ -163,14 +163,14 @@ export const resumeSections: ResumeSection[] = [
     id: "achievements",
     title: "Achievements & Certifications",
     mustInclude: false,
-    description: "Contest rankings, hackathon wins, certifications, open-source contributions.",
+    description: "Contest rankings, hackathon wins, certifications, and public project contributions.",
     tips: [
       "Include only relevant achievements",
       "Mention contest ranks (e.g., 'Top 5% on LeetCode')",
       "Add AWS/GCP/Azure certifications if applicable",
-      "Open-source contributions with links",
+      "Public project contributions with links",
     ],
-    exampleContent: "• LeetCode: 2000+ rating, solved 500+ problems\n• Codeforces: Expert (1600+ rating)\n• AWS Certified Solutions Architect – Associate\n• Contributed to open-source project with 1K+ stars",
+    exampleContent: "• LeetCode: 2000+ rating, solved 500+ problems\n• Codeforces: Expert (1600+ rating)\n• AWS Certified Solutions Architect – Associate\n• Contributed to active developer tool with 1K+ stars",
   },
 ];
 
