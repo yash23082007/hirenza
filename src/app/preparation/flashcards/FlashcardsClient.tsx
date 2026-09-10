@@ -58,7 +58,7 @@ export function FlashcardsClient() {
     const techList = interviewQuestionsData[selectedDeck] || [];
     return techList.map((q) => ({
       id: `flash-${selectedDeck}-${q.id}`,
-      front: q.question,
+      front: q.title,
       category: q.category,
       difficulty: q.difficulty,
       back: `Core Concept: ${q.category}. Explain technical definition, real-world engineering trade-offs, and failure edge cases.`,
