@@ -331,4 +331,53 @@
   .animate-marquee:hover {
     animation-play-state: paused;
   }
+
+  /* Print Stylesheet for Sheets & Study Plans (T8.5) */
+  @media print {
+    aside,
+    nav,
+    header,
+    footer,
+    .theme-toggle,
+    .announcement-bar,
+    button[aria-label="Open navigation menu"],
+    .no-print {
+      display: none !important;
+    }
+
+    body,
+    html {
+      background: #ffffff !important;
+      color: #000000 !important;
+    }
+
+    main {
+      margin: 0 !important;
+      padding: 0 !important;
+      max-width: 100% !important;
+    }
+
+    .card,
+    div[class*="bg-surface-"] {
+      background: transparent !important;
+      border: 1px solid #d1d5db !important;
+      box-shadow: none !important;
+      color: #000000 !important;
+      page-break-inside: avoid;
+    }
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    span {
+      color: #111827 !important;
+    }
+
+    a {
+      text-decoration: underline !important;
+      color: #000000 !important;
+    }
+  }
 }

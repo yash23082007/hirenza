@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { systemDesignTopics, systemDesignCategories, type SystemDesignTopic } from "@/data/systemDesign";
+import { systemDesignTopics } from "@/data/systemDesign";
 import { useProgress } from "@/hooks/useProgress";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import {
@@ -11,8 +11,6 @@ import {
   Star,
   ChevronDown,
   ChevronRight,
-  Layers,
-  Sparkles,
   Building2,
 } from "lucide-react";
 

@@ -27,7 +27,6 @@ export function QuestionList({ questions, storageKey = "default" }: QuestionList
 
   const completedCount = questions.filter(q => isCompleted(getFullId(q.id))).length;
   const bookmarkedCount = questions.filter(q => isBookmarked(getFullId(q.id))).length;
-  const progress = questions.length === 0 ? 0 : Math.round((completedCount / questions.length) * 100);
 
   const filtered = questions.filter(q => {
     const fid = getFullId(q.id);

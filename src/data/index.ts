@@ -983,9 +983,14 @@ export interface InterviewExperience {
     name: string;
     description: string;
     duration?: string;
+    sampleQuestions?: string[];
   }[];
   topics: string[];
   difficulty: "Easy" | "Medium" | "Hard";
+  outcome?: string;
+  tips?: string[];
+  submittedBy?: string;
+  date?: string;
 }
 
 export const interviewExperiences: InterviewExperience[] = [

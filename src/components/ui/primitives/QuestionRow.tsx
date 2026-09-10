@@ -20,7 +20,6 @@ export interface QuestionRowProps {
 }
 
 export function QuestionRow({
-  id,
   index,
   title,
   subtitle,

@@ -9,6 +9,7 @@ import { companies } from "@/data/companies";
 
 import { ReadinessExplainer } from "@/components/features/ReadinessExplainer";
 import { WeakestPatternWidget } from "@/components/dashboard/WeakestPatternWidget";
+import { ContestTracker } from "@/components/features/ContestTracker";
 
 export default function DashboardPage() {
   const { moduleStats, topicMastery, revisionQueue, data, allBookmarks } = useProgress();
@@ -299,6 +300,9 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Contest Radar & Calendar (T8.3) */}
+      <ContestTracker />
     </div>
   );
 }

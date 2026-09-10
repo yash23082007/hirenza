@@ -1,22 +1,16 @@
 "use client";
 
 import { Suspense, useState, useMemo } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
 import { notes, type Note } from "@/data";
-import { notesContent, type NoteContent } from "@/data/notesContent";
+import { notesContent } from "@/data/notesContent";
 import {
-  ArrowLeft,
-  BookOpen,
   Search,
   Sparkles,
   Calendar,
-  Layers,
   ChevronLeft,
   ChevronRight,
   X,
-  FileText,
   Bookmark,
-  Check,
 } from "lucide-react";
 import { useProgress } from "@/hooks/useProgress";
 

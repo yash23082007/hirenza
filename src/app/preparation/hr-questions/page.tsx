@@ -265,7 +265,13 @@ export default function HRQuestionsPage() {
             placeholder="Search questions (e.g., conflict, leadership, failure)..."
             className="flex-1"
           />
-          <FilterTabs tabs={tabs} activeTab={activeTab} onChange={id => setActiveTab(id as any)} />
+          <FilterTabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onChange={id =>
+              setActiveTab(id as "All" | "Easy" | "Medium" | "Hard" | "Bookmarked")
+            }
+          />
         </div>
 
         {/* Category Filter Pills */}

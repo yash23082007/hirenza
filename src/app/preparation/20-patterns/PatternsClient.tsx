@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { dsaPatterns } from "@/data";
-import { ExternalLink, Search, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { ExternalLink, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 import { useProgress } from "@/hooks/useProgress";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { SearchBar } from "@/components/ui/primitives/SearchBar";
