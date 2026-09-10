@@ -15,8 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ tech: str
   const { tech: techId } = await params;
   const tech = availableTechnologies.find((t) => t.id === techId);
   if (!tech) notFound();
+  const count = interviewQuestionsData[tech.id]?.length || 0;
   return {
-    title: `${tech.name} Interview Questions`,
+    title: `Top ${count} ${tech.name} Interview Questions for Developers (2026)`,
     description: tech.description,
   };
 }

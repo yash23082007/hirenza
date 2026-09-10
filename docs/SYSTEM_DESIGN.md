@@ -83,7 +83,7 @@
 - **File-based routing** — Cleaner organization, no manual route config
 - **Layouts** — Shared UI (navbar, sidebar) without duplication
 - **Server Components** — Zero JS sent to client for static content
-- **Static Generation** — All 23 routes pre-rendered at build time
+- **Static Generation** — All 32 routes (96 static pages) pre-rendered at build time
 - **Performance** — Automatic code splitting, image optimization
 - **Future-proof** — App Router is the future of Next.js
 
@@ -107,7 +107,7 @@
 
 **Trade-offs:**
 - Content is static (but our content IS static — no dynamic data)
-- Build time increases with more pages (8s for 23 routes is acceptable)
+- Build time increases with more pages (4.1s for 96 static pages is blazingly fast)
 - Can't fetch data at request time (not needed for our use case)
 
 **Why not SSR or ISR?**
@@ -552,7 +552,7 @@ Total Bundle: 240KB gzipped
 
 ```bash
 # Build output
-✓ 23 routes generated in 8.2s
+✓ 32 routes (96 static pages) generated in 4.1s
 ✓ Bundle size: 240KB gzipped
 ✓ CSS size: 8KB gzipped
 ✓ Image optimization: 0 images (no images used)

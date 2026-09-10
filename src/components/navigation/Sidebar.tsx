@@ -6,6 +6,14 @@ import { useEffect, useState } from "react";
 import { HirenzaLogo } from "../ui/HirenzaLogo";
 import { dsaSheets } from "@/data/dsaSheets";
 import { dsaPlaylists, systemDesignPlaylists } from "@/data";
+import { coreSubjectsData } from "@/data/coreSubjects";
+
+const SUBJECT_SLUGS: Record<string, string> = {
+  DBMS: "dbms",
+  "Operating Systems": "os",
+  "Computer Networks": "cn",
+  OOP: "oop",
+};
 import {
   LayoutDashboard,
   BookOpen,
@@ -72,12 +80,10 @@ const learningItems: NavItem[] = [
   {
     label: "Core Subjects",
     icon: <Brain size={16} />,
-    children: [
-      { label: "DBMS", href: "/preparation/core-subjects?subject=dbms" },
-      { label: "Operating Systems", href: "/preparation/core-subjects?subject=os" },
-      { label: "Computer Networks", href: "/preparation/core-subjects?subject=cn" },
-      { label: "OOP", href: "/preparation/core-subjects?subject=oop" },
-    ],
+    children: Object.keys(coreSubjectsData).map(subject => ({
+      label: subject,
+      href: `/preparation/core-subjects?subject=${SUBJECT_SLUGS[subject] || subject.toLowerCase()}`,
+    })),
   },
   {
     label: "System Design Playlists",
@@ -114,8 +120,11 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [mobileOpen, onCloseMobile]);
 
-  const toggleGroup = (label: string) => {
-    setExpandedGroups(prev => ({ ...prev, [label]: !prev[label] }));
+  const toggleGroup = (key: string, isChildOpen: boolean) => {
+    setExpandedGroups(prev => {
+      const current = prev[key] !== undefined ? prev[key] : isChildOpen;
+      return { ...prev, [key]: !current };
+    });
   };
 
   const isActive = (href?: string) => {
@@ -142,7 +151,9 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
 
   const renderNavItem = (item: NavItem, groupLabel: string) => {
     const hasChildren = item.children && item.children.length > 0;
-    const expanded = expandedGroups[`${groupLabel}-${item.label}`] ?? Boolean(isChildActive(item.children));
+    const isChildOpen = Boolean(isChildActive(item.children));
+    const groupKey = `${groupLabel}-${item.label}`;
+    const expanded = expandedGroups[groupKey] !== undefined ? expandedGroups[groupKey] : isChildOpen;
     const active = isActive(item.href);
 
     return (
@@ -151,7 +162,7 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
           className={`sidebar-item ${active ? "active" : ""} ${collapsed ? "justify-center px-0" : ""}`}
           onClick={() => {
             if (hasChildren) {
-              toggleGroup(`${groupLabel}-${item.label}`);
+              toggleGroup(groupKey, isChildOpen);
             }
           }}
           {...(hasChildren ? {
@@ -161,7 +172,7 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
             onKeyDown: (e: React.KeyboardEvent) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                toggleGroup(`${groupLabel}-${item.label}`);
+                toggleGroup(groupKey, isChildOpen);
               }
             }
           } : {})}

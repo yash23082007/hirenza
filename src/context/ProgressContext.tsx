@@ -144,7 +144,11 @@ interface ProgressContextValue {
 const ProgressContext = createContext<ProgressContextValue | null>(null);
 
 export function ProgressProvider({ children }: { children: React.ReactNode }) {
-  const [data, setData] = useState<ProgressData>(loadInitialData);
+  const [data, setData] = useState<ProgressData>(() => ProgressDataSchema.parse({ version: 2 }));
+
+  useEffect(() => {
+    setData(loadInitialData());
+  }, []);
 
   const persistData = useCallback((newData: ProgressData) => {
     setData(newData);

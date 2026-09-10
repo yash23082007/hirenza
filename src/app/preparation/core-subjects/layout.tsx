@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Core Subjects",
-  description: "OS, DBMS, CN, and OOP interview preparation with curated questions and resources.",
+  title: "Top 60 Core Computer Science Questions for Technical Rounds (2026)",
+  description: "Master core CS interview questions across DBMS, Operating Systems, Computer Networks, and Object-Oriented Programming.",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

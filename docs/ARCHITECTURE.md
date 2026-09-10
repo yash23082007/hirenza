@@ -375,7 +375,7 @@ const [filter, setFilter] = useSearchParams("filter");
 ### Build-Time Optimizations
 
 1. **Static Site Generation**
-   - All 23 routes pre-rendered at build time
+   - All 32 routes (96 static pages) pre-rendered at build time
    - Zero runtime cost
    - CDN-ready HTML
 
@@ -465,7 +465,7 @@ const [filter, setFilter] = useSearchParams("filter");
 ### Build Metrics
 
 ```bash
-✓ 23 routes generated in 8.2s
+✓ 32 routes (96 pages) generated in 4.1s
 ✓ Bundle size: 240KB gzipped
 ✓ CSS size: 8KB gzipped
 ✓ Zero TypeScript errors

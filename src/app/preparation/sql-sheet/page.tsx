@@ -2,7 +2,7 @@ import { sqlQuestions } from "@/data";
 import { QuestionList } from "@/components/questions/QuestionList";
 
 export const metadata = {
-  title: "Top 110 SQL Interview Queries",
+  title: "Top 110 SQL Interview Queries for SDE & Analyst Roles (2026)",
   description: "Comprehensive collection of SQL interview questions from DataLemur, LeetCode, and HackerRank covering JOINs, window functions, and aggregations.",
 };
 
