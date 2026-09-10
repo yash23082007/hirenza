@@ -63,11 +63,24 @@ export default function ColdEmailTemplatesPage() {
   };
 
 
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const filteredTemplates = useMemo(() => {
+    return emailTemplates.filter(t => {
+      const matchesCat = selectedCategory === "All" || t.category === selectedCategory;
+      const matchesSearch =
+        t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        t.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCat && matchesSearch;
+    });
+  }, [selectedCategory, searchQuery]);
+
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">Interactive Cold Email Builder</h1>
-        <p className="text-secondary">High-converting cold email outreach templates for software engineering referrals and coffee chats with real-time field interpolation.</p>
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">High-Converting Cold Email Library</h1>
+        <p className="text-secondary">Battle-tested referral request templates across specialized software engineering domains with real-time field interpolation.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -75,26 +88,65 @@ export default function ColdEmailTemplatesPage() {
         <div className="lg:col-span-5 space-y-6">
           {/* Template Picker */}
           <div className="card p-5 bg-surface-2 border-border space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-muted flex items-center gap-1.5">
-              <Mail size={14} className="text-purple-1" /> Select Email Archetype
-            </span>
-            <div className="space-y-1.5 max-h-[220px] overflow-y-auto custom-scrollbar pr-1">
-              {emailTemplates.map(template => (
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted flex items-center gap-1.5">
+                <Mail size={14} className="text-orange-400" /> Select Outreach Template
+              </span>
+              <span className="text-[10px] text-muted font-medium">{filteredTemplates.length} Available</span>
+            </div>
+
+            {/* Category tabs */}
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {["All", "Tech Stack Specific", "Cloud & DevOps", "Data & AI/ML", "Mobile"].map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`text-[11px] px-2.5 py-1 rounded-lg transition-colors font-medium cursor-pointer ${
+                    selectedCategory === cat
+                      ? "bg-purple-1 text-white"
+                      : "bg-surface-3 text-muted hover:text-primary hover:bg-surface-hover"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Search Input */}
+            <input
+              type="text"
+              placeholder="Search templates (e.g. MERN, iOS, AWS, Data...)"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full bg-surface-3 border border-border rounded-lg px-3 py-1.5 text-xs text-primary outline-none focus:border-purple-1 placeholder:text-muted"
+            />
+
+            <div className="space-y-1.5 max-h-[260px] overflow-y-auto custom-scrollbar pr-1">
+              {filteredTemplates.map(template => (
                 <button
                   key={template.id}
                   onClick={() => setSelectedTemplateId(template.id)}
-                  className={`w-full text-left p-3 rounded-xl border transition-all text-xs flex items-center justify-between ${
+                  className={`w-full text-left p-3 rounded-xl border transition-all text-xs flex items-center justify-between cursor-pointer ${
                     selectedTemplateId === template.id
                       ? "bg-purple-950/30 border-purple-500/50 text-white font-bold"
-                      : "bg-surface-3 border-border-soft text-secondary hover:border-border"
+                      : "bg-surface-3 border-border-soft text-secondary hover:border-border hover:text-primary"
                   }`}
                 >
-                  <span className="truncate">{template.title}</span>
-                  <span className="text-[10px] text-muted bg-surface-2 px-2 py-0.5 rounded-md shrink-0 ml-2">
+                  <div className="min-w-0 flex-1 pr-2">
+                    <span className="truncate block">{template.title}</span>
+                    <span className="text-[10px] text-muted font-normal block truncate mt-0.5">{template.description}</span>
+                  </div>
+                  <span className="text-[10px] text-orange-400 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-md shrink-0">
                     {template.category}
                   </span>
                 </button>
               ))}
+
+              {filteredTemplates.length === 0 && (
+                <div className="text-center py-6 text-xs text-muted">
+                  No templates match &quot;{searchQuery}&quot;.
+                </div>
+              )}
             </div>
           </div>
 

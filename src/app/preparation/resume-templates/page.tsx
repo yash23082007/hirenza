@@ -133,6 +133,17 @@ export default function ResumePage() {
     URL.revokeObjectURL(url);
   };
 
+  const downloadLatexTemplate = (template: typeof resumeTemplates[0]) => {
+    const content = template.latexCode || `% ${template.name}\n`;
+    const blob = new Blob([content], { type: "application/x-latex" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${template.id}-ats-template.tex`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handlePrintPDF = () => {
     window.print();
   };
@@ -485,18 +496,24 @@ export default function ResumePage() {
                 </div>
 
                 <div className="pt-4 border-t border-border flex flex-col gap-2 text-xs">
-                  <div className="flex items-center gap-2">
+                  <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => setPreviewTemplate(template.id)}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 rounded-lg bg-surface-3 hover:bg-surface-hover text-secondary font-medium transition-colors cursor-pointer"
+                      className="inline-flex items-center justify-center gap-1.5 py-2 rounded-lg bg-surface-3 hover:bg-surface-hover text-secondary font-medium transition-colors cursor-pointer"
                     >
-                      <Eye size={13} /> View Structure
+                      <Eye size={13} /> Preview
                     </button>
                     <button
                       onClick={() => downloadRealTemplate(template)}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 rounded-lg bg-purple-1 text-white font-medium hover:bg-purple-1/90 transition-colors cursor-pointer"
+                      className="inline-flex items-center justify-center gap-1.5 py-2 rounded-lg bg-purple-1 text-white font-medium hover:bg-purple-1/90 transition-colors cursor-pointer"
                     >
-                      <Download size={13} /> Markdown (.md)
+                      <Download size={13} /> .md
+                    </button>
+                    <button
+                      onClick={() => downloadLatexTemplate(template)}
+                      className="col-span-2 inline-flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-surface-2 border border-border hover:border-purple-1/30 text-secondary hover:text-primary font-medium transition-colors cursor-pointer text-[11px]"
+                    >
+                      <Download size={12} /> Download LaTeX (.tex)
                     </button>
                   </div>
 
@@ -505,7 +522,7 @@ export default function ResumePage() {
                       href={template.overleafUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-1.5 py-1.5 text-muted hover:text-primary transition-colors text-[11px]"
+                      className="inline-flex items-center justify-center gap-1.5 py-1 text-muted hover:text-primary transition-colors text-[11px]"
                     >
                       Open in Overleaf LaTeX <ExternalLink size={11} />
                     </a>
@@ -647,12 +664,18 @@ export default function ResumePage() {
               {selectedTemplate.markdownCode}
             </pre>
 
-            <div className="mt-4 pt-4 border-t border-border flex justify-end gap-3">
+            <div className="mt-4 pt-4 border-t border-border flex flex-wrap justify-end gap-3">
+              <button
+                onClick={() => downloadLatexTemplate(selectedTemplate)}
+                className="px-4 py-2 rounded-xl bg-surface-2 border border-border text-secondary hover:text-primary text-xs font-bold hover:border-purple-1/40 transition-colors cursor-pointer"
+              >
+                Download LaTeX (.tex)
+              </button>
               <button
                 onClick={() => downloadRealTemplate(selectedTemplate)}
-                className="px-4 py-2 rounded-xl bg-purple-1 text-white text-xs font-bold hover:bg-purple-1/90 transition-colors"
+                className="px-4 py-2 rounded-xl bg-purple-1 text-white text-xs font-bold hover:bg-purple-1/90 transition-colors cursor-pointer"
               >
-                Download Markdown Template (.md)
+                Download Markdown (.md)
               </button>
             </div>
           </div>

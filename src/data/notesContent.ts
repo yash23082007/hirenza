@@ -373,4 +373,148 @@ export const notesContent: NoteContent[] = [
       },
     ],
   },
+  {
+    id: "low-level-design",
+    title: "Low-Level Design & OOP",
+    icon: "📐",
+    tag: "Design Patterns",
+    date: "2026-02-12",
+    coverGradient: "from-emerald-600 to-teal-700",
+    sections: [
+      {
+        title: "SOLID Principles in Practice",
+        keyPoints: [
+          "Single Responsibility: A class should have only one reason to change.",
+          "Open/Closed: Open for extension via interfaces, closed for modification.",
+          "Liskov Substitution: Subtypes must be substitutable for base types without breaking invariants.",
+          "Interface Segregation: Clients should never be forced to depend on methods they don't use.",
+          "Dependency Inversion: High-level modules should depend on abstractions, not concrete classes.",
+        ],
+        importantTerms: ["Tight Coupling", "High Cohesion", "Inversion of Control", "Dependency Injection"],
+      },
+      {
+        title: "Essential Gang of Four (GoF) Patterns",
+        keyPoints: [
+          "Creational: Factory Method, Abstract Factory, Builder, Singleton.",
+          "Structural: Adapter, Decorator, Facade, Composite, Proxy.",
+          "Behavioral: Strategy, Observer, Command, State, Chain of Responsibility.",
+        ],
+        importantTerms: ["Strategy Pattern", "Observer Pattern", "Decorator Pattern", "State Machine"],
+      },
+    ],
+  },
+  {
+    id: "java",
+    title: "Java 21 & Concurrency",
+    icon: "☕",
+    tag: "JVM & Concurrency",
+    date: "2026-01-15",
+    coverGradient: "from-red-600 to-rose-700",
+    sections: [
+      {
+        title: "Modern Java Features (Java 17 to 21)",
+        keyPoints: [
+          "Virtual Threads (Project Loom): Lightweight M:N user-mode threads for high throughput.",
+          "Records: Immutable data carriers with automatic equals, hashCode, and toString.",
+          "Pattern Matching: Pattern matching for switch expressions and instanceof.",
+          "Sealed Classes: Restricting subclass inheritance hierarchies for domain modeling.",
+        ],
+        importantTerms: ["Virtual Threads", "Carrier Thread", "Records", "Pattern Matching"],
+      },
+      {
+        title: "Memory Model & Garbage Collection",
+        keyPoints: [
+          "JVM Memory: Heap (Young/Old Gen), Metaspace, Thread Stacks.",
+          "Garbage Collectors: G1GC (default), ZGC (sub-millisecond pause times), Shenandoah.",
+          "Volatile Keyword: Guarantees visibility across CPU caches and prevents instruction reordering.",
+        ],
+        importantTerms: ["ZGC", "Volatile", "Happens-Before", "Metaspace"],
+      },
+    ],
+  },
+  {
+    id: "typescript",
+    title: "Advanced TypeScript",
+    icon: "🔷",
+    tag: "Type System",
+    date: "2026-02-28",
+    coverGradient: "from-blue-600 to-sky-600",
+    sections: [
+      {
+        title: "Type System Foundations & Narrowing",
+        keyPoints: [
+          "Discriminated Unions: Tagged union types for exhaustive pattern matching.",
+          "Type Predicates (is): Custom type guard functions narrowing unknown shapes.",
+          "Const Assertions (as const): Narrowing literal values to deeply readonly types.",
+        ],
+        importantTerms: ["Type Guard", "Discriminated Union", "Type Narrowing", "Exhaustiveness Check"],
+      },
+      {
+        title: "Advanced Generics & Conditional Types",
+        keyPoints: [
+          "Conditional Types: T extends U ? X : Y for type-level computation.",
+          "Infer Keyword: Deducing inner types within conditional clauses (e.g. ReturnType<T>).",
+          "Template Literal Types: String manipulation at compile time (`on${Capitalize<Event>}`).",
+        ],
+        importantTerms: ["Infer Keyword", "Mapped Types", "Template Literal Types", "Utility Types"],
+      },
+    ],
+  },
+  {
+    id: "redis-in-depth",
+    title: "Redis Architecture & Caching",
+    icon: "⚡",
+    tag: "In-Memory Data",
+    date: "2026-02-10",
+    coverGradient: "from-red-500 to-amber-600",
+    sections: [
+      {
+        title: "Redis Internals & Memory Management",
+        keyPoints: [
+          "Single-Threaded Event Loop: Multiplexed non-blocking I/O via epoll/kqueue.",
+          "Data Structures: SDS (Simple Dynamic Strings), Skiplists, ZipLists, QuickLists.",
+          "Eviction Policies: volatile-lru, allkeys-lru, noeviction when maxmemory is hit.",
+        ],
+        importantTerms: ["Skiplist", "ZipList", "LRU Eviction", "Epoll"],
+      },
+      {
+        title: "High Availability & Distributed Caching",
+        keyPoints: [
+          "Persistence: RDB periodic snapshots + AOF append-only log with fsync policies.",
+          "Redis Sentinel: Automatic failover and health monitoring for master-replica pairs.",
+          "Redis Cluster: 16,384 hash slots distributed across master nodes for horizontal scale.",
+        ],
+        importantTerms: ["Hash Slot", "AOF", "RDB", "Sentinel", "Redlock"],
+      },
+    ],
+  },
+  {
+    id: "git-internals",
+    title: "Git Internals & Workflows",
+    icon: "🌿",
+    tag: "VCS & GitOps",
+    date: "2026-01-10",
+    coverGradient: "from-orange-600 to-red-600",
+    sections: [
+      {
+        title: "Git Object Model (.git/objects)",
+        keyPoints: [
+          "Blob: Stores pure file content compressed with zlib, without metadata or file name.",
+          "Tree: Stores directory structure, mapping file names and permissions to blob SHA-1 hashes.",
+          "Commit: Points to a root tree, author info, timestamp, and parent commit SHA-1.",
+          "Annotated Tag: Permanent pointer with message and GPG signature to a specific commit.",
+        ],
+        importantTerms: ["Content Addressable", "Blob", "Tree", "SHA-1 / SHA-256", "Packfile"],
+      },
+      {
+        title: "Branching, Merging & Rebasing",
+        keyPoints: [
+          "Merge: Creates a 3-way merge commit combining divergent branch histories.",
+          "Rebase: Replays commits from one branch onto another for a clean linear history.",
+          "Git Reflog: Local safety log recording every HEAD update, allowing recovery of deleted commits.",
+        ],
+        importantTerms: ["Fast-Forward", "3-Way Merge", "Interactive Rebase", "Reflog"],
+      },
+    ],
+  },
 ];

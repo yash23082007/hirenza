@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Star, ChevronDown, ChevronRight, Check, ExternalLink, Lightbulb, Clock, Layers } from "lucide-react";
 import { Question } from "@/data";
 import { useProgress } from "@/hooks/useProgress";
+import { ProgressRing } from "@/components/ui/ProgressRing";
 
 interface QuestionListProps {
   questions: Question[];
@@ -50,24 +51,55 @@ export function QuestionList({ questions, storageKey = "default" }: QuestionList
 
   return (
     <div>
-      {/* Progress bar */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2 text-sm">
-          <span className="text-secondary font-medium">Sheet Completion</span>
-          <span className="text-muted font-mono">
-            {completedCount}/{questions.length} ({progress}%)
-          </span>
+      {/* Overall Progress Ring & Stats Header */}
+      <div className="card p-5 sm:p-6 mb-6 flex flex-col sm:flex-row items-center justify-between gap-6 bg-surface-1 border border-border rounded-2xl">
+        <div className="flex items-center gap-5">
+          <ProgressRing completed={completedCount} total={questions.length} size={92} strokeWidth={7} />
+          <div>
+            <h3 className="text-base font-bold text-primary">Sheet Progress</h3>
+            <p className="text-xs text-muted mt-0.5">
+              {completedCount} of {questions.length} problems solved
+            </p>
+            <div className="flex items-center gap-3 mt-2 text-xs">
+              <span className="inline-flex items-center gap-1 text-emerald-400 font-medium">
+                <Check size={13} /> {completedCount} Done
+              </span>
+              <span className="text-muted">•</span>
+              <span className="inline-flex items-center gap-1 text-amber-400 font-medium">
+                <Star size={13} className="fill-amber-400" /> {bookmarkedCount} Starred
+              </span>
+            </div>
+          </div>
         </div>
-        <div className="h-2 bg-surface-3 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-purple-1 rounded-full transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
+
+        {/* Breakdown counters */}
+        <div className="grid grid-cols-3 gap-2 w-full sm:w-auto text-center sm:text-left">
+          <div className="px-3 py-2 bg-surface-2 rounded-xl border border-border-soft">
+            <span className="text-[10px] text-muted uppercase tracking-wider block">Easy</span>
+            <span className="text-sm font-bold text-emerald-400">
+              {questions.filter(q => q.difficulty === "Easy" && isCompleted(getFullId(q.id))).length}
+              <span className="text-xs font-normal text-muted">/{questions.filter(q => q.difficulty === "Easy").length}</span>
+            </span>
+          </div>
+          <div className="px-3 py-2 bg-surface-2 rounded-xl border border-border-soft">
+            <span className="text-[10px] text-muted uppercase tracking-wider block">Medium</span>
+            <span className="text-sm font-bold text-amber-400">
+              {questions.filter(q => q.difficulty === "Medium" && isCompleted(getFullId(q.id))).length}
+              <span className="text-xs font-normal text-muted">/{questions.filter(q => q.difficulty === "Medium").length}</span>
+            </span>
+          </div>
+          <div className="px-3 py-2 bg-surface-2 rounded-xl border border-border-soft">
+            <span className="text-[10px] text-muted uppercase tracking-wider block">Hard</span>
+            <span className="text-sm font-bold text-red-400">
+              {questions.filter(q => q.difficulty === "Hard" && isCompleted(getFullId(q.id))).length}
+              <span className="text-xs font-normal text-muted">/{questions.filter(q => q.difficulty === "Hard").length}</span>
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      {/* Difficulty Filter Tabs */}
+      <div className="flex flex-wrap items-center gap-2 mb-4">
         {(["All", "Easy", "Medium", "Hard", "Bookmarked"] as const).map(f => {
           const count =
             f === "All"
@@ -80,20 +112,41 @@ export function QuestionList({ questions, storageKey = "default" }: QuestionList
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer inline-flex items-center gap-1.5 ${
                 filter === f
-                  ? "bg-purple-1 text-white shadow-sm"
+                  ? "bg-purple-1 text-white shadow-sm ring-1 ring-purple-1"
                   : "bg-surface-2 text-secondary border border-border hover:border-purple-1/30 hover:text-primary"
               }`}
             >
-              {f} {count > 0 && <span className="ml-1 opacity-70">({count})</span>}
+              <span>{f}</span>
+              <span
+                className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  filter === f ? "bg-white/20 text-white" : "bg-surface-3 text-muted"
+                }`}
+              >
+                {count}
+              </span>
             </button>
           );
         })}
       </div>
 
+      {/* Table Column Headers */}
+      <div className="hidden sm:flex items-center justify-between px-6 py-2.5 bg-surface-2/80 border border-b-0 border-border rounded-t-xl text-[10px] font-bold uppercase tracking-wider text-muted select-none">
+        <div className="flex items-center gap-5">
+          <span className="w-5 text-center">STATUS</span>
+          <span className="w-6 text-center">#</span>
+          <span>PROBLEM</span>
+        </div>
+        <div className="flex items-center gap-8 pr-2">
+          <span>REVISION</span>
+          <span>LEVEL</span>
+          <span className="w-4"></span>
+        </div>
+      </div>
+
       {/* Questions list */}
-      <div className="border border-border rounded-xl overflow-hidden divide-y divide-border-soft bg-surface-1">
+      <div className="border border-border rounded-xl sm:rounded-t-none overflow-hidden divide-y divide-border-soft bg-surface-1">
         {filtered.map((q, idx) => {
           const fid = getFullId(q.id);
           const solved = isCompleted(fid);

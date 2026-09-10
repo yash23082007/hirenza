@@ -2,8 +2,8 @@ import { MostAskedQuestionsClient } from "./MostAskedQuestionsClient";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Most Asked Tech Questions",
-  description: "High-frequency interview questions for Frontend, Backend, Fullstack, and other tech roles.",
+  title: "Top 210 Most Asked Tech Interview Questions for SDE & DevOps (2026) | HIRENZA",
+  description: "Curated high-frequency technical interview questions across Core CS, Web, Mobile, DevOps, and Databases with structured answers.",
 };
 
 export default function MostAskedQuestionsPage() {

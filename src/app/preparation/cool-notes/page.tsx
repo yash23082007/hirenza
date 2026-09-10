@@ -2,231 +2,402 @@
 
 import { Suspense, useState, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { notesContent } from "@/data";
-import { ArrowLeft, BookOpen, Search, Bookmark, Sparkles, Hash } from "lucide-react";
+import { notes, type Note } from "@/data";
+import { notesContent, type NoteContent } from "@/data/notesContent";
+import {
+  ArrowLeft,
+  BookOpen,
+  Search,
+  Sparkles,
+  Calendar,
+  Layers,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  FileText,
+  Bookmark,
+  Check,
+} from "lucide-react";
 import { useProgress } from "@/hooks/useProgress";
 
-function CoolNotesContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const selectedNoteId = searchParams.get("note") || null;
-  const [search, setSearch] = useState("");
-  const [revisionMode, setRevisionMode] = useState(false);
+const PAGE_SIZE = 8;
 
+function NoteReaderModal({
+  note,
+  onClose,
+}: {
+  note: Note;
+  onClose: () => void;
+}) {
+  const [revisionMode, setRevisionMode] = useState(false);
   const { isBookmarked, toggleBookmark } = useProgress();
 
-  const handleSelectNote = (id: string | null) => {
-    if (id) {
-      router.replace(`/preparation/cool-notes?note=${id}`, { scroll: false });
-    } else {
-      router.replace("/preparation/cool-notes", { scroll: false });
-    }
-  };
-
-  const selectedNote = useMemo(() => {
-    return selectedNoteId ? notesContent.find(n => n.id === selectedNoteId) : null;
-  }, [selectedNoteId]);
-
-  const filteredSections = useMemo(() => {
-    if (!selectedNote) return [];
-    if (!search) return selectedNote.sections;
-    return selectedNote.sections.filter(
-      s =>
-        s.title.toLowerCase().includes(search.toLowerCase()) ||
-        s.keyPoints.some(k => k.toLowerCase().includes(search.toLowerCase())) ||
-        (s.importantTerms && s.importantTerms.some(t => t.toLowerCase().includes(search.toLowerCase())))
-    );
-  }, [selectedNote, search]);
-
-  if (selectedNote) {
+  // Find corresponding deep content or fallback to standard sections
+  const content = useMemo(() => {
     return (
-      <div>
-        <div className="flex items-center justify-between gap-4 mb-6">
-          <button
-            onClick={() => {
-              handleSelectNote(null);
-              setSearch("");
-              setRevisionMode(false);
-            }}
-            className="text-xs font-bold text-purple-1 hover:underline flex items-center gap-1.5 cursor-pointer"
-          >
-            <ArrowLeft size={14} /> Back to all study notes
-          </button>
+      notesContent.find(
+        c =>
+          c.id === note.id ||
+          (note.id === "computer-networks" && c.id === "cn") ||
+          (note.id === "operating-systems" && c.id === "os") ||
+          (note.id === "low-level-design" && c.id === "lld")
+      ) || {
+        id: note.id,
+        title: note.title,
+        icon: "📘",
+        sections: [
+          {
+            title: "Core Architecture & Key Concepts",
+            keyPoints: [
+              note.description,
+              "Designed for rapid revision before technical screening loops.",
+              "Focuses on trade-offs, scalability, and system invariants.",
+            ],
+            importantTerms: [note.tag, note.category, "Production Grade"],
+          },
+        ],
+      }
+    );
+  }, [note]);
 
-          <button
-            onClick={() => setRevisionMode(!revisionMode)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              revisionMode
-                ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                : "bg-surface-2 hover:bg-surface-hover text-secondary border border-border"
-            }`}
-          >
-            <Sparkles size={13} className="text-amber-400" />
-            {revisionMode ? "Standard Reader Mode" : "Quick Revision Mode (Flashcards)"}
-          </button>
-        </div>
+  const bookmarkKey = `note-${note.id}`;
+  const bookmarked = isBookmarked(bookmarkKey);
 
-        {/* Note Header */}
-        <div className="card p-6 mb-6 bg-gradient-to-br from-surface-1 to-surface-2 border-purple-500/20">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-surface-3 border border-border flex items-center justify-center text-3xl shadow-inner">
-              {selectedNote.icon}
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${note.title} Reader`}
+    >
+      <div
+        className="w-full max-w-3xl bg-surface-1 border border-border rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-150"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Modal Top Header */}
+        <div className="p-4 sm:p-5 border-b border-border flex items-center justify-between gap-4 bg-surface-2/60">
+          <div className="flex items-center gap-3 min-w-0">
+            <div
+              className={`w-10 h-10 rounded-xl bg-gradient-to-br ${note.coverGradient} flex items-center justify-center text-white text-lg font-bold shrink-0 shadow-sm`}
+            >
+              {note.title.charAt(0)}
             </div>
-            <div className="flex-1">
-              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-primary">
-                {selectedNote.title}
-              </h1>
-              <p className="text-xs text-muted mt-1">
-                {selectedNote.sections.length} Core Modules • Fast Revision & Concept Notes
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Search & TOC */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-          {/* Table of Contents Sidebar */}
-          <div className="card p-4 lg:col-span-1 sticky top-24 space-y-3 bg-surface-2 hidden lg:block">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted border-b border-border pb-2">
-              <Hash size={14} /> Table of Contents
-            </div>
-            <div className="space-y-1 max-h-[60vh] overflow-y-auto custom-scrollbar pr-1">
-              {selectedNote.sections.map((sec, i) => (
-                <a
-                  key={i}
-                  href={`#sec-${i}`}
-                  className="block text-xs py-1.5 px-2 rounded-lg text-secondary hover:text-purple-1 hover:bg-surface-3 transition-colors truncate"
-                >
-                  {i + 1}. {sec.title}
-                </a>
-              ))}
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-lg font-bold text-primary truncate">{note.title}</h2>
+              <div className="flex items-center gap-2 text-xs text-muted">
+                <span className="text-purple-400 font-medium">{note.tag}</span>
+                <span>•</span>
+                <span>{note.pages} pages</span>
+                <span>•</span>
+                <span>{note.date}</span>
+              </div>
             </div>
           </div>
 
-          {/* Main Sections Reader */}
-          <div className="lg:col-span-3 space-y-4">
-            <div className="flex items-center gap-3 bg-surface-2 border border-border rounded-xl px-4 py-2.5">
-              <Search size={15} className="text-muted shrink-0" />
-              <input
-                type="text"
-                placeholder="Search keywords in this note..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                className="bg-transparent flex-1 text-xs outline-none placeholder:text-muted text-primary"
-              />
-            </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => toggleBookmark(bookmarkKey)}
+              className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                bookmarked
+                  ? "bg-amber-500/15 text-amber-400"
+                  : "bg-surface-3 text-muted hover:text-primary hover:bg-surface-hover"
+              }`}
+              title={bookmarked ? "Remove Bookmark" : "Save Note"}
+            >
+              <Bookmark size={16} className={bookmarked ? "fill-amber-400" : ""} />
+            </button>
 
-            {filteredSections.map((section, idx) => (
+            <button
+              onClick={() => setRevisionMode(!revisionMode)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1.5 cursor-pointer ${
+                revisionMode
+                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                  : "bg-surface-3 hover:bg-surface-hover text-secondary border border-border"
+              }`}
+            >
+              <Sparkles size={13} className="text-amber-400" />
+              <span className="hidden sm:inline">{revisionMode ? "Standard Mode" : "Flashcard Mode"}</span>
+            </button>
+
+            <button
+              onClick={onClose}
+              className="p-1.5 text-muted hover:text-primary rounded-lg hover:bg-surface-3 cursor-pointer"
+              aria-label="Close reader"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        </div>
+
+        {/* Modal Scrollable Reader Body */}
+        <div className="p-5 sm:p-6 overflow-y-auto space-y-6 custom-scrollbar">
+          <div className="p-4 bg-surface-2 rounded-xl border border-border-soft">
+            <p className="text-xs text-secondary leading-relaxed">{note.description}</p>
+          </div>
+
+          <div className="space-y-4">
+            {content.sections.map((sec, sIdx) => (
               <div
-                key={idx}
-                id={`sec-${idx}`}
-                className={`card p-6 border transition-all ${
-                  revisionMode ? "bg-surface-2/80 border-purple-500/30" : "bg-surface-2 border-border"
+                key={sIdx}
+                className={`p-5 rounded-xl border transition-all ${
+                  revisionMode
+                    ? "bg-amber-950/10 border-amber-500/30"
+                    : "bg-surface-2/70 border-border"
                 }`}
               >
-                <div className="flex items-center justify-between mb-4 border-b border-border pb-3">
-                  <h2 className="text-base font-bold flex items-center gap-2 text-primary">
-                    <BookOpen size={16} className="text-purple-1" />
-                    {section.title}
-                  </h2>
-                  <span className="text-[10px] text-muted bg-surface-3 px-2 py-0.5 rounded-full font-medium">
-                    Module {idx + 1}
-                  </span>
-                </div>
-
-                {/* Key Points */}
-                <div className="mb-4">
-                  <span className="text-xs font-bold text-muted uppercase tracking-wider block mb-2.5">
-                    Core Concepts & Key Insights:
-                  </span>
-                  <ul className="space-y-2.5">
-                    {section.keyPoints.map((point, pIdx) => {
-                      const pointId = `note-${selectedNote.id}-${idx}-${pIdx}`;
-                      const starred = isBookmarked(pointId);
-
-                      return (
-                        <li
-                          key={pIdx}
-                          className="flex items-start gap-3 text-xs text-secondary leading-relaxed bg-surface-3/50 p-2.5 rounded-xl border border-border-soft"
-                        >
-                          <button
-                            onClick={() => toggleBookmark(pointId)}
-                            className={`mt-0.5 transition-colors cursor-pointer ${
-                              starred ? "text-amber-400" : "text-muted hover:text-secondary"
-                            }`}
-                            title={starred ? "Remove Bookmark" : "Save Bookmark"}
-                          >
-                            <Bookmark size={13} fill={starred ? "currentColor" : "none"} />
-                          </button>
-                          <span className="flex-1">{point}</span>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-
-                {/* Important Terms */}
-                {section.importantTerms && section.importantTerms.length > 0 && (
-                  <div className="pt-3 border-t border-border-soft">
-                    <span className="text-[11px] font-bold text-muted uppercase tracking-wider block mb-2">
-                      Key Terminology & Tags:
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <h3 className="font-bold text-sm text-primary flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-md bg-purple-1/20 text-purple-400 flex items-center justify-center text-[10px]">
+                      {sIdx + 1}
                     </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {section.importantTerms.map((term, tIdx) => (
-                        <span
-                          key={tIdx}
-                          className="px-2.5 py-1 text-[11px] bg-surface-3 border border-border rounded-lg text-primary font-medium"
-                        >
-                          {term}
-                        </span>
-                      ))}
-                    </div>
+                    {sec.title}
+                  </h3>
+                  {revisionMode && (
+                    <span className="text-[10px] font-semibold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">
+                      Flashcard Bullet
+                    </span>
+                  )}
+                </div>
+
+                <ul className="space-y-2 text-xs text-secondary mb-4 list-disc list-inside">
+                  {sec.keyPoints.map((point, pIdx) => (
+                    <li key={pIdx} className="leading-relaxed">
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+
+                {sec.importantTerms && sec.importantTerms.length > 0 && (
+                  <div className="pt-3 border-t border-border-soft flex flex-wrap items-center gap-1.5">
+                    <span className="text-[10px] text-muted uppercase font-bold tracking-wider mr-1">
+                      Key Terms:
+                    </span>
+                    {sec.importantTerms.map((term, tIdx) => (
+                      <span
+                        key={tIdx}
+                        className="text-[10px] px-2 py-0.5 rounded bg-surface-3 text-secondary border border-border-soft"
+                      >
+                        {term}
+                      </span>
+                    ))}
                   </div>
                 )}
               </div>
             ))}
           </div>
         </div>
-      </div>
-    );
-  }
 
-  // Catalog View
+        {/* Modal Bottom Footer */}
+        <div className="p-4 border-t border-border bg-surface-2/60 flex items-center justify-between text-xs text-muted">
+          <span>{note.category} Track • Free Offline Access</span>
+          <button
+            onClick={onClose}
+            className="px-4 py-1.5 rounded-lg bg-purple-1 hover:bg-purple-1/90 text-white font-medium cursor-pointer"
+          >
+            Done Reading
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CoolNotesContent() {
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [activeReadingNote, setActiveReadingNote] = useState<Note | null>(null);
+
+  const categories = useMemo(() => {
+    return ["All", ...new Set(notes.map(n => n.category))];
+  }, []);
+
+  const filteredNotes = useMemo(() => {
+    return notes.filter(n => {
+      const matchesCat = selectedCategory === "All" || n.category === selectedCategory;
+      const matchesSearch =
+        n.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        n.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        n.tag.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCat && matchesSearch;
+    });
+  }, [selectedCategory, searchQuery]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredNotes.length / PAGE_SIZE));
+  const paginatedNotes = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredNotes.slice(start, start + PAGE_SIZE);
+  }, [filteredNotes, currentPage]);
+
+  const handleCategoryChange = (cat: string) => {
+    setSelectedCategory(cat);
+    setCurrentPage(1);
+  };
+
   return (
-    <div>
-      <div className="mb-8">
+    <div className="space-y-8">
+      {/* Active in-page reader modal */}
+      {activeReadingNote && (
+        <NoteReaderModal
+          note={activeReadingNote}
+          onClose={() => setActiveReadingNote(null)}
+        />
+      )}
+
+      {/* Header */}
+      <div>
         <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">
-          Technical Study Notes
+          Engineering Revision Library
         </h1>
-        <p className="text-secondary">
-          Concise revision guides for Core CS, System Design, and Cloud Architecture with quick flashcards and persistent bookmarks.
+        <p className="text-secondary text-sm md:text-base max-w-3xl">
+          Concise, high-yield revision summaries designed for final-round tech reviews.
+          Covers low-level internals, OS concurrency, database engines, and cloud distributed architecture.
         </p>
       </div>
 
+      {/* Controls Bar: Category Filter + Search + Count */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        {/* Category Pills */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          {categories.map(cat => {
+            const count = cat === "All" ? notes.length : notes.filter(n => n.category === cat).length;
+            return (
+              <button
+                key={cat}
+                onClick={() => handleCategoryChange(cat)}
+                className={`text-xs px-3 py-1.5 rounded-lg transition-colors font-medium cursor-pointer inline-flex items-center gap-1.5 ${
+                  selectedCategory === cat
+                    ? "bg-purple-1 text-white shadow-sm"
+                    : "bg-surface-2 text-secondary border border-border hover:border-purple-1/30 hover:text-primary"
+                }`}
+              >
+                <span>{cat}</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                    selectedCategory === cat ? "bg-white/20 text-white" : "bg-surface-3 text-muted"
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Search Input */}
+        <div className="flex items-center gap-2 bg-surface-2 border border-border rounded-xl px-3.5 py-2 w-full md:w-72">
+          <Search size={15} className="text-muted shrink-0" />
+          <input
+            type="text"
+            placeholder="Search notes or tags..."
+            value={searchQuery}
+            onChange={e => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="bg-transparent flex-1 text-xs outline-none text-primary placeholder:text-muted"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between text-xs text-muted border-b border-border-soft pb-2">
+        <span>{filteredNotes.length} notes found</span>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+      </div>
+
+      {/* Grid of Notes Cards */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        {notesContent.map(note => (
+        {paginatedNotes.map(note => (
           <div
             key={note.id}
-            onClick={() => handleSelectNote(note.id)}
-            className="card p-6 cursor-pointer hover:border-purple-500/40 transition-all flex flex-col justify-between group"
+            onClick={() => setActiveReadingNote(note)}
+            className="card p-5 cursor-pointer hover:border-purple-500/40 hover:-translate-y-1 transition-all flex flex-col justify-between group bg-surface-1 border border-border rounded-2xl shadow-sm"
           >
             <div>
-              <div className="bg-surface-3/60 border border-border-soft rounded-2xl p-6 mb-4 aspect-square flex items-center justify-center group-hover:scale-[1.02] transition-transform shadow-inner">
-                <div className="text-5xl">{note.icon}</div>
+              {/* Visual Cover Banner with Custom Gradient */}
+              <div
+                className={`w-full h-32 rounded-xl bg-gradient-to-br ${note.coverGradient} p-4 mb-4 flex flex-col justify-between text-white shadow-inner relative overflow-hidden group-hover:scale-[1.01] transition-transform`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-black/30 backdrop-blur-xs">
+                    {note.category}
+                  </span>
+                  <span className="text-xs opacity-80">{note.pages} pages</span>
+                </div>
+                <div>
+                  <h4 className="font-extrabold text-sm leading-snug drop-shadow-sm">{note.title}</h4>
+                  <span className="text-[10px] opacity-90 block mt-0.5">{note.tag}</span>
+                </div>
               </div>
-              <h3 className="font-bold text-base mb-1 group-hover:text-purple-1 transition-colors">
-                {note.title}
-              </h3>
-              <p className="text-xs text-muted">{note.sections.length} In-Depth Modules</p>
+
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-[11px] text-muted">
+                  <span className="inline-flex items-center gap-1 font-mono">
+                    <Calendar size={11} /> {note.date}
+                  </span>
+                  <span className="text-purple-400 font-semibold">{note.tag}</span>
+                </div>
+                <p className="text-xs text-muted line-clamp-2 leading-relaxed">{note.description}</p>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-border mt-4 text-xs">
-              <span className="text-muted font-medium">Click to study</span>
-              <span className="text-purple-1 font-bold">Open Notes →</span>
+            <div className="pt-4 border-t border-border-soft mt-4 flex items-center justify-between text-xs">
+              <span className="text-muted font-medium group-hover:text-secondary transition-colors">
+                Interactive Summary
+              </span>
+              <span className="text-purple-400 font-bold group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1">
+                Open Reader →
+              </span>
             </div>
           </div>
         ))}
       </div>
+
+      {filteredNotes.length === 0 && (
+        <div className="text-center py-16 text-muted">
+          <p className="text-sm">No revision notes matched &quot;{searchQuery}&quot; in category &quot;{selectedCategory}&quot;.</p>
+        </div>
+      )}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 pt-6">
+          <button
+            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="p-2 rounded-lg bg-surface-2 border border-border text-secondary hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            aria-label="Previous Page"
+          >
+            <ChevronLeft size={16} />
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`w-8 h-8 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                currentPage === page
+                  ? "bg-purple-1 text-white"
+                  : "bg-surface-2 border border-border text-secondary hover:text-primary"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+
+          <button
+            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="p-2 rounded-lg bg-surface-2 border border-border text-secondary hover:text-primary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            aria-label="Next Page"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
