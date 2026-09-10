@@ -217,7 +217,11 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
           {!collapsed && <span>hirenza</span>}
         </Link>
         {mobileOpen && (
-          <button onClick={onCloseMobile} className="ml-auto p-1 text-muted hover:text-primary">
+          <button
+            onClick={onCloseMobile}
+            aria-label="Close navigation menu"
+            className="ml-auto p-1 text-muted hover:text-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-1/40"
+          >
             <X size={18} />
           </button>
         )}
@@ -289,9 +293,18 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
 
       {/* Mobile Sidebar Overlay */}
       {mobileOpen && (
-        <div className="md:hidden fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/50" onClick={onCloseMobile} />
-          <aside className="absolute left-0 top-0 bottom-0 w-[300px] bg-sidebar border-r border-border-soft">
+        <div
+          className="md:hidden fixed inset-0 z-50"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation drawer"
+        >
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-xs"
+            onClick={onCloseMobile}
+            aria-hidden="true"
+          />
+          <aside className="absolute left-0 top-0 bottom-0 w-[300px] bg-sidebar border-r border-border-soft shadow-2xl animate-in slide-in-from-left duration-200">
             {sidebarContent}
           </aside>
         </div>

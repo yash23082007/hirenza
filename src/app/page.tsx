@@ -1,4 +1,5 @@
 import { MarketingNavbar } from "@/components/navigation/MarketingNavbar";
+import { LogoMarquee } from "@/components/marketing/LogoMarquee";
 import { HeroSection } from "@/components/marketing/HeroSection";
 import { StatsBand } from "@/components/marketing/StatsBand";
 import { PrivacyPanel } from "@/components/marketing/PrivacyPanel";
@@ -25,6 +26,11 @@ export default function HomePage() {
     <main className="min-h-screen">
       <MarketingNavbar />
       
+      {/* Practice Tracks Marquee */}
+      <div className="pt-[calc(var(--topbar-height)+var(--announcement-height))]">
+        <LogoMarquee />
+      </div>
+
       {/* Hero */}
       <HeroSection />
 

@@ -2,11 +2,12 @@ import { MetadataRoute } from "next";
 import { dsaSheets } from "@/data/dsaSheets";
 import { companies } from "@/data/companies";
 import { dsaPatterns } from "@/data/patterns";
+import { interviewQuestionsData } from "@/data/interviewQuestions";
 import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = SITE_URL;
-  const lastModifiedDate = new Date("2024-05-15");
+  const lastModifiedDate = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
     "",
@@ -15,13 +16,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/privacy",
     "/terms",
     "/community",
+    "/onboarding",
+    "/changelog",
+    "/roadmap",
     "/preparation",
+    "/preparation/daily",
+    "/preparation/flashcards",
+    "/preparation/simulator",
     "/preparation/dsa-sheets",
     "/preparation/sql-sheet",
     "/preparation/system-design",
     "/preparation/core-subjects",
     "/preparation/package-wise-dsa",
     "/preparation/company-wise-dsa",
+    "/preparation/company-wise-dsa/compare",
     "/preparation/20-patterns",
     "/preparation/most-asked-questions",
     "/preparation/hr-questions",
@@ -32,6 +40,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/preparation/dsa-playlists",
     "/preparation/system-design-playlists",
     "/preparation/coding-practice",
+    "/preparation/role-wise",
   ].map(route => ({
     url: `${baseUrl}${route}`,
     lastModified: lastModifiedDate,
@@ -63,5 +72,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...sheetRoutes, ...companyRoutes, ...patternRoutes];
+  // Most asked technology question routes
+  const techRoutes: MetadataRoute.Sitemap = Object.keys(interviewQuestionsData).map(tech => ({
+    url: `${baseUrl}/preparation/most-asked-questions/${tech}`,
+    lastModified: lastModifiedDate,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  return [...staticRoutes, ...sheetRoutes, ...companyRoutes, ...patternRoutes, ...techRoutes];
 }

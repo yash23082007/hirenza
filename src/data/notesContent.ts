@@ -9,6 +9,10 @@ export interface NoteContent {
   title: string;
   icon: string;
   sections: NoteSection[];
+  tag?: string;
+  date?: string;
+  coverGradient?: string;
+  pdfUrl?: string;
 }
 
 export const notesContent: NoteContent[] = [

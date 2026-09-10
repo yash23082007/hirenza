@@ -14,32 +14,33 @@ export function CommandPalette() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousActiveElement = useRef<HTMLElement | null>(null);
   const router = useRouter();
   const { isCompleted, isBookmarked, toggleComplete, toggleBookmark } = useProgress();
 
-  const allItems = useMemo(() => getAllCatalogItems(), []);
-  const fuse = useMemo(
-    () =>
-      new Fuse(allItems, {
-        keys: [
-          { name: "title", weight: 0.7 },
-          { name: "topic", weight: 0.2 },
-          { name: "moduleLabel", weight: 0.1 },
-        ],
-        threshold: 0.35,
-        ignoreLocation: true,
-      }),
-    [allItems]
-  );
+  // Lazy-load catalog items only when palette is active
+  const allItems = useMemo(() => (isOpen ? getAllCatalogItems() : []), [isOpen]);
+  const fuse = useMemo(() => {
+    if (!isOpen || allItems.length === 0) return null;
+    return new Fuse(allItems, {
+      keys: [
+        { name: "title", weight: 0.7 },
+        { name: "topic", weight: 0.2 },
+        { name: "moduleLabel", weight: 0.1 },
+      ],
+      threshold: 0.35,
+      ignoreLocation: true,
+    });
+  }, [isOpen, allItems]);
 
   const results = useMemo(() => {
-    if (!fuse) return [];
-    if (!deferredQuery.trim()) {
-      // Default view: curated mix of high frequency and popular topics
+    if (!isOpen) return [];
+    if (!fuse || !deferredQuery.trim()) {
       return allItems.slice(0, 10);
     }
     return fuse.search(deferredQuery, { limit: 25 }).map(res => res.item);
-  }, [deferredQuery, fuse, allItems]);
+  }, [isOpen, deferredQuery, fuse, allItems]);
 
   // Open/close keyboard listeners
   useEffect(() => {
@@ -66,10 +67,14 @@ export function CommandPalette() {
     };
   }, [isOpen]);
 
+  // Focus trap & return
   useEffect(() => {
     if (isOpen) {
-      const timer = setTimeout(() => inputRef.current?.focus(), 50);
+      previousActiveElement.current = document.activeElement as HTMLElement | null;
+      const timer = setTimeout(() => inputRef.current?.focus(), 40);
       return () => clearTimeout(timer);
+    } else if (previousActiveElement.current) {
+      previousActiveElement.current.focus();
     }
   }, [isOpen]);
 
@@ -95,6 +100,22 @@ export function CommandPalette() {
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setSelectedIndex(prev => (prev > 0 ? prev - 1 : results.length - 1));
+    } else if (e.key === "Tab") {
+      // Focus trap within the palette
+      const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+        'input, button, [href], [tabindex="0"]'
+      );
+      if (focusable && focusable.length > 0) {
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     } else if (e.key === "Enter") {
       e.preventDefault();
       const current = results[selectedIndex];
@@ -130,8 +151,13 @@ export function CommandPalette() {
     <div
       className="fixed inset-0 z-50 flex items-start justify-center pt-20 sm:pt-28 px-4 bg-black/70 backdrop-blur-sm transition-all"
       onClick={() => setIsOpen(false)}
+      role="presentation"
     >
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Global search and navigation palette"
         className="w-full max-w-2xl bg-surface-1 border border-border-hover rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-150"
         onClick={e => e.stopPropagation()}
         onKeyDown={handleKeyDownInList}

@@ -190,16 +190,35 @@ export interface Technology {
 }
 
 export const technologies: Technology[] = [
-  { id: "javascript", name: "JavaScript", questions: 15, description: "Core JS, ES6+, async/await, closures, prototypes", color: "#F7DF1E", group: "Web Development" },
-  { id: "typescript", name: "TypeScript", questions: 15, description: "Type safety, generics, utility types, advanced patterns", color: "#3178C6", group: "Web Development" },
-  { id: "react", name: "React.js", questions: 15, description: "Hooks, state management, patterns, performance optimization", color: "#61DAFB", group: "Web Development" },
-  { id: "node", name: "Node.js", questions: 15, description: "Backend development, Express, middleware, streams", color: "#339933", group: "Web Development" },
-  { id: "python", name: "Python", questions: 15, description: "Pythonic syntax, decorators, generators, OOP, internals", color: "#3776AB", group: "Programming Languages" },
-  { id: "dbms", name: "DBMS", questions: 10, description: "Database management systems, SQL, normalization, transactions", color: "#4479A1", group: "Core Subjects" },
-  { id: "os", name: "OS", questions: 10, description: "Operating systems concepts, processes, memory management", color: "#F5A623", group: "Core Subjects" },
-  { id: "cn", name: "Computer Networks", questions: 10, description: "Networking protocols, OSI model, TCP/IP", color: "#00BCD4", group: "Core Subjects" },
-  { id: "aws", name: "AWS", questions: 10, description: "Amazon Web Services: EC2, S3, Lambda, DynamoDB", color: "#FF9900", group: "DevOps & Cloud" },
-  { id: "docker", name: "Docker", questions: 10, description: "Containerization, Docker Compose, multi-stage builds", color: "#2496ED", group: "DevOps & Cloud" },
+  // Core Subjects
+  { id: "dbms", name: "DBMS", questions: 10, description: "Database management systems, SQL, normalization, ACID transactions", color: "#4479A1", group: "Core Subjects" },
+  { id: "os", name: "Operating Systems", questions: 10, description: "Processes, threads, memory management, scheduling, virtual memory", color: "#F5A623", group: "Core Subjects" },
+  { id: "oops", name: "OOP Concepts", questions: 10, description: "Four pillars, SOLID design principles, polymorphism, design patterns", color: "#A855F7", group: "Core Subjects" },
+  { id: "cn", name: "Computer Networks", questions: 10, description: "OSI stack, TCP/IP, HTTP/3, TLS handshakes, DNS resolution", color: "#00BCD4", group: "Core Subjects" },
+
+  // Web
+  { id: "javascript", name: "JavaScript", questions: 15, description: "Event loop, closures, prototypes, async/await, ES2024 features", color: "#F7DF1E", group: "Web" },
+  { id: "typescript", name: "TypeScript", questions: 15, description: "Type narrowing, conditional types, generics, declaration merging", color: "#3178C6", group: "Web" },
+  { id: "react", name: "React.js", questions: 15, description: "Virtual DOM, hooks, state reconciliation, memoization, Server Components", color: "#61DAFB", group: "Web" },
+  { id: "node", name: "Node.js", questions: 15, description: "V8 engine, libuv event loop, streams, clustering, microservices", color: "#339933", group: "Web" },
+  { id: "python", name: "Python", questions: 15, description: "Pythonic syntax, decorators, generators, GIL, memory management", color: "#3776AB", group: "Web" },
+
+  // Mobile
+  { id: "react-native", name: "React Native", questions: 10, description: "Fabric renderer, TurboModules, Reanimated, bridge architecture", color: "#00D8FF", group: "Mobile" },
+  { id: "flutter", name: "Flutter", questions: 10, description: "Widget trees, Dart isolates, Riverpod/Bloc state, MethodChannels", color: "#54C5F8", group: "Mobile" },
+  { id: "android", name: "Android (Kotlin)", questions: 10, description: "Jetpack Compose, Coroutines, Flow, Hilt, MVVM architecture", color: "#3DDC84", group: "Mobile" },
+  { id: "swift", name: "Swift (iOS)", questions: 10, description: "SwiftUI, Swift Concurrency, ARC memory, protocols, GCD", color: "#F05138", group: "Mobile" },
+
+  // DevOps
+  { id: "aws", name: "AWS Cloud", questions: 10, description: "EC2, S3, VPC networking, IAM security, Lambda serverless", color: "#FF9900", group: "DevOps" },
+  { id: "docker", name: "Docker", questions: 10, description: "Containers vs VMs, multi-stage builds, volumes, compose stacks", color: "#2496ED", group: "DevOps" },
+  { id: "kubernetes", name: "Kubernetes", questions: 10, description: "Pod scheduling, Ingress, Services, HPA autoscaling, RBAC", color: "#326CE5", group: "DevOps" },
+  { id: "terraform", name: "Terraform", questions: 10, description: "Infrastructure as Code, state locking, modules, drift detection", color: "#844FBA", group: "DevOps" },
+
+  // Databases
+  { id: "postgresql", name: "PostgreSQL", questions: 10, description: "MVCC, indexing (B-Tree/GIN), query planning, partitioning", color: "#336791", group: "Databases" },
+  { id: "mongodb", name: "MongoDB", questions: 10, description: "Document modeling, aggregation pipelines, ESR indexing, sharding", color: "#47A248", group: "Databases" },
+  { id: "redis", name: "Redis", questions: 10, description: "In-memory data structures, caching patterns, pub/sub, clustering", color: "#DC382D", group: "Databases" },
 ];
 
 // Email templates data
@@ -207,136 +226,347 @@ export interface EmailTemplate {
   id: string;
   title: string;
   description: string;
-  category: string;
+category: string;
   content: string;
 }
 
 export const emailTemplates: EmailTemplate[] = [
+  // Tech Stack Specific (7)
   {
-    id: "frontend-referral",
-    title: "Frontend Developer – Job Referral Request",
-    description: "Professional template for frontend role referrals",
-    category: "Frontend",
-    content: `Subject: Frontend Developer Role at [Company] - Referral Request
+    id: "mern-referral",
+    title: "MERN Stack Developer – Referral Request",
+    description: "High-impact referral email showcasing full-stack JavaScript and production MongoDB experience.",
+    category: "Tech Stack Specific",
+    content: `Subject: Referral Request: Full-Stack MERN Developer - [Job ID / Requisition]
 
 Hi [Name],
 
-I hope you're doing well. I'm [Your Name], a frontend developer with [X years] of experience in React, TypeScript, and modern web technologies.
+I hope your week is off to a productive start. I am reaching out because I follow your engineering work at [Company] and noticed an opening for a Full-Stack MERN Engineer on your team.
 
-I came across the Frontend Developer position at [Company] and I'm very interested. Given your experience there, I'd greatly appreciate if you could refer me for this role.
+I have spent the past [X years] architecting React frontends with Node/Express backends, handling high-concurrency workloads backed by MongoDB. Here are three quick metrics from my recent work:
+• Built a real-time collaborative workspace reducing state synchronization latency by 42%.
+• Optimized complex MongoDB aggregation queries, cutting peak P95 query times from 850ms to 120ms.
+• Shipped end-to-end REST & WebSocket microservices covered by automated CI/CD pipelines.
 
-I've attached my resume and here's a quick summary of my relevant experience:
-- [Key achievement 1]
-- [Key achievement 2]
-- [Key achievement 3]
+I would love to be considered for this role with your referral. My resume and GitHub profile are linked below.
 
-I'd be happy to provide any additional information. Thank you for your time!
+Thank you for your time and guidance,
+[Your Name]
+Portfolio: [Your URL] | GitHub: [Your Profile] | LinkedIn: [Your Profile]`,
+  },
+  {
+    id: "react-referral",
+    title: "React / Frontend Specialist – Role Outreach",
+    description: "Tailored for senior/mid frontend roles emphasizing design systems and web performance.",
+    category: "Tech Stack Specific",
+    content: `Subject: Frontend Engineer Opening ([Job ID]) - Referral Request
+
+Hi [Name],
+
+I hope you're having a great day. I came across the Frontend Engineer opening at [Company] and wanted to connect given your tenure on the engineering team.
+
+As a frontend specialist focused on React 19, TypeScript, and Next.js, I care deeply about performance, type safety, and accessible design systems. At [Current/Previous Role], I:
+• Refactored core user checkout flows, lifting conversion by 14% and achieving a 99 Lighthouse performance rating.
+• Maintained our multi-package component library used across 8 internal web properties.
+• Reduced client-side JavaScript bundle sizes by 35% through tree-shaking and dynamic route streaming.
+
+If you have a quick moment, could you submit my profile for [Job Title / Requisition ID]? My resume is attached for your review.
+
+Warm regards,
+[Your Name]
+[LinkedIn URL] · [Portfolio URL]`,
+  },
+  {
+    id: "node-referral",
+    title: "Node.js Backend Engineer – API & Microservices",
+    description: "Emphasizes event-loop efficiency, streaming, microservices, and database tuning.",
+    category: "Tech Stack Specific",
+    content: `Subject: Backend Engineer (Node.js) - [Company] - Referral Inquiry
+
+Hi [Name],
+
+I saw the Backend Engineer opening at [Company] and immediately noted your team's focus on low-latency microservices.
+
+I specialize in building distributed backend systems in Node.js and TypeScript. A few highlights from my recent projects:
+• Designed distributed rate-limiting and job-queue microservices using Redis and BullMQ, handling 15,000+ RPS.
+• Migrated legacy monolithic services to modular NestJS microservices with comprehensive integration test suites.
+• Profiled memory leaks and CPU bottlenecks using Clinic.js, boosting throughput by 28%.
+
+Would you be open to providing a referral for this role? I have attached my resume and would welcome any feedback.
 
 Best regards,
 [Your Name]
-[LinkedIn URL]
-[Portfolio/GitHub URL]`,
+[GitHub URL] · [LinkedIn URL]`,
   },
   {
-    id: "backend-referral",
-    title: "Backend Developer – Job Referral Request",
-    description: "Template for backend engineering referrals",
-    category: "Backend",
-    content: `Subject: Backend Developer Opportunity at [Company] - Referral
+    id: "fullstack-referral",
+    title: "Full-Stack Generalist – Product Engineering",
+    description: "Designed for fast-moving startups and product teams requiring end-to-end velocity.",
+    category: "Tech Stack Specific",
+    content: `Subject: Full-Stack Product Engineer ([Job ID]) - Referral Request
 
 Hi [Name],
 
-I'm [Your Name], a backend engineer specializing in [Node.js/Python/Java] with experience building scalable APIs and microservices.
+I have been following [Company]'s product roadmap and noticed the open Full-Stack Software Engineer role. Given your experience at [Company], I wanted to ask if you'd be comfortable referring me.
 
-I noticed [Company] is hiring for a Backend Developer role, and I believe my background in [specific skills] aligns well with the position.
+I operate as a full-cycle product engineer:
+• Owned product feature cycles from Figma handoff through schema migrations to production deployment.
+• Built full-stack apps in Next.js, TypeScript, PostgreSQL, and Prisma with automated Docker deployments.
+• Maintained 99.9% uptime while shipping weekly product iterations and resolving user regressions quickly.
 
-Would you be open to referring me? I've attached my resume and a brief overview:
-- [Key technical achievement]
-- [Relevant project or impact]
-- [Years of experience and core skills]
-
-Happy to chat further at your convenience. Thanks for considering!
+My resume and live projects are attached. I appreciate your time and would be thrilled to contribute to the team!
 
 Best,
-[Your Name]`,
+[Your Name]
+[Portfolio] | [LinkedIn]`,
   },
   {
-    id: "devops-referral",
-    title: "DevOps Engineer – Job Referral Request",
-    description: "DevOps role referral template",
-    category: "Cloud & DevOps",
-    content: `Subject: DevOps Engineer Position at [Company] - Referral
+    id: "vue-referral",
+    title: "Vue.js & Nuxt Developer – Frontend Outreach",
+    description: "Focuses on Vue 3 Composition API, Nuxt SSR, Pinia state, and modern UI engineering.",
+    category: "Tech Stack Specific",
+    content: `Subject: Vue / Frontend Developer Opportunity - Referral Request
 
 Hi [Name],
 
-I'm [Your Name], a DevOps engineer with strong experience in CI/CD, Kubernetes, and cloud infrastructure (AWS/GCP).
+I noticed [Company] utilizes Vue 3 and Nuxt to power your customer-facing applications, and I saw your open Frontend Engineer listing.
 
-I'm very interested in the DevOps Engineer role at [Company]. Your referral would mean a lot.
+I have specialized in the Vue ecosystem for the past [X years]:
+• Architected enterprise SPAs and SSR apps with Vue 3, TypeScript, Vite, and Pinia.
+• Built reusable UI primitives adhering to WCAG 2.1 AA accessibility guidelines.
+• Improved First Contentful Paint (FCP) by 45% via Nuxt route caching and server-side rendering optimizations.
 
-Quick highlights:
-- [Infrastructure achievement]
-- [Automation or CI/CD accomplishment]
-- [Relevant certifications]
+I would be grateful for a referral for this position. Please let me know if you would like any further details about my background.
 
-Resume attached. Happy to provide more details anytime.
-
-Thanks,
-[Your Name]`,
+Sincerely,
+[Your Name]
+[LinkedIn Profile] · [GitHub]`,
   },
   {
-    id: "data-referral",
-    title: "Data Engineer – Job Referral Request",
-    description: "Data engineering referral template",
-    category: "Data & AI/ML",
-    content: `Subject: Data Engineer Role at [Company] - Referral Request
+    id: "angular-referral",
+    title: "Angular Enterprise Engineer – Large-Scale SPAs",
+    description: "Highlights RxJS reactive patterns, NgRx state stores, and modular architecture.",
+    category: "Tech Stack Specific",
+    content: `Subject: Application for Angular Software Engineer - Referral Request
 
 Hi [Name],
 
-I'm [Your Name], a data engineer with experience in ETL pipelines, Apache Spark, and data warehousing.
+I hope this note finds you well. I came across the Angular Engineer role at [Company] and wanted to reach out to you as a fellow frontend engineer.
 
-I saw the Data Engineer opening at [Company] and would love to be referred. My relevant background:
-- [Data pipeline achievement]
-- [Relevant tools and technologies]
-- [Impact metrics]
+I have built complex enterprise web applications with Angular 16+, TypeScript, and RxJS:
+• Designed reactive state architectures with NgRx and Signals, cutting unnecessary component re-renders by 50%.
+• Authored shared Angular UI components and standalone modules across monorepo codebases using Nx.
+• Enforced strict unit and E2E test coverage using Jest and Playwright.
 
-Resume attached. Would appreciate your help!
+Could you kindly refer me for [Job Requisition ID]? My resume is attached for convenience.
 
-Best,
-[Your Name]`,
+Thank you for your consideration,
+[Your Name]
+[LinkedIn URL]`,
   },
   {
-    id: "networking-general",
-    title: "General Networking – Connection Request",
-    description: "Template for professional networking on LinkedIn",
-    category: "Networking & Learning",
-    content: `Hi [Name],
-
-I came across your profile and was impressed by your work in [specific field/project]. I'm currently [your situation - e.g., "a final year CS student passionate about backend development"].
-
-I'd love to connect and learn from your journey. No immediate ask — just hoping to be part of your network.
-
-Best,
-[Your Name]`,
-  },
-  {
-    id: "informational-interview",
-    title: "Informational Interview Request",
-    description: "Request for career advice conversation",
-    category: "Networking & Learning",
-    content: `Subject: 15-min Chat About [Topic]?
+    id: "django-referral",
+    title: "Python / Django Developer – High Scale Systems",
+    description: "Emphasizes Django ORM optimization, Celery asynchronous queues, and REST APIs.",
+    category: "Tech Stack Specific",
+    content: `Subject: Python / Django Developer - Referral Request for [Company]
 
 Hi [Name],
 
-I'm [Your Name], a [your role/student status] interested in [specific area]. I noticed your experience at [Company] in [relevant domain] and would love to learn from your perspective.
+I noticed the Python / Django Engineer position open on your engineering organization at [Company].
 
-Would you be open to a 15-minute chat sometime in the next few weeks? I have specific questions about:
-1. [Question 1]
-2. [Question 2]
+With [X years] building scalable backend services with Django, Django REST Framework, and PostgreSQL, I have:
+• Eliminated N+1 database queries across heavy reporting endpoints using select_related and prefetch_related.
+• Orchestrated background batch processing workflows with Celery and Redis executing 500,000+ daily jobs.
+• Deployed production services with Gunicorn, Docker, and Kubernetes.
 
-I promise to keep it brief and respect your time. Thank you for considering!
+I would appreciate the chance to be referred for this position. Thank you for your time and help!
 
 Best regards,
-[Your Name]`,
+[Your Name]
+[GitHub] · [LinkedIn]`,
+  },
+
+  // Cloud & DevOps (2)
+  {
+    id: "cloud-architect-referral",
+    title: "AWS Cloud Architect – Infrastructure Engineering",
+    description: "Focuses on cost optimization, multi-AZ high availability, and secure cloud topologies.",
+    category: "Cloud & DevOps",
+    content: `Subject: Cloud Infrastructure Engineer - Referral Request - [Company]
+
+Hi [Name],
+
+I hope you're having a productive week. I am reaching out regarding the Cloud Infrastructure / AWS role open at [Company].
+
+As an AWS-certified engineer with hands-on experience designing cloud architectures:
+• Architected multi-region AWS infrastructure with Terraform, reducing annual cloud compute spend by 28%.
+• Implemented zero-trust VPC peering, IAM role policies, and KMS encryption across production environments.
+• Built automated disaster recovery pipelines achieving an RPO < 15 minutes and RTO < 30 minutes.
+
+I would value the opportunity to be referred by you for this role. My resume is attached.
+
+Warm regards,
+[Your Name]
+[LinkedIn Profile] · [Certifications Link]`,
+  },
+  {
+    id: "devops-sre-referral",
+    title: "DevOps & SRE Specialist – Observability & CI/CD",
+    description: "Emphasizes Kubernetes orchestration, GitOps, Prometheus metrics, and automated release cycles.",
+    category: "Cloud & DevOps",
+    content: `Subject: DevOps / SRE Role Referral Request ([Job ID])
+
+Hi [Name],
+
+I noticed [Company] is hiring for a DevOps / Site Reliability Engineer. Having followed your engineering blog on infrastructure reliability, I am excited about your team's mission.
+
+In my recent DevOps roles:
+• Scaled production Kubernetes (EKS) clusters serving 40M monthly requests with automated HPA rules.
+• Automated blue-green and canary deployments via ArgoCD and GitHub Actions, achieving 99.99% service availability.
+• Configured Prometheus, Grafana, and OpenTelemetry tracing dashboards to resolve incidents 60% faster.
+
+Would you be open to forwarding my resume to the hiring team?
+
+Best,
+[Your Name]
+[GitHub URL] · [LinkedIn URL]`,
+  },
+
+  // Data & AI/ML (2)
+  {
+    id: "data-engineer-referral",
+    title: "Data Platform Engineer – ETL Pipelines & Warehousing",
+    description: "Focuses on PySpark batch processing, dbt transformation, and Snowflake/BigQuery architectures.",
+    category: "Data & AI/ML",
+    content: `Subject: Data Engineer Opening - Referral Request ([Requisition ID])
+
+Hi [Name],
+
+I hope all is well with you. I am reaching out to express my strong interest in the Data Engineer position at [Company].
+
+My background is centered on scalable data pipelines and modern data stack tooling:
+• Built distributed ETL/ELT pipelines using Apache Spark and Airflow, processing over 2TB of daily transactional logs.
+• Modeled dimensional data warehouses in Snowflake and dbt, reducing dashboard query latency by 3.5x.
+• Implemented data validation test suites with Great Expectations to maintain data integrity.
+
+I have attached my resume and would be honored if you could refer me for the role.
+
+Thank you very much,
+[Your Name]
+[LinkedIn URL] · [GitHub Projects]`,
+  },
+  {
+    id: "ml-engineer-referral",
+    title: "Machine Learning Engineer – Model Serving & MLOps",
+    description: "Highlights PyTorch training, vector embeddings, MLflow tracking, and sub-100ms model inference.",
+    category: "Data & AI/ML",
+    content: `Subject: Machine Learning Engineer Role - Referral Request
+
+Hi [Name],
+
+I hope you are doing well. I noticed [Company]'s team is hiring an ML Engineer to work on production intelligence and models.
+
+I specialize in building and deploying practical machine learning pipelines:
+• Deployed real-time inference services with FastAPI and Triton Inference Server with sub-40ms latency.
+• Trained and fine-tuned transformer and embedding models using PyTorch, tracking experiments with MLflow.
+• Optimized model weights through quantization (INT8/FP16) and ONNX runtime conversion.
+
+I would love to be considered for this position. If you are open to referring me, my resume is attached.
+
+Best regards,
+[Your Name]
+[GitHub/HuggingFace] · [LinkedIn]`,
+  },
+
+  // Mobile (4)
+  {
+    id: "react-native-referral",
+    title: "React Native Developer – Cross-Platform Apps",
+    description: "Emphasizes 60 FPS mobile performance, Reanimated gestures, and native TurboModules.",
+    category: "Mobile",
+    content: `Subject: React Native Engineer Opening - Referral Request ([Company])
+
+Hi [Name],
+
+I saw the mobile engineering vacancy for a React Native Developer at [Company] and wanted to reach out.
+
+I build performant cross-platform mobile apps for iOS and Android:
+• Shipped cross-platform applications to the App Store and Google Play with over 100,000 downloads and a 4.7-star rating.
+• Achieved stable 60 FPS gesture and scroll interactions using React Native Reanimated and Gesture Handler.
+• Integrated native Swift and Kotlin modules for camera capture and encrypted biometric storage.
+
+Could you help refer me for this opening? My portfolio and resume are attached below.
+
+Warm regards,
+[Your Name]
+[App Store / Play Store Links] · [LinkedIn]`,
+  },
+  {
+    id: "flutter-referral",
+    title: "Flutter & Dart Engineer – Smooth UI & State",
+    description: "Focuses on custom painters, Riverpod reactive state, and seamless multi-platform delivery.",
+    category: "Mobile",
+    content: `Subject: Flutter Developer Role - Referral Request - [Company]
+
+Hi [Name],
+
+I hope you're having a great week. I noticed [Company]'s mobile team is expanding and hiring a Flutter Developer.
+
+I have built production Flutter applications targeting Android, iOS, and Web:
+• Implemented declarative state architecture with Riverpod and Freezed, guaranteeing zero unhandled UI states.
+• Built responsive custom UI components and animated canvas graphs running at 120Hz refresh rates.
+• Configured automated Fastlane CI/CD pipelines to build and deploy daily internal beta releases.
+
+I would appreciate if you could refer me for this role. My resume is attached for your convenience.
+
+Best,
+[Your Name]
+[GitHub / Demo Apps] · [LinkedIn]`,
+  },
+  {
+    id: "ios-swift-referral",
+    title: "iOS Software Engineer – SwiftUI & Swift Concurrency",
+    description: "Highlights modern iOS development with SwiftUI, async/await, Combine, and Apple HIG guidelines.",
+    category: "Mobile",
+    content: `Subject: iOS Engineer Position - Referral Request - [Job ID]
+
+Hi [Name],
+
+I am writing to express my enthusiasm for the iOS Developer position currently open at [Company].
+
+As a native iOS engineer specializing in Swift and modern Apple frameworks:
+• Developed and published native iOS applications using SwiftUI, Swift Concurrency (async/await, Actors), and Combine.
+• Profiling app launches and memory allocations using Xcode Instruments, eliminating retain cycles and reducing launch times by 30%.
+• Integrated StoreKit 2 in-app subscriptions, APNs push notifications, and Core Data persistence.
+
+Would you be open to providing an internal referral for me? My resume is attached.
+
+Thank you for your time and assistance,
+[Your Name]
+[App Store Portfolio] · [GitHub] · [LinkedIn]`,
+  },
+  {
+    id: "android-kotlin-referral",
+    title: "Android Engineer – Jetpack Compose & Kotlin",
+    description: "Emphasizes modern Android architecture: Jetpack Compose, Coroutines, Flow, and Hilt.",
+    category: "Mobile",
+    content: `Subject: Android Engineer Role at [Company] - Referral Request
+
+Hi [Name],
+
+I noticed [Company] is hiring for an Android Engineer to build next-generation mobile experiences.
+
+I have focused exclusively on modern Android development with Kotlin:
+• Rebuilt core user flows with Jetpack Compose, cutting code verbosity by 40% while ensuring zero frame-jank recompositions.
+• Structured apps using Clean Architecture + MVVM, Kotlin Coroutines, StateFlow, and Hilt dependency injection.
+• Authored comprehensive local JUnit tests and UI Espresso/Compose testing suites.
+
+I would be grateful if you could submit my profile as a referral for this role. My resume and GitHub are attached.
+
+Best regards,
+[Your Name]
+[Play Store Links] · [GitHub] · [LinkedIn]`,
   },
 ];
 
@@ -347,17 +577,24 @@ export interface Note {
   pages: number;
   category: string;
   description: string;
+  tag: string;
+  date: string;
+  coverGradient: string;
 }
 
 export const notes: Note[] = [
-  { id: "computer-networks", title: "Computer Networks", pages: 45, category: "Core", description: "OSI Model, TCP/IP, HTTP/HTTPS, DNS, routing protocols" },
-  { id: "aws", title: "AWS", pages: 60, category: "Cloud", description: "EC2, S3, Lambda, VPC, IAM, CloudFormation" },
-  { id: "java", title: "Java", pages: 55, category: "Language", description: "OOP, Collections, Streams, Multithreading, JVM" },
-  { id: "kubernetes", title: "Kubernetes", pages: 40, category: "DevOps", description: "Pods, Deployments, Services, Ingress, Helm" },
-  { id: "docker", title: "Docker", pages: 30, category: "DevOps", description: "Images, Containers, Dockerfile, Compose, Networking" },
-  { id: "dbms", title: "DBMS", pages: 50, category: "Core", description: "Normalization, ACID, Transactions, Indexing, Joins" },
-  { id: "operating-systems", title: "Operating Systems", pages: 48, category: "Core", description: "Processes, Threads, Memory Management, Scheduling" },
-  { id: "system-design", title: "System Design", pages: 70, category: "Design", description: "Scalability, Load Balancing, Caching, Databases" },
+  { id: "computer-networks", title: "Computer Networks", pages: 45, category: "Core", tag: "Networking", date: "2026-03-01", coverGradient: "from-cyan-600 to-blue-700", description: "OSI Model, TCP/IP, HTTP/3, DNS hierarchy, TLS handshakes, routing protocols" },
+  { id: "operating-systems", title: "Operating Systems", pages: 48, category: "Core", tag: "Kernel & Concurrency", date: "2026-02-24", coverGradient: "from-amber-600 to-orange-700", description: "Processes, threads, memory paging, CPU scheduling, virtual memory, race conditions" },
+  { id: "dbms", title: "DBMS & SQL", pages: 50, category: "Core", tag: "Transactions & SQL", date: "2026-02-18", coverGradient: "from-blue-600 to-indigo-700", description: "Normalization (1NF to BCNF), ACID guarantees, write-ahead log, indexing, B-Trees" },
+  { id: "system-design", title: "High-Level System Design", pages: 70, category: "Design", tag: "Scalability", date: "2026-03-05", coverGradient: "from-purple-600 to-pink-700", description: "Horizontal scaling, load balancers, CDN caching, CAP theorem, message queues" },
+  { id: "low-level-design", title: "Low-Level Design & OOP", pages: 52, category: "Design", tag: "Design Patterns", date: "2026-02-12", coverGradient: "from-emerald-600 to-teal-700", description: "SOLID principles, GoF creational/structural/behavioral patterns, class modeling" },
+  { id: "aws", title: "AWS Cloud Architecture", pages: 60, category: "Cloud", tag: "Cloud Architecture", date: "2026-01-30", coverGradient: "from-orange-500 to-amber-700", description: "EC2, S3, VPC subnets, IAM zero-trust, Lambda serverless, DynamoDB scaling" },
+  { id: "kubernetes", title: "Kubernetes Orchestration", pages: 42, category: "DevOps", tag: "Containers", date: "2026-02-05", coverGradient: "from-blue-500 to-cyan-700", description: "Pod scheduling, Ingress controllers, Services, HPA autoscaling, Persistent Volumes" },
+  { id: "docker", title: "Docker Containerization", pages: 35, category: "DevOps", tag: "Virtualization", date: "2026-01-20", coverGradient: "from-sky-500 to-blue-600", description: "OCI images, multi-stage builds, rootless containers, volumes, compose stacks" },
+  { id: "java", title: "Java 21 & Concurrency", pages: 55, category: "Language", tag: "JVM & Concurrency", date: "2026-01-15", coverGradient: "from-red-600 to-rose-700", description: "Virtual threads (Project Loom), memory model, synchronized blocks, garbage collection" },
+  { id: "typescript", title: "Advanced TypeScript", pages: 38, category: "Language", tag: "Type System", date: "2026-02-28", coverGradient: "from-blue-600 to-sky-600", description: "Conditional types, template literal types, distributive unions, type narrowing" },
+  { id: "redis-in-depth", title: "Redis Architecture & Caching", pages: 32, category: "Core", tag: "In-Memory Data", date: "2026-02-10", coverGradient: "from-red-500 to-amber-600", description: "In-memory structures, RDB/AOF persistence, pub-sub channels, cluster sharding" },
+  { id: "git-internals", title: "Git Internals & Workflows", pages: 28, category: "DevOps", tag: "VCS & GitOps", date: "2026-01-10", coverGradient: "from-orange-600 to-red-600", description: "Blobs, trees, commits, rebasing mechanics, conflict resolution, cherry-picking" },
 ];
 
 // Resume templates data
@@ -583,6 +820,152 @@ Systems Engineer $|$ engineer@domain.com $|$ github.com/engineer
 \\section*{Engineering Experience}
 \\textbf{InfraCore Technologies} -- Systems Engineer \\hfill 2022 -- Present\\\\
 Designed LSM-tree persistent storage in C++ processing 100K write ops/sec.
+\\end{document}`
+  },
+  {
+    id: "classic-single-column",
+    name: "Classic Minimalist (Harvard Style)",
+    style: "Academic & Corporate Standard",
+    description: "Ultra-clean serif typography trusted across finance, Big Tech, and traditional enterprise screening algorithms.",
+    tags: ["ATS-Score: 99/100", "Single-Column", "Minimalist", "High Contrast"],
+    overleafUrl: "https://www.overleaf.com/latex/templates",
+    githubUrl: "https://github.com",
+    markdownCode: `# FIRSTNAME LASTNAME
+New York, NY • (555) 234-5678 • firstname.lastname@email.com • linkedin.com/in/firstnamelastname
+
+### EDUCATION
+**Columbia University**, The Fu Foundation School of Engineering and Applied Science
+*Bachelor of Science in Computer Science*, Minor in Applied Mathematics (May 2024)
+- GPA: 3.88/4.00, Dean's List (All Semesters)
+- Honors: Tau Beta Pi Engineering Honor Society
+
+### WORK EXPERIENCE
+**Stripe** — *Software Engineering Intern* (May 2023 – Aug 2023)
+- Implemented real-time fraud scoring pipeline in Ruby and Java evaluating 2,000 transactions/second.
+- Reduced false positive flags by 18% through supervised learning model inference optimization.
+- Documented internal developer API guidelines adopted across 6 cross-functional engineering pods.
+
+**Bloomberg L.P.** — *Software Developer Intern* (May 2022 – Aug 2022)
+- Re-architected financial ticker websocket feed in modern C++ (C++20) yielding a 40% memory footprint drop.
+- Collaborated with QA team to achieve 96% unit test line coverage using Google Test and CI pipelines.
+
+### LEADERSHIP & ACTIVITIES
+**President**, Association for Computing Machinery (ACM) Student Chapter
+- Organized 36-hour annual hackathon with 800+ university attendees and $25,000 corporate sponsorship.
+`,
+    latexCode: `\\documentclass[10pt,letterpaper]{article}
+\\usepackage[margin=0.6in]{geometry}
+\\usepackage{enumitem}
+\\pagestyle{empty}
+\\begin{document}
+\\begin{center}
+  {\\Large \\textbf{Firstname Lastname}} \\\\[2pt]
+  New York, NY \\textbullet\\ (555) 234-5678 \\textbullet\\ candidate@email.com
+\\end{center}
+\\vspace{-6pt}
+\\section*{Education}
+\\textbf{Columbia University} \\hfill May 2024\\\\
+B.S. in Computer Science (GPA: 3.88/4.00)
+\\section*{Experience}
+\\textbf{Stripe} -- Software Engineering Intern \\hfill Summer 2023\\\\
+\\begin{itemize}[noitemsep,topsep=0pt]
+  \\item Implemented real-time transaction scoring in Java/Ruby evaluating 2,000 TPS.
+  \\item Reduced false positives by 18\\% via inference optimization.
+\\end{itemize}
+\\end{document}`
+  },
+  {
+    id: "modern-two-tone",
+    name: "Modern Engineering (Senior Track)",
+    style: "Two-Tone Structured",
+    description: "Polished layout emphasizing leadership scope, business impact metrics, and cloud system architecture.",
+    tags: ["ATS-Score: 95/100", "Two-Tone", "Senior SDE", "Cloud Native"],
+    overleafUrl: "https://www.overleaf.com/latex/templates",
+    githubUrl: "https://github.com",
+    markdownCode: `# FIRSTNAME LASTNAME — SENIOR SOFTWARE ENGINEER
+Seattle, WA | senior.engineer@domain.com | +1 (555) 987-6543 | github.com/sre-lead
+
+### PROFESSIONAL SUMMARY
+Senior Software Engineer with 6+ years specializing in distributed systems, high-availability cloud architecture, and platform engineering. Track record of mentoring junior engineers and leading cross-team technical initiatives.
+
+### KEY TECHNICAL HIGHLIGHTS
+- Led cloud migration from on-premise datacenter to AWS EKS, saving $180,000 in annual infrastructure overhead.
+- Engineered event-driven pipeline on Apache Kafka and AWS Lambda processing 50M+ daily events with 99.995% SLA.
+- Spearheaded company-wide transition to OpenTelemetry distributed tracing, improving Mean Time to Detection (MTTD) by 65%.
+
+### EXPERIENCE
+**Lead Platform Engineer** — CloudScale Dynamics (2022 – Present)
+- Directed architectural redesign of multi-region payment gateway handling $40M monthly volume.
+- Supervised sprint planning and code reviews for a distributed team of 8 software engineers.
+
+**Senior Software Engineer** — Apex Core Systems (2019 – 2022)
+- Built gRPC microservices in Go and Rust connecting core identity and billing databases.
+`,
+    latexCode: `\\documentclass[10pt]{article}
+\\usepackage[margin=0.7in]{geometry}
+\\usepackage{titlesec}
+\\pagestyle{empty}
+\\begin{document}
+\\textbf{\\LARGE Firstname Lastname} \\hfill senior.engineer@domain.com\\\\
+Seattle, WA $|$ github.com/sre-lead $|$ linkedin.com/in/seniorlead
+\\rule{\\textwidth}{0.8pt}
+\\section*{Experience}
+\\textbf{CloudScale Dynamics} -- Lead Platform Engineer \\hfill 2022 -- Present\\\\
+Architected multi-region payment platform processing 50M daily events with 99.995\\% SLA.
+\\end{document}`
+  },
+  {
+    id: "fresher-intern",
+    name: "New Grad & Intern Accelerator",
+    style: "Project & Fundamentals First",
+    description: "Tailored for early-career developers, interns, and campus placements. Spotlights coursework, hackathons, and high-signal GitHub projects.",
+    tags: ["ATS-Score: 98/100", "New Grad", "Internship", "Campus Placements"],
+    overleafUrl: "https://www.overleaf.com/latex/templates",
+    githubUrl: "https://github.com",
+    markdownCode: `# FIRSTNAME LASTNAME
+Phone: +91 98765 43210 | Email: fresher.grad@domain.edu | GitHub: github.com/newgrad | LinkedIn: linkedin.com/in/newgrad
+
+### EDUCATION
+**Indian Institute of Information Technology**
+*B.Tech in Computer Science and Engineering* (2021 – 2025)
+- CGPA: 8.9/10.0
+- Relevant Coursework: Data Structures, Analysis of Algorithms, DBMS, Operating Systems, Computer Networks
+
+### PROJECTS
+**Hirenza Prep Tracker (Open Source Project)** | *Next.js, TypeScript, Tailwind CSS, LocalStorage*
+- Engineered an offline-first interview preparation workspace supporting 600+ problems with zero cloud dependency.
+- Implemented client-side Leitner spaced repetition interval scheduler and deterministic daily problem generator.
+- Achieved perfect 100/100 Lighthouse performance and accessibility scores across all static routes.
+
+**Real-Time Collaborative Code Editor** | *React, Node.js, WebSockets, Redis, Docker*
+- Built collaborative web code editor supporting concurrent typing with Operational Transformation (OT).
+- Sandboxed remote code execution across Python, JavaScript, and C++ using isolated Docker containers.
+
+### TECHNICAL SKILLS
+- **Languages:** C++, Java, Python, JavaScript, TypeScript, SQL
+- **Frameworks:** React, Next.js, Node.js, Express, Tailwind CSS
+- **Tools:** Git, GitHub, Docker, Postman, Linux Bash, VS Code
+
+### ACHIEVEMENTS & CODING PROFILES
+- **LeetCode:** Knight Badge (Rating: 1940+, Top 4% globally, 450+ problems solved).
+- **Codeforces:** Specialist (Max rating: 1485).
+- Winner, Smart India Hackathon internal round (Rank 1 out of 60 competing teams).
+`,
+    latexCode: `\\documentclass[10pt]{article}
+\\usepackage[margin=0.65in]{geometry}
+\\usepackage{hyperref}
+\\pagestyle{empty}
+\\begin{document}
+\\begin{center}
+  {\\textbf{\\Large Firstname Lastname}} \\\\[2pt]
+  fresher.grad@domain.edu $|$ +91 98765 43210 $|$ \\href{https://github.com/newgrad}{github.com/newgrad}
+\\end{center}
+\\section*{Education}
+\\textbf{B.Tech in Computer Science} -- IIIT \\hfill 2021 -- 2025\\\\
+CGPA: 8.9/10.0
+\\section*{Key Projects}
+\\textbf{Hirenza Prep Tracker} (Next.js, TypeScript, Local-First Engine)\\\\
+Built offline-first preparation platform covering 600+ problems with 100 Lighthouse performance.
 \\end{document}`
   }
 ];
