@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { useState, useMemo } from "react";
 import { useProgress } from "@/hooks/useProgress";
+import { FocusTimer } from "@/components/features/FocusTimer";
 
 
 
@@ -184,6 +185,9 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
             )}
           </div>
         </div>
+
+        {/* Focus Timer & Pomodoro Bar */}
+        <FocusTimer className="mb-6" />
 
         {/* View Tabs & Filters */}
         <div className="card p-4 mb-6 space-y-4">

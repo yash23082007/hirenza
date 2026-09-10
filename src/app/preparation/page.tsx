@@ -7,6 +7,9 @@ import { useProgress } from "@/hooks/useProgress";
 import { Target, RotateCcw, ArrowUpRight, CheckCircle2, BookMarked, Sparkles } from "lucide-react";
 import { companies } from "@/data/companies";
 
+import { ReadinessExplainer } from "@/components/features/ReadinessExplainer";
+import { WeakestPatternWidget } from "@/components/dashboard/WeakestPatternWidget";
+
 export default function DashboardPage() {
   const { moduleStats, topicMastery, revisionQueue, data, allBookmarks } = useProgress();
 
@@ -14,8 +17,8 @@ export default function DashboardPage() {
   const targetCompany = data.profile.targetCompany || "Google";
   const matchedCompany = companies.find(c => c.name.toLowerCase() === targetCompany.toLowerCase()) || companies[0];
 
-  const readinessScore = useMemo(() => {
-    if (!matchedCompany) return 0;
+  const readinessDetails = useMemo(() => {
+    if (!matchedCompany) return { score: 0, compSolved: 0, compTotal: 1, patSolved: 0, patTotal: 1 };
     const companyProblems = matchedCompany.problems;
     const total = companyProblems.length || 1;
     const solved = companyProblems.filter(p => {
@@ -35,8 +38,16 @@ export default function DashboardPage() {
     const sdRatio = (moduleStats["system-design"]?.percent || 0) / 100;
 
     const weighted = (highFreqRatio * 0.45 + generalRatio * 0.25 + coreRatio * 0.15 + sdRatio * 0.15) * 100;
-    return Math.min(100, Math.round(weighted));
+    return {
+      score: Math.min(100, Math.round(weighted)),
+      compSolved: highFreqSolved,
+      compTotal: Math.max(1, highFreq.length),
+      patSolved: moduleStats["20-patterns"]?.solved || 0,
+      patTotal: moduleStats["20-patterns"]?.total || 1,
+    };
   }, [matchedCompany, data.statuses, moduleStats]);
+
+  const readinessScore = readinessDetails.score;
 
   // Interview countdown days
   const daysUntilInterview = useMemo(() => {
@@ -76,11 +87,22 @@ export default function DashboardPage() {
             <Target size={20} />
           </div>
           <div>
-            <div className="text-xs text-muted flex items-center gap-1.5">
+            <div className="text-xs text-muted flex items-center gap-2">
               <span>{matchedCompany?.name || "Company"} Target</span>
               {daysUntilInterview && (
                 <span className="text-brand-orange font-semibold">• {daysUntilInterview}d left</span>
               )}
+              <ReadinessExplainer
+                companySolved={readinessDetails.compSolved}
+                companyTotal={readinessDetails.compTotal}
+                patternsSolved={readinessDetails.patSolved}
+                patternsTotal={readinessDetails.patTotal}
+                coreSolved={moduleStats["core-subjects"]?.solved || 0}
+                coreTotal={moduleStats["core-subjects"]?.total || 1}
+                systemSolved={moduleStats["system-design"]?.solved || 0}
+                systemTotal={moduleStats["system-design"]?.total || 1}
+                companyName={matchedCompany?.name || "Target"}
+              />
             </div>
             <div className="text-lg font-bold text-primary">
               {readinessScore}% <span className="text-xs font-normal text-muted">Readiness Score</span>
@@ -213,6 +235,9 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Algorithmic Focus & Weakness Radar */}
+      <WeakestPatternWidget />
 
       {/* Real Skill Analysis */}
       <div>

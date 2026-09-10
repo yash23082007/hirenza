@@ -24,6 +24,8 @@ import {
   ChevronRight,
   Code2,
   X,
+  Flame,
+  Layers,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -40,6 +42,7 @@ interface NavItem {
 }
 
 const sheetsItems: NavItem[] = [
+  { label: "Daily Challenge", href: "/preparation/daily", icon: <Flame size={16} className="text-amber-500" /> },
   {
     label: "DSA Sheets",
     icon: <BookOpen size={16} />,
@@ -56,6 +59,8 @@ const sheetsItems: NavItem[] = [
 ];
 
 const learningItems: NavItem[] = [
+  { label: "Flashcards Recall", href: "/preparation/flashcards", icon: <Layers size={16} className="text-purple-400" /> },
+  { label: "Round Simulator", href: "/preparation/simulator", icon: <Building2 size={16} className="text-cyan-400" /> },
   {
     label: "DSA Playlists",
     icon: <PlaySquare size={16} />,

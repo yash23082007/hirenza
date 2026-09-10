@@ -3,7 +3,8 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { companies, Company } from "@/data";
-import { Search, ExternalLink, ArrowLeft, Bookmark, CheckCircle2, Flame } from "lucide-react";
+import Link from "next/link";
+import { Search, ExternalLink, ArrowLeft, Bookmark, CheckCircle2, Flame, GitCompare } from "lucide-react";
 import { useProgress } from "@/hooks/useProgress";
 
 export function CompanyWiseClient({ companyId }: { companyId?: string }) {
@@ -44,11 +45,21 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">Company Wise DSA Preparation</h1>
-        <p className="text-secondary">
-          Target high-frequency interview patterns with automated Company Readiness Scores and curated problem archives.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">Company Wise DSA Preparation</h1>
+          <p className="text-secondary">
+            Target high-frequency interview patterns with automated Company Readiness Scores and curated problem archives.
+          </p>
+        </div>
+
+        <Link
+          href="/preparation/company-wise-dsa/compare"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-2 border border-border text-xs font-mono font-bold text-primary hover:border-purple-1/40 transition-colors shrink-0"
+        >
+          <GitCompare size={15} className="text-purple-1" />
+          <span>Compare Targets</span>
+        </Link>
       </div>
 
       {/* Catalog View */}

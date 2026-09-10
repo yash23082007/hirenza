@@ -3,6 +3,8 @@
 import { Suspense, useEffect, useState } from "react";
 import { Sidebar } from "@/components/navigation/Sidebar";
 import { TopBar } from "@/components/navigation/TopBar";
+import { Breadcrumbs } from "@/components/navigation/Breadcrumbs";
+import { ShortcutsOverlay } from "@/components/navigation/ShortcutsOverlay";
 import { Menu } from "lucide-react";
 import { ReactNode } from "react";
 
@@ -51,7 +53,9 @@ export function ApplicationLayout({ children }: { children: ReactNode }) {
         </button>
 
         <main className="w-full min-w-0 max-w-[1350px] p-6 md:p-10">
+          <Breadcrumbs />
           {children}
+          <ShortcutsOverlay />
         </main>
       </div>
     </div>

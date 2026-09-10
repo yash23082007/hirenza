@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { ProgressProvider } from "@/hooks/useProgress";
 import { ClientCommandPalette } from "@/components/search/ClientCommandPalette";
+import { AnnouncementBar } from "@/components/navigation/AnnouncementBar";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -12,10 +13,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "HIRENZA — Your Unfair Advantage For Tech Interviews",
+    default: "HIRENZA — The Open-Source Prep OS for Power Users",
     template: "%s | HIRENZA",
   },
-  description: "Structured DSA, company-wise interview preparation, SQL, system design, cold emails and engineering career resources.",
+  description: "Offline-first interview preparation workspace: Curated DSA sheets, company-specific tracks, algorithmic patterns, system design blueprints, and production SQL.",
   keywords: [
     "DSA",
     "LeetCode",
@@ -28,20 +29,20 @@ export const metadata: Metadata = {
     "Cold Email Templates",
     "Interview Preparation",
   ],
-  authors: [{ name: "Yash", url: SITE_URL }],
+  authors: [{ name: "Yash Vijay", url: SITE_URL }],
   creator: "HIRENZA",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    title: "HIRENZA — Your Unfair Advantage For Tech Interviews",
-    description: "Structured DSA, company-wise interview preparation, SQL, system design, notes and career resources.",
+    title: "HIRENZA — The Open-Source Prep OS for Power Users",
+    description: "Offline-first interview preparation workspace: Curated DSA sheets, company tracks, algorithmic patterns, system design, and production SQL.",
     siteName: "HIRENZA",
   },
   twitter: {
-    card: "summary",
-    title: "HIRENZA — Your Unfair Advantage For Tech Interviews",
-    description: "Structured DSA, company-wise interview preparation, SQL, system design, notes and career resources.",
+    card: "summary_large_image",
+    title: "HIRENZA — The Open-Source Prep OS for Power Users",
+    description: "Offline-first interview preparation workspace: Curated DSA sheets, company tracks, algorithmic patterns, and system design.",
   },
   icons: { icon: "/favicon.ico" },
 };
@@ -64,6 +65,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider>
           <ProgressProvider>
+            <AnnouncementBar />
             {children}
             <ClientCommandPalette />
           </ProgressProvider>

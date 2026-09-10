@@ -3,6 +3,7 @@
 import { FormEvent, useState, useRef } from "react";
 import { Check, Download, Upload, RotateCcw } from "lucide-react";
 import { useProgress } from "@/hooks/useProgress";
+import { ShareablePrepCard } from "@/components/profile/ShareablePrepCard";
 
 export default function ProfilePage() {
   const { data, updateProfile, exportData, importData, resetProgress } = useProgress();
@@ -82,7 +83,10 @@ export default function ProfilePage() {
         <p className="text-secondary">Manage your interview target, preferences, and data backup.</p>
       </div>
 
-      <div className="bg-surface-2 border border-border rounded-2xl p-8 mb-6">
+      {/* Shareable Prep Scorecard */}
+      <ShareablePrepCard />
+
+      <div className="bg-surface-2 border border-border rounded-2xl p-8 mb-6 mt-6">
         <div className="flex items-center gap-6 mb-8">
           <div className="w-24 h-24 rounded-full bg-purple-1/20 flex items-center justify-center text-3xl font-bold text-purple-1">
             {initial}

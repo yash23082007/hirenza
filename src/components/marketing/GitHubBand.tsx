@@ -2,17 +2,10 @@ import Link from "next/link";
 import { Star, GitFork, ShieldCheck, ArrowUpRight } from "lucide-react";
 
 interface GitHubStats {
-  stars: number;
-  forks: number;
+  stars: number | null;
+  forks: number | null;
   license: string;
 }
-
-// Fallback numbers if GitHub API is rate-limited or offline
-const FALLBACK_STATS: GitHubStats = {
-  stars: 128,
-  forks: 34,
-  license: "MIT",
-};
 
 async function getRepoStats(): Promise<GitHubStats> {
   try {
@@ -25,17 +18,17 @@ async function getRepoStats(): Promise<GitHubStats> {
     });
 
     if (!res.ok) {
-      return FALLBACK_STATS;
+      return { stars: null, forks: null, license: "MIT" };
     }
 
     const data = await res.json();
     return {
-      stars: typeof data.stargazers_count === "number" ? data.stargazers_count : FALLBACK_STATS.stars,
-      forks: typeof data.forks_count === "number" ? data.forks_count : FALLBACK_STATS.forks,
+      stars: typeof data.stargazers_count === "number" ? data.stargazers_count : null,
+      forks: typeof data.forks_count === "number" ? data.forks_count : null,
       license: data.license?.spdx_id || "MIT",
     };
   } catch {
-    return FALLBACK_STATS;
+    return { stars: null, forks: null, license: "MIT" };
   }
 }
 
@@ -68,17 +61,21 @@ export async function GitHubBand() {
           </div>
 
           <div className="flex items-center gap-4 flex-wrap justify-center flex-shrink-0">
-            <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-1 border border-border text-sm font-mono text-secondary">
-              <Star className="w-4 h-4 text-amber-400 fill-amber-400/20" />
-              <span className="font-bold text-primary">{stats.stars}</span>
-              <span className="text-xs text-muted">stars</span>
-            </div>
+            {stats.stars !== null ? (
+              <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-1 border border-border text-sm font-mono text-secondary">
+                <Star className="w-4 h-4 text-amber-400 fill-amber-400/20" />
+                <span className="font-bold text-primary">{stats.stars}</span>
+                <span className="text-xs text-muted">stars</span>
+              </div>
+            ) : null}
 
-            <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-1 border border-border text-sm font-mono text-secondary">
-              <GitFork className="w-4 h-4 text-cyan-400" />
-              <span className="font-bold text-primary">{stats.forks}</span>
-              <span className="text-xs text-muted">forks</span>
-            </div>
+            {stats.forks !== null ? (
+              <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-1 border border-border text-sm font-mono text-secondary">
+                <GitFork className="w-4 h-4 text-cyan-400" />
+                <span className="font-bold text-primary">{stats.forks}</span>
+                <span className="text-xs text-muted">forks</span>
+              </div>
+            ) : null}
 
             <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-1 border border-border text-sm font-mono text-secondary">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
