@@ -5,7 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HirenzaLogo } from "../ui/HirenzaLogo";
 import { dsaSheets } from "@/data/dsaSheets";
-import { dsaPlaylists } from "@/data";
+import { dsaPlaylists, systemDesignPlaylists } from "@/data";
 import {
   LayoutDashboard,
   BookOpen,
@@ -82,11 +82,10 @@ const learningItems: NavItem[] = [
   {
     label: "System Design Playlists",
     icon: <GraduationCap size={16} />,
-    children: [
-      { label: "HLD Fundamentals", href: "/preparation/system-design-playlists?playlist=hld" },
-      { label: "LLD Fundamentals", href: "/preparation/system-design-playlists?playlist=lld" },
-      { label: "Distributed Systems", href: "/preparation/system-design-playlists?playlist=distributed" },
-    ],
+    children: systemDesignPlaylists.map(playlist => ({
+      label: playlist.author ? `${playlist.author} Track` : playlist.title,
+      href: `/preparation/system-design-playlists?playlist=${playlist.id}`,
+    })),
   },
 ];
 

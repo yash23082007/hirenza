@@ -2,10 +2,21 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { companies, Company } from "@/data";
+import { companies, Company, CompanyProblem } from "@/data";
 import Link from "next/link";
-import { Search, ExternalLink, ArrowLeft, Bookmark, CheckCircle2, Flame, GitCompare } from "lucide-react";
+import {
+  Search,
+  ExternalLink,
+  ArrowLeft,
+  Bookmark,
+  CheckCircle2,
+  Flame,
+  GitCompare,
+  ChevronDown,
+  ChevronRight,
+} from "lucide-react";
 import { useProgress } from "@/hooks/useProgress";
+import { ProgressRing } from "@/components/ui/ProgressRing";
 
 export function CompanyWiseClient({ companyId }: { companyId?: string }) {
   const router = useRouter();
@@ -13,6 +24,8 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
   const selectedCompanyId = companyId || null;
   const [difficultyFilter, setDifficultyFilter] = useState<string>("All");
   const [highFreqOnly, setHighFreqOnly] = useState(false);
+  const [isDescExpanded, setIsDescExpanded] = useState(false);
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
 
   const { isCompleted, isBookmarked, toggleComplete, toggleBookmark } = useProgress();
 
@@ -43,13 +56,37 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
     );
   }, [search]);
 
+  // Group company problems by Topic / Category
+  const groupedProblems = useMemo(() => {
+    if (!selectedCompany) return {};
+    const groups: Record<string, CompanyProblem[]> = {};
+    selectedCompany.problems.forEach(p => {
+      const cat = p.topic || "Core Problems";
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(p);
+    });
+    return groups;
+  }, [selectedCompany]);
+
+  const toggleCategory = (cat: string) => {
+    setOpenCategories(prev => ({
+      ...prev,
+      [cat]: prev[cat] === false ? true : false,
+    }));
+  };
+
+  const isCategoryOpen = (cat: string) => openCategories[cat] !== false;
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">Company Wise DSA Preparation</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">
+            Company Wise DSA Preparation
+          </h1>
           <p className="text-secondary">
-            Target high-frequency interview patterns with automated Company Readiness Scores and curated problem archives.
+            Target high-frequency interview patterns with automated Company Readiness Scores and
+            curated problem archives.
           </p>
         </div>
 
@@ -87,7 +124,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                 <div
                   key={company.id}
                   onClick={() => handleSelectCompany(company.id)}
-                  className="card p-6 cursor-pointer hover:border-purple-500/40 transition-all flex flex-col justify-between group"
+                  className="card p-6 cursor-pointer hover:border-purple-500/40 transition-all flex flex-col justify-between group rounded-2xl bg-surface-1 border border-border"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-3 mb-4">
@@ -99,52 +136,52 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                           <h3 className="font-bold text-base group-hover:text-purple-400 transition-colors">
                             {company.name}
                           </h3>
-                          <p className="text-xs text-muted">{company.totalQuestions} Curated Questions</p>
+                          <span className="text-[10px] text-muted font-mono">
+                            {company.problems.length} Curated Questions
+                          </span>
                         </div>
                       </div>
+
                       <div className="text-right">
-                        <span
-                          className={`text-xs font-bold px-2 py-0.5 rounded-full border ${
-                            readiness >= 75
-                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                              : readiness >= 30
-                              ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                              : "bg-surface-3 text-muted border-border"
-                          }`}
-                        >
-                          {readiness}% Ready
+                        <span className="text-sm font-extrabold text-purple-1 font-mono">
+                          {readiness}%
                         </span>
+                        <span className="text-[10px] text-muted block">Ready</span>
                       </div>
                     </div>
 
-                    <p className="text-xs text-secondary mb-4 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-secondary leading-relaxed line-clamp-2 mb-4">
                       {company.description}
                     </p>
 
-                    {/* Progress Bar */}
-                    <div className="mb-4">
-                      <div className="w-full h-1.5 bg-surface-3 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all duration-500"
-                          style={{ width: `${readiness}%` }}
-                        />
-                      </div>
-                      <div className="flex justify-between text-[10px] text-muted mt-1">
-                        <span>{solvedCount} / {company.problems.length} Solved</span>
-                        <span>Readiness Index</span>
-                      </div>
+                    <div className="w-full h-1.5 bg-surface-3 rounded-full overflow-hidden mb-4">
+                      <div
+                        className="h-full bg-purple-1 rounded-full transition-all"
+                        style={{ width: `${readiness}%` }}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-muted">
+                      <span>{solvedCount} solved</span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="text-green-400 font-medium">
+                          {company.difficultyBreakdown.easy}E
+                        </span>
+                        <span>•</span>
+                        <span className="text-orange-400 font-medium">
+                          {company.difficultyBreakdown.medium}M
+                        </span>
+                        <span>•</span>
+                        <span className="text-red-400 font-medium">
+                          {company.difficultyBreakdown.hard}H
+                        </span>
+                      </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-3 border-t border-border text-xs">
-                    <div className="flex gap-2">
-                      <span className="text-green-400 font-semibold">{company.difficultyBreakdown.easy}E</span>
-                      <span className="text-orange-400 font-semibold">{company.difficultyBreakdown.medium}M</span>
-                      <span className="text-red-400 font-semibold">{company.difficultyBreakdown.hard}H</span>
-                    </div>
-                    <span className="text-purple-1 font-bold group-hover:translate-x-1 transition-transform">
-                      Start Practice →
-                    </span>
+                  <div className="mt-5 pt-3 border-t border-border-soft flex items-center justify-between text-xs font-semibold text-purple-400 group-hover:translate-x-0.5 transition-transform">
+                    <span>Open Company Track</span>
+                    <span>→</span>
                   </div>
                 </div>
               );
@@ -153,44 +190,77 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
         </>
       )}
 
-      {/* Company Detail View */}
+      {/* Company Detail View (Inventory §§43-49 Chrome Parity) */}
       {selectedCompany && (
         <div>
           <button
+            type="button"
             onClick={() => handleSelectCompany(null)}
             className="mb-6 inline-flex items-center gap-1.5 text-xs text-purple-1 hover:underline font-bold cursor-pointer"
           >
             <ArrowLeft size={14} /> Back to all companies
           </button>
 
-          {/* Company Readiness Card */}
-          <div className="card p-6 mb-6 bg-gradient-to-br from-surface-1 to-surface-2 border-purple-500/20">
+          {/* Company Readiness Card with ProgressRing */}
+          <div className="card p-6 mb-6 bg-gradient-to-br from-surface-1 to-surface-2 border border-purple-500/20 rounded-2xl">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-surface-3 border border-border flex items-center justify-center font-extrabold text-3xl shadow-inner text-purple-400">
+              <div className="flex items-start gap-4">
+                <div className="w-16 h-16 rounded-2xl bg-surface-3 border border-border flex items-center justify-center font-extrabold text-3xl shadow-inner text-purple-400 shrink-0">
                   {selectedCompany.logo}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-extrabold">{selectedCompany.name} Tech Interview Hub</h2>
-                  <p className="text-xs text-secondary mt-0.5 max-w-xl">{selectedCompany.description}</p>
+                  <h2 className="text-2xl font-extrabold text-primary">
+                    {selectedCompany.name} Tech Interview Hub
+                  </h2>
+                  <p className="text-xs text-muted font-medium mt-0.5">
+                    Curated Interview Track · {selectedCompany.problems.length} Problems
+                  </p>
+                  <div className="text-xs text-secondary mt-1 max-w-xl leading-relaxed">
+                    <p
+                      className={
+                        !isDescExpanded && selectedCompany.description.length > 120
+                          ? "line-clamp-2"
+                          : ""
+                      }
+                    >
+                      {selectedCompany.description}
+                    </p>
+                    {selectedCompany.description.length > 120 && (
+                      <button
+                        type="button"
+                        onClick={() => setIsDescExpanded(!isDescExpanded)}
+                        className="text-xs text-purple-400 hover:text-purple-300 font-semibold mt-0.5 cursor-pointer"
+                      >
+                        {isDescExpanded ? "Read Less" : "Read More"}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              {/* Readiness Score meter */}
-              <div className="flex items-center gap-4 bg-surface-3 p-4 rounded-2xl border border-border">
-                <div className="text-center">
-                  <div className="text-3xl font-extrabold text-purple-1">
-                    {calculateReadiness(selectedCompany)}%
-                  </div>
-                  <div className="text-[10px] uppercase font-bold text-muted mt-0.5">Readiness Score</div>
-                </div>
-                <div className="w-px h-10 bg-border" />
+              {/* Readiness Score meter with ProgressRing */}
+              <div className="flex items-center gap-5 bg-surface-3 p-4 rounded-2xl border border-border shrink-0">
+                <ProgressRing
+                  completed={
+                    selectedCompany.problems.filter(p => isCompleted(`comp-${p.id}`)).length
+                  }
+                  total={selectedCompany.problems.length}
+                  size={76}
+                  strokeWidth={6}
+                />
                 <div className="text-xs text-muted space-y-0.5">
-                  <p>Target: <strong>80%+</strong> to clear OA</p>
+                  <span className="text-[10px] uppercase font-bold text-purple-400 block">
+                    Readiness Score
+                  </span>
+                  <p>
+                    Target: <strong>80%+</strong> to clear OA
+                  </p>
                   <p>
                     Solved:{" "}
                     <strong>
-                      {selectedCompany.problems.filter(p => isCompleted(`comp-${p.id}`)).length}
+                      {
+                        selectedCompany.problems.filter(p => isCompleted(`comp-${p.id}`)).length
+                      }
                     </strong>{" "}
                     / {selectedCompany.problems.length}
                   </p>
@@ -204,22 +274,28 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                 <div className="text-[11px] text-muted">Total Problems</div>
               </div>
               <div className="bg-green-500/5 p-2.5 rounded-xl border border-green-500/10">
-                <div className="text-lg font-bold text-green-400">{selectedCompany.difficultyBreakdown.easy}</div>
+                <div className="text-lg font-bold text-green-400">
+                  {selectedCompany.difficultyBreakdown.easy}
+                </div>
                 <div className="text-[11px] text-muted">Easy</div>
               </div>
               <div className="bg-orange-500/5 p-2.5 rounded-xl border border-orange-500/10">
-                <div className="text-lg font-bold text-orange-400">{selectedCompany.difficultyBreakdown.medium}</div>
+                <div className="text-lg font-bold text-orange-400">
+                  {selectedCompany.difficultyBreakdown.medium}
+                </div>
                 <div className="text-[11px] text-muted">Medium</div>
               </div>
               <div className="bg-red-500/5 p-2.5 rounded-xl border border-red-500/10">
-                <div className="text-lg font-bold text-red-400">{selectedCompany.difficultyBreakdown.hard}</div>
+                <div className="text-lg font-bold text-red-400">
+                  {selectedCompany.difficultyBreakdown.hard}
+                </div>
                 <div className="text-[11px] text-muted">Hard</div>
               </div>
             </div>
           </div>
 
           {/* Filter Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-4 card p-3 bg-surface-2">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4 card p-3 bg-surface-2 rounded-xl">
             <div className="flex items-center gap-2">
               <select
                 value={difficultyFilter}
@@ -233,6 +309,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
               </select>
 
               <button
+                type="button"
                 onClick={() => setHighFreqOnly(!highFreqOnly)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer ${
                   highFreqOnly
@@ -256,119 +333,193 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
             </span>
           </div>
 
-          {/* Problems List */}
-          <div className="space-y-2.5">
-            {selectedCompany.problems
-              .filter(p => {
+          {/* Category Accordions for Company Problems */}
+          <div className="space-y-4">
+            {Object.entries(groupedProblems).map(([category, problems]) => {
+              const matchingProblems = problems.filter(p => {
                 if (difficultyFilter !== "All" && p.difficulty !== difficultyFilter) return false;
                 if (highFreqOnly && p.frequency !== "High") return false;
                 return true;
-              })
-              .map(problem => {
-                const progressId = `comp-${problem.id}`;
-                const isSolved = isCompleted(progressId);
-                const isStarred = isBookmarked(progressId);
+              });
 
-                return (
+              if (matchingProblems.length === 0 && (difficultyFilter !== "All" || highFreqOnly)) {
+                return null;
+              }
+
+              const catSolved = problems.filter(p => isCompleted(`comp-${p.id}`)).length;
+              const isOpen = isCategoryOpen(category);
+              const catPercent =
+                problems.length > 0 ? Math.round((catSolved / problems.length) * 100) : 0;
+
+              return (
+                <div
+                  key={category}
+                  className="card overflow-hidden border border-border rounded-2xl bg-surface-1"
+                >
                   <div
-                    key={problem.id}
-                    className={`border rounded-xl p-4 transition-all flex items-center justify-between gap-4 ${
-                      isSolved
-                        ? "bg-green-950/15 border-green-500/30"
-                        : "bg-surface-2 border-border hover:border-purple-500/20"
-                    }`}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => toggleCategory(category)}
+                    onKeyDown={e => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        toggleCategory(category);
+                      }
+                    }}
+                    className="flex items-center justify-between p-4 sm:p-5 bg-surface-2/70 hover:bg-surface-2 cursor-pointer transition-colors select-none gap-3"
                   >
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <button
-                        onClick={() =>
-                          toggleComplete(progressId, {
-                            module: "companies",
-                            topic: problem.topic,
-                            difficulty: problem.difficulty,
-                          })
-                        }
-                        className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                          isSolved ? "bg-emerald-500 text-white" : "bg-surface-3 text-muted hover:text-secondary"
-                        }`}
-                        title={isSolved ? "Solved" : "Mark as Solved"}
-                      >
-                        <CheckCircle2 size={16} />
-                      </button>
-
-                      <button
-                        onClick={() => toggleBookmark(progressId)}
-                        className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                          isStarred ? "text-amber-400 bg-amber-500/10" : "text-muted hover:text-secondary"
-                        }`}
-                        title={isStarred ? "Bookmarked" : "Bookmark"}
-                      >
-                        <Bookmark size={15} fill={isStarred ? "currentColor" : "none"} />
-                      </button>
-
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap mb-1">
-                          <h4
-                            className={`font-semibold text-sm ${
-                              isSolved ? "text-emerald-300 line-through opacity-85" : "text-primary"
-                            }`}
-                          >
-                            {problem.title}
-                          </h4>
-                          <span
-                            className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
-                              problem.difficulty === "Easy"
-                                ? "bg-green-500/10 text-green-400"
-                                : problem.difficulty === "Medium"
-                                ? "bg-orange-500/10 text-orange-400"
-                                : "bg-red-500/10 text-red-400"
-                            }`}
-                          >
-                            {problem.difficulty}
-                          </span>
-                          {problem.frequency === "High" && (
-                            <span className="text-[10px] px-2 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/20 rounded-full font-bold flex items-center gap-1">
-                              <Flame size={10} /> High Frequency
-                            </span>
-                          )}
-                          {problem.year && (
-                            <span className="text-[10px] text-muted bg-surface-3 px-2 py-0.5 rounded-md">
-                              {problem.year}
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-3 text-xs text-muted">
-                          <span>Topic: {problem.topic}</span>
-                          {problem.pattern && <span>• Pattern: {problem.pattern}</span>}
-                        </div>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="text-muted shrink-0">
+                        {isOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                      </div>
+                      <div className="flex items-center gap-2.5 min-w-0 flex-wrap">
+                        <h3 className="text-sm sm:text-base font-bold text-primary truncate">
+                          {category}
+                        </h3>
+                        <span className="text-xs bg-surface-3 px-2 py-0.5 rounded-full text-muted font-medium border border-border-soft shrink-0">
+                          {catSolved} / {problems.length} done
+                        </span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
-                      {problem.leetcodeUrl && (
-                        <a
-                          href={problem.leetcodeUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface-3 hover:bg-surface-hover text-purple-1 rounded-lg text-xs font-bold border border-border transition-colors"
-                        >
-                          LeetCode <ExternalLink size={12} />
-                        </a>
-                      )}
-                      {problem.gfgUrl && (
-                        <a
-                          href={problem.gfgUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface-3 hover:bg-surface-hover text-green-400 rounded-lg text-xs font-bold border border-border transition-colors"
-                        >
-                          GFG <ExternalLink size={12} />
-                        </a>
-                      )}
+                    <div className="flex items-center gap-4 shrink-0">
+                      <div className="hidden sm:flex items-center gap-2">
+                        <div className="w-24 h-1.5 bg-surface-3 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-purple-1 rounded-full transition-all duration-300"
+                            style={{ width: `${catPercent}%` }}
+                          />
+                        </div>
+                        <span className="text-[11px] font-mono text-muted w-8 text-right">
+                          {catPercent}%
+                        </span>
+                      </div>
+                      <span className="text-xs text-muted">{matchingProblems.length} visible</span>
                     </div>
                   </div>
-                );
-              })}
+
+                  {isOpen && (
+                    <div className="p-4 sm:p-5 pt-3 border-t border-border-soft space-y-2.5 animate-in fade-in duration-150">
+                      {matchingProblems.map(problem => {
+                        const progressId = `comp-${problem.id}`;
+                        const isSolved = isCompleted(progressId);
+                        const isStarred = isBookmarked(progressId);
+
+                        return (
+                          <div
+                            key={problem.id}
+                            className={`border rounded-xl p-4 transition-all flex items-center justify-between gap-4 ${
+                              isSolved
+                                ? "bg-green-950/15 border-green-500/30"
+                                : "bg-surface-2 border-border hover:border-purple-500/20"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3 min-w-0 flex-1">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  toggleComplete(progressId, {
+                                    module: "companies",
+                                    topic: problem.topic,
+                                    difficulty: problem.difficulty,
+                                  })
+                                }
+                                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                                  isSolved
+                                    ? "bg-emerald-500 text-white"
+                                    : "bg-surface-3 text-muted hover:text-secondary"
+                                }`}
+                                title={isSolved ? "Solved" : "Mark as Solved"}
+                                aria-label={isSolved ? "Mark incomplete" : "Mark solved"}
+                              >
+                                <CheckCircle2 size={16} />
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => toggleBookmark(progressId)}
+                                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                                  isStarred
+                                    ? "text-amber-400 bg-amber-500/10"
+                                    : "text-muted hover:text-secondary"
+                                }`}
+                                title={isStarred ? "Bookmarked" : "Bookmark"}
+                                aria-label={isStarred ? "Remove bookmark" : "Bookmark"}
+                              >
+                                <Bookmark size={15} fill={isStarred ? "currentColor" : "none"} />
+                              </button>
+
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2 flex-wrap mb-1">
+                                  <h4
+                                    className={`font-semibold text-sm ${
+                                      isSolved
+                                        ? "text-emerald-300 line-through opacity-85"
+                                        : "text-primary"
+                                    }`}
+                                  >
+                                    {problem.title}
+                                  </h4>
+                                  <span
+                                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                                      problem.difficulty === "Easy"
+                                        ? "bg-green-500/10 text-green-400"
+                                        : problem.difficulty === "Medium"
+                                        ? "bg-orange-500/10 text-orange-400"
+                                        : "bg-red-500/10 text-red-400"
+                                    }`}
+                                  >
+                                    {problem.difficulty}
+                                  </span>
+                                  {problem.frequency === "High" && (
+                                    <span className="text-[10px] px-2 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/20 rounded-full font-bold flex items-center gap-1">
+                                      <Flame size={10} /> High Frequency
+                                    </span>
+                                  )}
+                                  {problem.year && (
+                                    <span className="text-[10px] text-muted bg-surface-3 px-2 py-0.5 rounded-md">
+                                      {problem.year}
+                                    </span>
+                                  )}
+                                </div>
+
+                                <div className="flex items-center gap-3 text-xs text-muted">
+                                  <span>Topic: {problem.topic}</span>
+                                  {problem.pattern && <span>• Pattern: {problem.pattern}</span>}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 shrink-0">
+                              {problem.leetcodeUrl && (
+                                <a
+                                  href={problem.leetcodeUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface-3 hover:bg-surface-hover text-purple-1 rounded-lg text-xs font-bold border border-border transition-colors"
+                                >
+                                  LeetCode <ExternalLink size={12} />
+                                </a>
+                              )}
+                              {problem.gfgUrl && (
+                                <a
+                                  href={problem.gfgUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface-3 hover:bg-surface-hover text-green-400 rounded-lg text-xs font-bold border border-border transition-colors"
+                                >
+                                  GFG <ExternalLink size={12} />
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

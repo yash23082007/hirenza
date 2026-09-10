@@ -112,70 +112,70 @@ export const dsaPlaylists: Playlist[] = [
 
 export const systemDesignPlaylists: Playlist[] = [
   {
-    id: "hld",
-    title: "High-Level System Design Primer",
-    thumbnail: "HLD",
-    videos: 32,
-    author: "Donne Martin & Primer Community",
+    id: "gaurav-sen",
+    title: "Gaurav Sen System Design & Distributed Systems",
+    thumbnail: "GS",
+    videos: 36,
+    author: "Gaurav Sen",
     gradient: "from-blue-700 via-indigo-800 to-slate-900",
     tag: "HLD Architecture",
-    description: "Learn how to design large-scale distributed systems. Scalability, availability, CAP theorem, and caching.",
-    url: "https://github.com/donnemartin/system-design-primer"
+    description: "Foundational high-level system design lessons on message brokers, consistent hashing, load balancers, and distributed cache architecture.",
+    url: "https://www.youtube.com/@gkcs"
   },
   {
-    id: "lld",
-    title: "Low-Level Design & Design Patterns",
-    thumbnail: "LLD",
-    videos: 28,
-    author: "Refactoring Guru",
-    gradient: "from-emerald-700 via-teal-800 to-slate-900",
-    tag: "OOP & LLD",
-    description: "Master Creational, Structural, and Behavioral Gang of Four (GoF) design patterns with clean object-oriented code.",
-    url: "https://refactoring.guru/design-patterns"
-  },
-  {
-    id: "distributed",
-    title: "Patterns of Distributed Systems",
-    thumbnail: "DS",
-    videos: 24,
-    author: "Martin Fowler & Unmesh Joshi",
+    id: "exponent",
+    title: "Exponent Real System Design Mock Interviews",
+    thumbnail: "EX",
+    videos: 42,
+    author: "Exponent",
     gradient: "from-purple-700 via-violet-800 to-slate-900",
-    tag: "Distributed Systems",
-    description: "Deep dive into consensus algorithms (Raft, Paxos), leader election, replication, and distributed transactions.",
-    url: "https://martinfowler.com/articles/patterns-of-distributed-systems/"
+    tag: "FAANG Mocks",
+    description: "Full-length mock interviews breaking down real-world architectural design questions asked at Google, Meta, and Uber.",
+    url: "https://www.youtube.com/@tryexponent"
   },
   {
-    id: "scalable-api",
-    title: "Scalable API Design & Microservices",
-    thumbnail: "API",
-    videos: 20,
-    author: "Chris Richardson (Microservices.io)",
+    id: "hello-interview",
+    title: "Hello Interview Deep Dive Walkthroughs",
+    thumbnail: "HI",
+    videos: 28,
+    author: "Hello Interview",
+    gradient: "from-cyan-700 via-teal-800 to-slate-900",
+    tag: "HLD Deep Dives",
+    description: "End-to-end architectural blueprints from requirements gathering to capacity estimation and database selection.",
+    url: "https://www.hellointerview.com"
+  },
+  {
+    id: "engineering-digest",
+    title: "Engineering Digest Microservices Architecture",
+    thumbnail: "ED",
+    videos: 30,
+    author: "Engineering Digest",
     gradient: "from-amber-600 via-orange-700 to-slate-900",
     tag: "Microservices",
-    description: "Patterns for decomposing monoliths, API Gateways, Saga pattern, CQRS, and asynchronous event streams.",
-    url: "https://microservices.io/patterns/index.html"
+    description: "Microservices design patterns, distributed tracing, Kafka event pipelines, and Spring Boot cloud services.",
+    url: "https://www.youtube.com/@EngineeringDigest"
   },
   {
-    id: "databases",
-    title: "Database Indexing & Internals (Use The Index, Luke)",
-    thumbnail: "DB",
-    videos: 26,
-    author: "Markus Winand",
-    gradient: "from-sky-700 via-blue-800 to-slate-900",
-    tag: "DB Internals",
-    description: "B-Trees, LSM-Trees, execution plans, partitioning, query optimization, and transaction isolation levels.",
-    url: "https://use-the-index-luke.com/"
+    id: "code-with-aryan",
+    title: "Code With Aryan LLD & Machine Coding",
+    thumbnail: "CA",
+    videos: 32,
+    author: "Code With Aryan",
+    gradient: "from-emerald-700 via-teal-800 to-slate-900",
+    tag: "LLD & Patterns",
+    description: "Hands-on low-level design walkthroughs and machine coding rounds for parking lot, splitwise, and elevator systems.",
+    url: "https://www.youtube.com/@CodeWithAryan"
   },
   {
-    id: "caching",
-    title: "Modern In-Memory Caching & Redis Patterns",
-    thumbnail: "C",
-    videos: 18,
-    author: "Redis University & Docs",
+    id: "coder-army-lld",
+    title: "Coder Army Object-Oriented Design & LLD",
+    thumbnail: "RN",
+    videos: 24,
+    author: "Coder Army",
     gradient: "from-rose-700 via-red-800 to-slate-900",
-    tag: "Caching",
-    description: "Cache-Aside, Write-Through, Write-Behind, eviction policies (LRU/LFU), Cache Stampede, and CDN strategies.",
-    url: "https://redis.io/docs/latest/develop/use/patterns-and-approaches/"
+    tag: "OOP & LLD",
+    description: "Clean code principles, SOLID design fundamentals, and GoF patterns applied to enterprise software systems.",
+    url: "https://www.youtube.com/@CoderArmy9"
   },
 ];
 
