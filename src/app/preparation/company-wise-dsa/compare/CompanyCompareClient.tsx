@@ -10,7 +10,6 @@ import {
   ArrowRight,
   CheckCircle2,
   ExternalLink,
-  Target,
   Sparkles,
   ArrowLeftRight,
 } from "lucide-react";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Clock, Play, Pause, RotateCcw, CheckCircle2, Flame, Bell } from "lucide-react";
+import { Clock, Play, Pause, RotateCcw, CheckCircle2 } from "lucide-react";
 
 interface FocusTimerProps {
   onSessionComplete?: (durationMinutes: number) => void;

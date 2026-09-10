@@ -12,9 +12,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ companyId: string }> }): Promise<Metadata> {
   const { companyId } = await params;
   const company = companies.find((c) => c.id === companyId);
-  if (!company) {
-    return { title: "Company Not Found" };
-  }
+  if (!company) notFound();
   return {
     title: `${company.name} Interview Questions`,
     description: company.description,

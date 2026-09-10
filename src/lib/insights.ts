@@ -80,7 +80,7 @@ export function detectWeakestPattern(
   const recommendedProblems = (matchedPattern?.problems || []).slice(0, 3).map((prob) => ({
     title: prob.title,
     difficulty: prob.difficulty,
-    url: prob.leetcodeUrl || prob.gfgUrl,
+    url: prob.leetcodeUrl || "",
   }));
 
   return {

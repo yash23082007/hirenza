@@ -1,6 +1,6 @@
 import { MarketingNavbar } from "@/components/navigation/MarketingNavbar";
 import { HeroSection } from "@/components/marketing/HeroSection";
-import { GitHubBand } from "@/components/marketing/GitHubBand";
+import { StatsBand } from "@/components/marketing/StatsBand";
 import { PrivacyPanel } from "@/components/marketing/PrivacyPanel";
 import { PaletteDemo } from "@/components/marketing/PaletteDemo";
 import { ATSLinterDemo } from "@/components/marketing/ATSLinterDemo";
@@ -28,8 +28,8 @@ export default function HomePage() {
       {/* Hero */}
       <HeroSection />
 
-      {/* GitHub Open Source Band */}
-      <GitHubBand />
+      {/* Metrics & Proof Band */}
+      <StatsBand />
 
       {/* Feature Intro */}
       <RevealSection id="features" className="py-20 md:py-28 text-center scroll-mt-20">

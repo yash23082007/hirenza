@@ -1,4 +1,4 @@
-# 🚀 HIRENZA — The Open-Source, Offline-First Prep OS For Tech Interviews
+# 🚀 HIRENZA — The Offline-First Prep OS For Tech Interviews
 
 <div align="center">
 
@@ -9,7 +9,7 @@
 ![Tailwind](https://img.shields.io/badge/Tailwind-4.x-38bdf8)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-**An open-source interview preparation workspace with curated questions, real company patterns, and local-first progress tracking.**
+**An offline-first interview preparation workspace with curated questions, real company patterns, and local-first progress tracking.**
 
 [Live Demo](https://hirenza.vercel.app) • [Documentation](#documentation) • [Features](#features) • [Getting Started](#getting-started)
 
@@ -137,7 +137,7 @@ Package Manager: npm
 - **Built-in optimization** for images and fonts
 
 #### **Why TypeScript?**
-- **Type safety** across 53 files and 800+ data points
+- **Type safety** across 96 files and verified data structures (all stats strictly computed via `src/data/stats.ts`)
 - **Better DX** with autocomplete and refactoring
 - **Fewer bugs** with compile-time error checking
 - **Self-documenting code** with interfaces and types
@@ -150,7 +150,7 @@ Package Manager: npm
 - **Dark mode** support built-in
 
 #### **Why Static Site Generation?**
-All 23 routes are pre-rendered at build time:
+All 32 routes/pages are pre-rendered at build time:
 - **Blazing fast** page loads (< 100ms)
 - **SEO friendly** with full HTML
 - **No server costs** — deploy anywhere
@@ -178,11 +178,11 @@ hirenza/
 │   │       ├── sql-sheet/      # 110 SQL questions
 │   │       ├── system-design/  # 25 topics
 │   │       ├── core-subjects/  # OS/DBMS/CN/OOP
-│   │       ├── most-asked-questions/ # 150+ tech Qs
+│   │       ├── most-asked-questions/ # 125 tech Qs
 │   │       ├── hr-questions/   # 40 HR questions
 │   │       ├── role-wise/      # 7 roles
 │   │       ├── cool-notes/     # 8 study topics
-│   │       ├── coding-practice/ # 37 problems
+│   │       ├── coding-practice/ # 39 problems
 │   │       ├── interview-experiences/ # 8 experiences
 │   │       ├── resume-templates/ # Resume guide
 │   │       ├── cold-email-templates/ # Email templates

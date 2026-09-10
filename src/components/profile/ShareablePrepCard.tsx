@@ -112,7 +112,7 @@ export function ShareablePrepCard() {
 
     ctx.fillStyle = "#c084fc";
     ctx.font = "bold 18px monospace";
-    ctx.fillText("⚡ ZERO TRACKERS · 100% CLIENT STORAGE · OPEN-SOURCE UNDER MIT", 95, 532);
+    ctx.fillText("⚡ ZERO TRACKERS · 100% CLIENT STORAGE · VERIFIED OFFLINE-FIRST", 95, 532);
 
     // Convert to PNG download
     const url = canvas.toDataURL("image/png");
@@ -124,7 +124,7 @@ export function ShareablePrepCard() {
   };
 
   const handleCopyText = () => {
-    const text = `🚀 Tracked ${solvedCount} problems with a ${streak}-day streak on Hirenza! Targeting ${targetCompany} (${readiness}% ready). Offline-first & open source at https://hirenza-prep.vercel.app`;
+    const text = `🚀 Tracked ${solvedCount} problems with a ${streak}-day streak on Hirenza! Targeting ${targetCompany} (${readiness}% ready). Offline-first prep at https://hirenza-prep.vercel.app`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);

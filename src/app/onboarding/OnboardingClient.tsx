@@ -1,23 +1,20 @@
 "use client";
 
 import { useState } from "react";
-// import  from "next/link";
+import Link from "next/link";
 import { MarketingNavbar } from "@/components/navigation/MarketingNavbar";
 import { Footer } from "@/components/marketing/Footer";
 import { useProgress } from "@/hooks/useProgress";
 import { generateStudyPlan, PlanAnswers, StudyPlan } from "@/lib/plan";
 import {
   Compass,
-  Building2,
   Calendar,
-  Clock,
   CheckCircle2,
   ArrowRight,
   ArrowLeft,
   Sparkles,
   Printer,
   ExternalLink,
-  Target,
 } from "lucide-react";
 
 const COMPANIES = ["Google", "Amazon", "Microsoft", "Meta", "Apple", "Flipkart", "General Tech"];

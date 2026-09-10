@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "HIRENZA — The Open-Source Prep OS for Power Users";
+export const alt = "HIRENZA — The Offline-First Prep OS for Power Users";
 export const size = {
   width: 1200,
   height: 630,
@@ -75,7 +75,7 @@ export default async function Image() {
               letterSpacing: "0.08em",
             }}
           >
-            Open Source
+            Offline-First
           </span>
         </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { RevealSection } from "./FeatureShowcase";
-import { Star, ExternalLink, Code2 } from "lucide-react";
+import { ExternalLink, Code2 } from "lucide-react";
 import Link from "next/link";
 
 function GithubIcon({ size = 18 }: { size?: number }) {
@@ -20,10 +20,10 @@ export function CreatorSection() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold uppercase tracking-wider mb-4">
             <Code2 size={13} />
-            <span>Open Source Initiative</span>
+            <span>The Engineering Story</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-            Built in the <span className="text-brand-gradient">open.</span>
+            Built for <span className="text-brand-gradient">focused preparation.</span>
           </h2>
         </div>
 
@@ -34,24 +34,24 @@ export function CreatorSection() {
               YV
             </div>
             <h3 className="text-xl font-bold text-primary">Yash Vijay</h3>
-            <p className="text-xs text-purple-400 font-semibold mb-4">Creator & Maintainer</p>
+            <p className="text-xs text-purple-400 font-semibold mb-4">Creator & Software Engineer</p>
             
             <div className="flex items-center gap-3">
               <a
-                href="https://github.com/yash23082007/hirenza"
+                href="https://github.com/yash23082007"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 rounded-xl bg-surface-3 border border-border text-secondary hover:text-primary hover:border-purple-500/30 transition-colors"
-                title="GitHub Repository"
+                title="GitHub"
               >
                 <GithubIcon size={18} />
               </a>
               <a
-                href="https://linkedin.com/in/yash-vijay"
+                href="https://linkedin.com/in/yash-vijay-b4369a285"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 rounded-xl bg-surface-3 border border-border text-secondary hover:text-primary hover:border-purple-500/30 transition-colors"
-                title="LinkedIn Profile"
+                title="LinkedIn"
               >
                 <ExternalLink size={18} />
               </a>
@@ -72,13 +72,13 @@ export function CreatorSection() {
 
             <div className="pt-4 flex flex-wrap items-center gap-3">
               <a
-                href="https://github.com/yash23082007/hirenza"
+                href="https://github.com/yash23082007"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-surface-3 hover:bg-surface-hover border border-border text-primary transition-all"
               >
-                <Star size={14} className="text-amber-400" />
-                Star on GitHub
+                <GithubIcon size={14} />
+                Connect on GitHub
               </a>
               <Link
                 href="/preparation"

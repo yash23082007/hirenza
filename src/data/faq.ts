@@ -25,13 +25,13 @@ export const faqData: FAQItem[] = [
     category: "Features & Functionality" 
   },
   { 
-    q: "Is Hirenza free?", 
-    a: "Yes. Hirenza is completely free and open source under the MIT License. Every sheet, problem archive, and tool is accessible to all developers.", 
+    q: "Is Hirenza free to use?", 
+    a: "Yes. Hirenza is completely free with no subscriptions, locked tiers, or hidden paywalls. Every sheet, company archive, and tool is accessible to all developers.", 
     category: "Account" 
   },
   { 
     q: "Can I track my interview preparation?", 
-    a: "Yes. The cockpit includes 4-state problem tracking (unsolved, in review, solved, mastered), GitHub-style heatmaps, streak calendars, Leitner spaced repetition, and target company readiness scores.", 
+    a: "Yes. The cockpit includes 4-state problem tracking (unsolved, in review, solved, mastered), heatmaps, streak calendars, Leitner spaced repetition, and target company readiness scores.", 
     category: "Features & Functionality" 
   },
   { 
@@ -65,8 +65,8 @@ export const faqData: FAQItem[] = [
     category: "Career Preparation" 
   },
   { 
-    q: "How can I contribute to Hirenza?", 
-    a: "Hirenza is open source. You can submit pull requests, add interview experiences, suggest curated problems, or report issues directly on GitHub.", 
+    q: "How can I suggest new features or interview questions?", 
+    a: "You can submit interview experiences, suggest curated problems, or share suggestions through our community channels and maintainer contact links.", 
     category: "Community" 
   },
   { 
@@ -75,8 +75,8 @@ export const faqData: FAQItem[] = [
     category: "Account" 
   },
   { 
-    q: "Where can I discuss a resource or share an experience?", 
-    a: "You can open a discussion or issue in our public GitHub repository, or connect with fellow developers via our community channels.", 
+    q: "Where can I discuss a resource or share an interview experience?", 
+    a: "You can connect with fellow developers via our community discussions or share your interview experience through our dedicated experience submission page.", 
     category: "Community" 
   },
   { 
@@ -86,7 +86,7 @@ export const faqData: FAQItem[] = [
   },
   { 
     q: "Can I inspect how Hirenza handles my data?", 
-    a: "Yes. The codebase is completely open source. You can inspect our storage services, validation schemas, and import/export implementations directly in the repository.", 
+    a: "Yes. All logic and storage execute transparently in your client browser. You can inspect your localStorage entries, export full JSON dumps, and verify that zero requests go to external telemetry servers.", 
     category: "Security" 
   },
 ];

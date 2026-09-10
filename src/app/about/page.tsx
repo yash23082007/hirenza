@@ -1,10 +1,10 @@
 import { TOTAL_ALL_PROBLEMS, TOTAL_PATTERNS, TOTAL_COMPANIES } from "@/data/stats";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { GitBranch, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About Hirenza — Open Source Interview Engine",
+  title: "About Hirenza — The Offline-First Tech Interview Prep OS",
   description: "Learn about Hirenza: an offline-first, client-side technical interview preparation OS built for engineers.",
 };
 
@@ -14,7 +14,7 @@ export default function AboutPage() {
       <div className="max-w-4xl mx-auto px-6 py-20">
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">About Hirenza</h1>
-          <p className="text-xl text-secondary">The open-source, offline-first prep OS for power users.</p>
+          <p className="text-xl text-secondary">The offline-first prep OS for power users.</p>
         </div>
 
         <div className="max-w-none space-y-10">
@@ -52,20 +52,11 @@ export default function AboutPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold mb-3 text-primary">Architecture & Philosophy</h2>
+            <h2 className="text-2xl font-bold mb-3 text-primary">Architecture & Privacy</h2>
             <p className="text-secondary leading-relaxed mb-4">
-              Hirenza is built with Next.js 16, React 19, TypeScript, and Tailwind CSS. We believe preparation tools should load instantly, function without internet access, and never lock candidate progress behind subscription paywalls.
+              Hirenza is built with Next.js 16, React 19, TypeScript, and Tailwind CSS. We believe preparation tools should load instantly, function without internet access, and never lock candidate progress behind subscription paywalls or server logins.
             </p>
             <div className="flex flex-wrap items-center gap-4 pt-2">
-              <a
-                href="https://github.com/yash23082007/hirenza"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-2 hover:bg-surface-3 border border-border text-sm font-semibold text-primary transition-colors"
-              >
-                <GitBranch size={16} />
-                View Repository on GitHub
-              </a>
               <Link
                 href="/preparation"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-sm font-semibold text-white transition-colors"

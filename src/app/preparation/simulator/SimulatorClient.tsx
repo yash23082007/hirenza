@@ -9,14 +9,11 @@ import {
   Clock,
   Play,
   Pause,
-  RotateCcw,
   CheckCircle2,
   Building2,
   ExternalLink,
   ChevronRight,
-  Sparkles,
   Trophy,
-  AlertCircle,
   FileCode2,
 } from "lucide-react";
 
@@ -78,14 +75,18 @@ export function SimulatorClient() {
 
   // Timer interval
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (timerRunning && remainingSeconds > 0) {
-      interval = setInterval(() => setRemainingSeconds((s) => s - 1), 1000);
-    } else if (remainingSeconds === 0 && sessionActive) {
-      setTimerRunning(false);
-    }
+    if (!timerRunning || remainingSeconds <= 0) return;
+    const interval = setInterval(() => {
+      setRemainingSeconds((s) => {
+        if (s <= 1) {
+          setTimerRunning(false);
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
     return () => clearInterval(interval);
-  }, [timerRunning, remainingSeconds, sessionActive]);
+  }, [timerRunning, remainingSeconds]);
 
   const activeRound = rounds[currentRoundIndex];
 

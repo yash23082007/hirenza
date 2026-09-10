@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Star, Zap, Tag, X, ArrowRight } from "lucide-react";
+import { Zap, Tag, ShieldCheck, X, ArrowRight } from "lucide-react";
 
 interface Announcement {
   id: string;
@@ -15,57 +15,65 @@ interface Announcement {
 
 const ANNOUNCEMENTS: Announcement[] = [
   {
-    id: "github-star",
-    icon: <Star size={13} className="text-amber-400 fill-amber-400/30" />,
-    text: "Hirenza is 100% free and open-source under MIT.",
-    linkText: "Star us on GitHub",
-    href: "https://github.com/yash23082007/hirenza",
-    external: true,
-  },
-  {
     id: "daily-challenge",
     icon: <Zap size={13} className="text-purple-400 fill-purple-400/30" />,
-    text: "Practice consistently with the new Daily Challenge.",
+    text: "Daily Challenge is live: practice one high-frequency question each day.",
     linkText: "Solve Today's Problem",
     href: "/preparation/daily",
   },
   {
-    id: "changelog-21",
+    id: "private-architecture",
+    icon: <ShieldCheck size={13} className="text-emerald-400" />,
+    text: "Private by architecture: 100% offline-first, client storage, zero server tracking.",
+    linkText: "Learn More",
+    href: "/about",
+  },
+  {
+    id: "algorithmic-patterns",
     icon: <Tag size={13} className="text-cyan-400" />,
-    text: "v2.1.0 is live: Async Next 16 core & zero data collisions.",
-    linkText: "Read Changelog",
-    href: "/changelog",
+    text: "Master 20 essential algorithmic patterns to tackle FAANG interview rounds.",
+    linkText: "View Patterns",
+    href: "/preparation/20-patterns",
   },
 ];
 
+function subscribeStorage(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function getDismissedSnapshot(): boolean {
+  if (typeof window === "undefined") return true;
+  const dismissedUntil = localStorage.getItem("hirenza-announcement-dismissed");
+  if (!dismissedUntil) return false;
+  return Date.now() <= parseInt(dismissedUntil, 10);
+}
+
+function getServerSnapshot(): boolean {
+  return true;
+}
+
 export function AnnouncementBar() {
-  const [mounted, setMounted] = useState(false);
-  const [dismissed, setDismissed] = useState(true);
+  const isDismissed = useSyncExternalStore(subscribeStorage, getDismissedSnapshot, getServerSnapshot);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    setMounted(true);
-    const dismissedUntil = localStorage.getItem("hirenza-announcement-dismissed");
-    if (!dismissedUntil || Date.now() > parseInt(dismissedUntil, 10)) {
-      setDismissed(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (dismissed) return;
+    if (isDismissed) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % ANNOUNCEMENTS.length);
     }, 6000);
     return () => clearInterval(interval);
-  }, [dismissed]);
+  }, [isDismissed]);
 
   const handleDismiss = () => {
-    setDismissed(true);
-    // Dismiss for 7 days
-    localStorage.setItem("hirenza-announcement-dismissed", (Date.now() + 7 * 24 * 60 * 60 * 1000).toString());
+    localStorage.setItem(
+      "hirenza-announcement-dismissed",
+      (Date.now() + 7 * 24 * 60 * 60 * 1000).toString()
+    );
+    window.dispatchEvent(new Event("storage"));
   };
 
-  if (!mounted || dismissed) return null;
+  if (isDismissed) return null;
 
   const current = ANNOUNCEMENTS[currentIndex];
 

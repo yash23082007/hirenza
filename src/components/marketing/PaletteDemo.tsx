@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, Command, CheckCircle2, ArrowRight, CornerDownLeft, Sparkles } from "lucide-react";
+import { Search, Command, ArrowRight, CornerDownLeft, Sparkles } from "lucide-react";
 
 interface DemoScenario {
   query: string;
@@ -44,40 +44,40 @@ const DEMO_SCENARIOS: DemoScenario[] = [
 
 export function PaletteDemo() {
   const [scenarioIndex, setScenarioIndex] = useState(0);
-  const [displayedText, setDisplayedText] = useState("");
+  const [displayedText, setDisplayedText] = useState(() => {
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return DEMO_SCENARIOS[0].query;
+    }
+    return "";
+  });
   const [isTyping, setIsTyping] = useState(true);
 
   useEffect(() => {
     // Check prefers-reduced-motion
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) {
-      setDisplayedText(DEMO_SCENARIOS[0].query);
-      return;
-    }
+    if (prefersReducedMotion) return;
 
     const currentScenario = DEMO_SCENARIOS[scenarioIndex];
     let charIndex = 0;
-    setIsTyping(true);
-    setDisplayedText("");
+    let pauseTimeout: NodeJS.Timeout;
 
     const typeInterval = setInterval(() => {
-      if (charIndex <= currentScenario.query.length) {
-        setDisplayedText(currentScenario.query.slice(0, charIndex));
-        charIndex++;
-      } else {
+      charIndex++;
+      setDisplayedText(currentScenario.query.slice(0, charIndex));
+      if (charIndex >= currentScenario.query.length) {
         clearInterval(typeInterval);
         setIsTyping(false);
-
-        // Pause before next scenario
-        const pauseTimeout = setTimeout(() => {
+        pauseTimeout = setTimeout(() => {
           setScenarioIndex((prev) => (prev + 1) % DEMO_SCENARIOS.length);
+          setIsTyping(true);
         }, 2600);
-
-        return () => clearTimeout(pauseTimeout);
       }
     }, 110);
 
-    return () => clearInterval(typeInterval);
+    return () => {
+      clearInterval(typeInterval);
+      clearTimeout(pauseTimeout);
+    };
   }, [scenarioIndex]);
 
   const active = DEMO_SCENARIOS[scenarioIndex];

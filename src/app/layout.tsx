@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "HIRENZA — The Open-Source Prep OS for Power Users",
+    default: "HIRENZA — The Offline-First Prep OS for Power Users",
     template: "%s | HIRENZA",
   },
   description: "Offline-first interview preparation workspace: Curated DSA sheets, company-specific tracks, algorithmic patterns, system design blueprints, and production SQL.",
@@ -35,13 +35,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    title: "HIRENZA — The Open-Source Prep OS for Power Users",
+    title: "HIRENZA — The Offline-First Prep OS for Power Users",
     description: "Offline-first interview preparation workspace: Curated DSA sheets, company tracks, algorithmic patterns, system design, and production SQL.",
     siteName: "HIRENZA",
   },
   twitter: {
     card: "summary_large_image",
-    title: "HIRENZA — The Open-Source Prep OS for Power Users",
+    title: "HIRENZA — The Offline-First Prep OS for Power Users",
     description: "Offline-first interview preparation workspace: Curated DSA sheets, company tracks, algorithmic patterns, and system design.",
   },
   icons: { icon: "/favicon.ico" },

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useProgress } from "@/hooks/useProgress";
 import { detectWeakestPattern } from "@/lib/insights";
-import { AlertCircle, Target, ArrowRight, ExternalLink, Sparkles, Lock } from "lucide-react";
+import { AlertCircle, ArrowRight, ExternalLink, Lock } from "lucide-react";
 
 export function WeakestPatternWidget() {
   const { topicMastery, data } = useProgress();

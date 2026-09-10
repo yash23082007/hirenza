@@ -12,11 +12,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ sheetId: string }> }): Promise<Metadata> {
   const { sheetId } = await params;
   const sheet = dsaSheets.find((s) => s.id === sheetId);
-  if (!sheet) {
-    return { title: "Sheet Not Found" };
-  }
+  if (!sheet) notFound();
   return {
-    title: `${sheet.name} DSA Sheet`,
+    title: sheet.name,
     description: sheet.description,
   };
 }

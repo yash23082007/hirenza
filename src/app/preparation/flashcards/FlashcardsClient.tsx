@@ -31,7 +31,15 @@ export function FlashcardsClient() {
   const [selectedDeck, setSelectedDeck] = useState<string>("react");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [grades, setGrades] = useState<Record<string, Grade>>({});
+  const [grades, setGrades] = useState<Record<string, Grade>>(() => {
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem("hirenza-flashcard-grades");
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
   const [sessionCount, setSessionCount] = useState(0);
 
   // Build deck cards
@@ -49,8 +57,8 @@ export function FlashcardsClient() {
 
     const techList = interviewQuestionsData[selectedDeck] || [];
     return techList.map((q) => ({
-      id: q.id,
-      front: q.title,
+      id: `flash-${selectedDeck}-${q.id}`,
+      front: q.question,
       category: q.category,
       difficulty: q.difficulty,
       back: `Core Concept: ${q.category}. Explain technical definition, real-world engineering trade-offs, and failure edge cases.`,
@@ -60,18 +68,6 @@ export function FlashcardsClient() {
 
   const cards = getDeckCards();
   const currentCard = cards[currentIndex] || cards[0];
-
-  // Load saved grades
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("hirenza-flashcard-grades");
-      if (saved) {
-        setGrades(JSON.parse(saved));
-      }
-    } catch {
-      // ignore
-    }
-  }, []);
 
   const handleGrade = useCallback(
     (grade: Grade) => {

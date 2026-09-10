@@ -155,7 +155,7 @@ export function HeroSection() {
           className="text-lg md:text-xl text-secondary max-w-2xl mx-auto mb-10 leading-relaxed text-balance"
           style={{ animation: "slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.35s backwards" }}
         >
-          Sheets, patterns, SQL, system design, and your own progress engine — free, open-source, no account required.
+          Sheets, patterns, SQL, system design, and your own progress engine — free, offline-first, no account required.
         </p>
 
         {/* CTA Buttons */}

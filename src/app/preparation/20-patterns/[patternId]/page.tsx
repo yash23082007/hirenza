@@ -12,9 +12,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ patternId: string }> }): Promise<Metadata> {
   const { patternId } = await params;
   const pattern = dsaPatterns.find((p) => p.id === patternId);
-  if (!pattern) {
-    return { title: "Pattern Not Found" };
-  }
+  if (!pattern) notFound();
   return {
     title: `${pattern.name} - DSA Pattern`,
     description: pattern.description,

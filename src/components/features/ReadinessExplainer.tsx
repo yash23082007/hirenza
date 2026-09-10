@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Info, X, Calculator, Target, Award, CheckCircle2 } from "lucide-react";
+import { Info, X, Calculator } from "lucide-react";
 
 interface ReadinessWeights {
   companySolved: number;

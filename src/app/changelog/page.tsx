@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MarketingNavbar } from "@/components/navigation/MarketingNavbar";
 import { Footer } from "@/components/marketing/Footer";
-import { GitCommit, Tag, Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
+import { GitCommit, Tag, Sparkles, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Changelog — What's New in Hirenza",
@@ -87,7 +87,7 @@ const RELEASES: Release[] = [
   {
     version: "1.0.0",
     date: "July 15, 2026",
-    tagline: "Initial release of Hirenza: Open-source developer interview workspace",
+    tagline: "Initial release of Hirenza: Offline-first developer interview workspace",
     highlights: [
       {
         category: "Added",
@@ -116,7 +116,7 @@ export default function ChangelogPage() {
             Platform Changelog
           </h1>
           <p className="text-lg text-secondary max-w-xl mx-auto">
-            Transparent release history of Hirenza. Every improvement is client-side, open-source, and documented.
+            Transparent release history of Hirenza. Every improvement is client-side, offline-first, and documented.
           </p>
         </div>
 
@@ -128,41 +128,27 @@ export default function ChangelogPage() {
                 <GitCommit size={14} />
               </div>
 
-              {/* Card */}
-              <div className="border border-border rounded-2xl p-6 md:p-8 bg-surface-1/60 hover:border-border-hover transition-colors">
-                <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+              <div className="card p-6 md:p-8 border-border bg-surface-1/60 hover:border-purple-1/30 transition-all">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl font-mono font-extrabold text-primary">v{release.version}</span>
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-surface-3 text-secondary font-mono">
+                    <span className="text-xl font-bold font-mono text-primary">v{release.version}</span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-surface-2 border border-border text-muted font-mono">
                       {release.date}
                     </span>
                   </div>
                 </div>
 
-                <p className="text-base font-medium text-secondary mb-6">{release.tagline}</p>
+                <p className="text-sm font-medium text-primary mb-6">{release.tagline}</p>
 
                 <div className="space-y-6">
-                  {release.highlights.map((group) => (
-                    <div key={group.category} className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`text-xs font-mono font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
-                            group.category === "Added"
-                              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                              : group.category === "Changed"
-                              ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                              : "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
-                          }`}
-                        >
-                          {group.category}
-                        </span>
-                      </div>
-                      <ul className="space-y-2 pl-2">
-                        {group.items.map((item, idx) => (
-                          <li key={idx} className="flex items-start gap-2.5 text-sm text-secondary leading-relaxed">
-                            <CheckCircle2 size={14} className="text-purple-1 flex-shrink-0 mt-1" />
-                            <span>{item}</span>
-                          </li>
+                  {release.highlights.map((h, i) => (
+                    <div key={i} className="space-y-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-purple-1 font-mono">
+                        {h.category}
+                      </span>
+                      <ul className="space-y-1.5 list-disc list-inside text-xs text-secondary leading-relaxed">
+                        {h.items.map((item, itemIdx) => (
+                          <li key={itemIdx}>{item}</li>
                         ))}
                       </ul>
                     </div>
@@ -176,7 +162,7 @@ export default function ChangelogPage() {
         <div className="mt-16 text-center border-t border-border pt-12">
           <h3 className="text-xl font-bold text-primary mb-2">Want to shape the next release?</h3>
           <p className="text-sm text-secondary mb-6">
-            Review our roadmap or contribute directly to the open-source repository.
+            Review our roadmap or connect with us on GitHub.
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Link
@@ -187,12 +173,12 @@ export default function ChangelogPage() {
               <ArrowRight size={16} />
             </Link>
             <Link
-              href="https://github.com/yash23082007/hirenza"
+              href="https://github.com/yash23082007"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-2 border border-border text-primary font-semibold text-sm hover:border-purple-1/40 transition-colors"
             >
-              <span>GitHub Repository</span>
+              <span>GitHub Profile</span>
               <Sparkles size={16} className="text-purple-1" />
             </Link>
           </div>

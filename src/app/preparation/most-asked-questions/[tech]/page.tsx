@@ -14,9 +14,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ tech: string }> }): Promise<Metadata> {
   const { tech: techId } = await params;
   const tech = availableTechnologies.find((t) => t.id === techId);
-  if (!tech) {
-    return { title: "Questions Not Found" };
-  }
+  if (!tech) notFound();
   return {
     title: `${tech.name} Interview Questions`,
     description: tech.description,

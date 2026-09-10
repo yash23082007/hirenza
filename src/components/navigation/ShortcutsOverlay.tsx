@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Keyboard, X, Command } from "lucide-react";
+import { Keyboard, X } from "lucide-react";
 
 interface ShortcutItem {
   keys: string[];

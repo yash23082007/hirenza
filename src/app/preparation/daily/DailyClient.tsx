@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useProgress, ProblemStatus } from "@/hooks/useProgress";
 import { getDailyChallenge, getDailyHistory, isFreezeTokenEligible } from "@/lib/daily";
@@ -18,11 +18,13 @@ import {
   Calendar,
 } from "lucide-react";
 
+const emptySubscribe = () => () => {};
+
 export function DailyClient() {
   const { data, streak, getStatus, setStatus, isBookmarked, toggleBookmark } = useProgress();
-  const [mounted, setMounted] = useState(false);
-  const [challenge, setChallenge] = useState(() => getDailyChallenge());
-  const [history, setHistory] = useState(() => getDailyHistory(7));
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+  const [challenge] = useState(() => getDailyChallenge());
+  const [history] = useState(() => getDailyHistory(7));
   const [timeLeft, setTimeLeft] = useState("");
 
   // Focus Timer state
@@ -30,10 +32,6 @@ export function DailyClient() {
   const [timerSeconds, setTimerSeconds] = useState(25 * 60);
 
   useEffect(() => {
-    setMounted(true);
-    setChallenge(getDailyChallenge());
-    setHistory(getDailyHistory(7));
-
     // Countdown to midnight
     const updateCountdown = () => {
       const now = new Date();
@@ -55,12 +53,16 @@ export function DailyClient() {
 
   // Timer interval
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (timerRunning && timerSeconds > 0) {
-      interval = setInterval(() => setTimerSeconds((s) => s - 1), 1000);
-    } else if (timerSeconds === 0) {
-      setTimerRunning(false);
-    }
+    if (!timerRunning || timerSeconds <= 0) return;
+    const interval = setInterval(() => {
+      setTimerSeconds((s) => {
+        if (s <= 1) {
+          setTimerRunning(false);
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
     return () => clearInterval(interval);
   }, [timerRunning, timerSeconds]);
 
