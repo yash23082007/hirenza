@@ -1,9 +1,11 @@
-import { TOTAL_ALL_PROBLEMS, TOTAL_PATTERNS } from "@/data/stats";
+import { TOTAL_ALL_PROBLEMS, TOTAL_PATTERNS, TOTAL_COMPANIES } from "@/data/stats";
 import type { Metadata } from "next";
+import Link from "next/link";
+import { GitBranch, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About",
-  description: "Learn about Hirenza — your unfair advantage for tech interviews.",
+  title: "About Hirenza — Open Source Interview Engine",
+  description: "Learn about Hirenza: an offline-first, client-side technical interview preparation OS built for engineers.",
 };
 
 export default function AboutPage() {
@@ -12,55 +14,66 @@ export default function AboutPage() {
       <div className="max-w-4xl mx-auto px-6 py-20">
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">About Hirenza</h1>
-          <p className="text-xl text-secondary">Your unfair advantage for tech interviews</p>
+          <p className="text-xl text-secondary">The open-source, offline-first prep OS for power users.</p>
         </div>
 
-        <div className="max-w-none space-y-8">
+        <div className="max-w-none space-y-10">
           <section>
-            <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
+            <h2 className="text-2xl font-bold mb-3 text-primary">Our Mission</h2>
             <p className="text-secondary leading-relaxed">
-              Hirenza was built to solve a simple but frustrating problem: technical interview preparation was scattered across dozens of platforms, sheets, playlists, and resources. We wanted to create one focused workspace where candidates could prepare efficiently without context switching.
+              Technical interview preparation has grown unnecessarily chaotic: fragmented spreadsheets, scattered video playlists, behind-the-paywall mock tests, and tracking cookies. Hirenza unifies every essential dimension — curated DSA sheets, high-frequency company archives, algorithmic patterns, system design blueprints, and production SQL — into one focused, offline-first application that runs entirely in your browser.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold mb-4">What We Offer</h2>
+            <h2 className="text-2xl font-bold mb-4 text-primary">Platform Capabilities</h2>
             <ul className="space-y-3 text-secondary">
               <li className="flex items-start gap-3">
-                <span className="text-purple-1 font-bold">→</span>
-                <span><strong className="text-primary">{TOTAL_ALL_PROBLEMS}+ curated problems</strong> from LeetCode, GeeksforGeeks, and DataLemur organized by sheets, patterns, and companies</span>
+                <span className="text-purple-400 font-bold">→</span>
+                <span><strong className="text-primary">{TOTAL_ALL_PROBLEMS}+ curated problems</strong> cross-referenced from LeetCode, GeeksforGeeks, and DataLemur.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-purple-1 font-bold">→</span>
-                <span><strong className="text-primary">Company-specific preparation</strong> with real interview patterns from Google, Amazon, Microsoft, Meta, Apple, and Netflix</span>
+                <span className="text-purple-400 font-bold">→</span>
+                <span><strong className="text-primary">{TOTAL_COMPANIES} company question tracks</strong> from Google, Amazon, Microsoft, Meta, Apple, and Flipkart with weighted readiness calculations.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-purple-1 font-bold">→</span>
-                <span><strong className="text-primary">{TOTAL_PATTERNS} DSA patterns</strong> with practice problems following the Grokking methodology</span>
+                <span className="text-purple-400 font-bold">→</span>
+                <span><strong className="text-primary">{TOTAL_PATTERNS} core algorithmic patterns</strong> to cultivate problem-solving intuition rather than rote memorization.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-purple-1 font-bold">→</span>
-                <span><strong className="text-primary">Complete interview prep</strong> including HR questions, role-wise tracks, resume guides, and cold email templates</span>
+                <span className="text-purple-400 font-bold">→</span>
+                <span><strong className="text-primary">Spaced repetition memory engine</strong> using automated Leitner intervals to ensure long-term retention before onsite rounds.</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-purple-1 font-bold">→</span>
-                <span><strong className="text-primary">Coding practice</strong> from LeetCode, Codeforces, and CodeChef with contest schedules</span>
+                <span className="text-purple-400 font-bold">→</span>
+                <span><strong className="text-primary">Zero accounts & zero server telemetry</strong> — your progress is stored locally in your browser with one-click JSON backup and restore.</span>
               </li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold mb-4">Built by Engineers, for Engineers</h2>
-            <p className="text-secondary leading-relaxed">
-              Hirenza is built with modern web technologies (Next.js, TypeScript, Tailwind CSS) and follows the same design principles we apply to our engineering work: clean architecture, type safety, performance optimization, and attention to detail.
+            <h2 className="text-2xl font-bold mb-3 text-primary">Architecture & Philosophy</h2>
+            <p className="text-secondary leading-relaxed mb-4">
+              Hirenza is built with Next.js 16, React 19, TypeScript, and Tailwind CSS. We believe preparation tools should load instantly, function without internet access, and never lock candidate progress behind subscription paywalls.
             </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold mb-4">Open Source</h2>
-            <p className="text-secondary leading-relaxed">
-              We believe in giving back to the developer community. Hirenza is open source and we welcome contributions from engineers who want to help improve the platform.
-            </p>
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <a
+                href="https://github.com/yash23082007/hirenza"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-2 hover:bg-surface-3 border border-border text-sm font-semibold text-primary transition-colors"
+              >
+                <GitBranch size={16} />
+                View Repository on GitHub
+              </a>
+              <Link
+                href="/preparation"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-sm font-semibold text-white transition-colors"
+              >
+                Start Preparing
+                <ArrowRight size={15} />
+              </Link>
+            </div>
           </section>
         </div>
       </div>

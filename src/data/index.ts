@@ -588,24 +588,7 @@ Designed LSM-tree persistent storage in C++ processing 100K write ops/sec.
 ];
 
 // FAQ data
-export interface FAQItem {
-  question: string;
-  answer: string;
-  category: string;
-}
-
-export const faqItems: FAQItem[] = [
-  { question: "What does Hirenza offer?", answer: "Hirenza is a complete interview preparation workspace bringing together DSA sheets, company-wise questions, SQL practice, system design resources, study notes, cold email templates, and resume tools — all in one focused platform.", category: "Features & Functionality" },
-  { question: "Is Hirenza free?", answer: "Yes, Hirenza is completely free. All resources, sheets, and tools are available at no cost. We believe interview preparation should be accessible to everyone.", category: "Account" },
-  { question: "Can I track my interview preparation?", answer: "Yes. The dashboard includes activity tracking, streak calendars, skill analysis, and category breakdowns so you can monitor your consistency and progress over time.", category: "Features & Functionality" },
-  { question: "Can I save and bookmark questions?", answer: "Absolutely. You can bookmark any question across all sheets and resources. Bookmarked questions are easily accessible from your saved questions section.", category: "Features & Functionality" },
-  { question: "Can I access notes directly?", answer: "Yes. All study notes are available directly in the platform — no downloading or searching required. Open PDFs right within the app.", category: "Content & Resources" },
-  { question: "How do I use the DSA sheets?", answer: "Navigate to the DSA Sheets section, choose an educator's sheet (Striver, Love Babbar, NeetCode, etc.), and start solving problems in order. Mark questions as completed, track progress, and use bookmarks for revision.", category: "Content & Resources" },
-  { question: "Does Hirenza support different roles?", answer: "Yes. We have role-wise preparation for 20+ tech roles including Frontend, Backend, Fullstack, Mobile, DevOps, Data Science, AI/ML, Cloud, Security, and more.", category: "Career Preparation" },
-  { question: "Can I switch between dark and light mode?", answer: "Yes. Use the theme toggle in the navigation bar to switch between dark and light modes. Your preference is saved automatically.", category: "Features & Functionality" },
-  { question: "Do you provide resume templates?", answer: "Yes. We offer multiple ATS-friendly resume templates designed for different roles and experience levels. Preview and download them directly.", category: "Career Preparation" },
-  { question: "How can I contribute to Hirenza?", answer: "You can contribute by joining our community, sharing interview experiences, suggesting resources, or contributing to open-source features. Visit the Community page to get started.", category: "Community" },
-];
+export { faqData, faqCategories, type FAQItem } from './faq';
 
 // Interview experience data
 export interface InterviewExperience {

@@ -25,10 +25,6 @@ function getTodayString(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function normalizeId(id: string | number): string {
-  return String(id);
-}
-
 function calculateNextReviewAt(stage: number): string {
   const intervals = [1, 3, 7, 14, 30]; // Leitner intervals in days
   const daysToAdd = intervals[Math.min(stage, intervals.length - 1)];

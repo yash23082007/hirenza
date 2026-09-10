@@ -1,4 +1,4 @@
-# 🚀 HIRENZA - Your UNFAIR Advantage For Tech Interviews
+# 🚀 HIRENZA — The Open-Source, Offline-First Prep OS For Tech Interviews
 
 <div align="center">
 
@@ -19,7 +19,7 @@
 
 ## 🎯 What is HIRENZA?
 
-HIRENZA is a **production-ready interview preparation platform** built for software engineers targeting top tech companies. Unlike generic platforms, hirenza-prep.vercel.appbines:
+HIRENZA is a **production-ready interview preparation platform** built for software engineers targeting top tech companies. Unlike generic platforms, Hirenza combines:
 
 - **Curated problems** from LeetCode, GFG, DataLemur, Codeforces, and CodeChef
 - **Real company interview patterns** from Google, Amazon, Meta, Microsoft, Apple, and Flipkart
@@ -27,6 +27,8 @@ HIRENZA is a **production-ready interview preparation platform** built for softw
 - **Production-grade architecture** with enterprise-level code quality
 
 Built with Next.js 16, TypeScript, and Tailwind CSS 4, HIRENZA delivers a blazing-fast, type-safe, and beautifully designed user experience.
+
+> **Note:** All resource counts across the platform and docs are strictly computed and verified against `src/data/stats.ts`.
 
 ---
 
@@ -52,10 +54,10 @@ Every aspect of tech interview prep covered in one platform:
 | Study Notes | 8 topics, 30+ sections | Curated summaries |
 
 #### 2. **Real Problem Links & Sources**
-Every problem links to **actual LeetCode/GFG/DataLemur pages** — no fake or placeholder content. Verified URLs across all 800+ questions.
+Every problem links to **actual LeetCode/GFG/DataLemur pages** — no fake or placeholder content. Verified URLs across all questions (600+ problems cross-referenced).
 
 #### 3. **Pattern-Based Learning**
-20 recognizable DSA patterns (Sliding Window, Two Pointers, Fast & Slow, Merge Intervals, etc.) with 104 problems organized by pattern — the **Grokking methodology** that works.
+20 recognizable DSA patterns (Sliding Window, Two Pointers, Fast & Slow, Merge Intervals, etc.) with 124 problems organized by pattern — the **Grokking methodology** that works.
 
 #### 4. **Company-Specific Interview Patterns**
 Know exactly what to expect at:

@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HirenzaLogo } from "../ui/HirenzaLogo";
 import { dsaSheets } from "@/data/dsaSheets";
+import { dsaPlaylists } from "@/data";
 import {
   LayoutDashboard,
   BookOpen,
@@ -58,11 +59,10 @@ const learningItems: NavItem[] = [
   {
     label: "DSA Playlists",
     icon: <PlaySquare size={16} />,
-    children: [
-      { label: "Love Babbar Playlist", href: "/preparation/dsa-playlists?playlist=lovebabbar" },
-      { label: "Shradha Khapra Playlist", href: "/preparation/dsa-playlists?playlist=shradha" },
-      { label: "Rohit Negi Playlist", href: "/preparation/dsa-playlists?playlist=rohit" },
-    ],
+    children: dsaPlaylists.map(playlist => ({
+      label: playlist.author ? `${playlist.author} Course` : playlist.title,
+      href: `/preparation/dsa-playlists?playlist=${playlist.id}`,
+    })),
   },
   {
     label: "Core Subjects",

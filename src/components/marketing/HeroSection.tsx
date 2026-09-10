@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Users, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { TOTAL_ALL_PROBLEMS, TOTAL_COMPANIES, TOTAL_PATTERNS } from "@/data/stats";
 
 const techIcons = [
   { name: "Java", color: "#f89820" },
@@ -127,24 +128,26 @@ export function HeroSection() {
       >
         {/* Eyebrow Badge */}
         <div 
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface-2/50 backdrop-blur-sm mb-8 text-sm text-secondary"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface-2/60 backdrop-blur-sm mb-8 text-xs md:text-sm font-medium text-secondary flex-wrap justify-center"
           style={{ animation: "slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards" }}
         >
-          <Users size={14} className="text-purple-1" />
-          <span>Built for candidates serious about tech interviews</span>
+          <span className="w-2 h-2 rounded-full bg-emerald-400" />
+          <span>{TOTAL_ALL_PROBLEMS}+ catalog questions</span>
+          <span className="text-muted">•</span>
+          <span>{TOTAL_COMPANIES} company archives</span>
+          <span className="text-muted">•</span>
+          <span>{TOTAL_PATTERNS} patterns</span>
+          <span className="text-muted">•</span>
+          <span className="text-purple-1 font-semibold">100% offline-ready</span>
         </div>
 
         {/* Main Heading */}
         <h1 
-          className="text-5xl md:text-7xl lg:text-[88px] font-extrabold leading-[0.95] tracking-tight mb-6"
+          className="text-5xl md:text-7xl lg:text-[84px] font-extrabold leading-[0.95] tracking-tight mb-6"
           style={{ animation: "slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards" }}
         >
-          Your{" "}
-          <span className="text-brand-gradient">UNFAIR</span>
-          <br />
-          Advantage
-          <br />
-          <span className="text-4xl md:text-5xl lg:text-6xl font-bold opacity-90">For Tech Interviews</span>
+          Prep like it&apos;s{" "}
+          <span className="text-brand-gradient">production.</span>
         </h1>
 
         {/* Description */}
@@ -152,18 +155,27 @@ export function HeroSection() {
           className="text-lg md:text-xl text-secondary max-w-2xl mx-auto mb-10 leading-relaxed text-balance"
           style={{ animation: "slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.35s backwards" }}
         >
-          Everything you need to prepare smarter — DSA, company-wise questions, SQL, system design, interview resources and career tools in one focused workspace.
+          Sheets, patterns, SQL, system design, and your own progress engine — free, open-source, no account required.
         </p>
 
-        {/* CTA Button */}
-        <div style={{ animation: "slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards" }}>
+        {/* CTA Buttons */}
+        <div 
+          className="flex flex-col sm:flex-row items-center gap-4"
+          style={{ animation: "slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards" }}
+        >
           <Link
             href="/preparation"
             className="cta-button inline-flex items-center gap-3 px-8 py-4 text-base font-semibold"
           >
-            Get Started for Free
+            Open the cockpit
             <ArrowRight size={18} />
           </Link>
+          <a
+            href="#features"
+            className="inline-flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-semibold text-secondary hover:text-primary bg-surface-2 hover:bg-surface-3 border border-border transition-all"
+          >
+            Take the 60-sec tour
+          </a>
         </div>
       </div>
 

@@ -25,14 +25,14 @@ export default function HomePage() {
       <HeroSection />
 
       {/* Feature Intro */}
-      <RevealSection className="py-20 md:py-28 text-center">
+      <RevealSection id="features" className="py-20 md:py-28 text-center scroll-mt-20">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-6">
-            Your Unfair Advantage{" "}
-            <span className="text-brand-gradient">Starts Here</span>
+            Structured preparation.{" "}
+            <span className="text-brand-gradient">Zero friction.</span>
           </h2>
           <p className="text-lg text-secondary leading-relaxed">
-            Stop jumping between scattered sheets, bookmarks, playlists and random interview resources. Hirenza brings the important pieces together.
+            Offline-first trackers, instant ⌘K search, spaced repetition intervals, and verifiable company readiness scores without subscriptions or tracking.
           </p>
         </div>
       </RevealSection>
@@ -40,16 +40,16 @@ export default function HomePage() {
       {/* Feature Showcases */}
       <FeatureShowcase
         label="DSA Sheets"
-        title="Curated DSA Sheets From Top Educators"
-        description="Follow structured problem sets instead of solving random questions without a plan. Sheets from Striver, Love Babbar, Shradha Khapra and more — all in one place."
+        title="Systematic DSA with 4-State Tracking"
+        description="Move beyond binary checklists. Track problems through Unsolved, In Review, Solved, and Mastered states with automated Leitner spaced repetition."
       >
         <DSASheetsMockup />
       </FeatureShowcase>
 
       <FeatureShowcase
         label="Company Preparation"
-        title="Prepare For The Company You Actually Want"
-        description={`Practice company-specific questions and focus on patterns that repeatedly matter. Target ${TOTAL_COMPANIES} top tech companies with curated problem sets.`}
+        title="Live Company Readiness Engine"
+        description={`Weighted readiness scores computed against high-frequency OA and onsite interview questions from ${TOTAL_COMPANIES} tech leaders.`}
         reverse
       >
         <CompanyWiseMockup />
@@ -57,16 +57,16 @@ export default function HomePage() {
 
       <FeatureShowcase
         label="Role Wise Sheets"
-        title="Practice By Role, Not Just By Topic"
-        description="Frontend, Backend, Fullstack, Mobile, DevOps, AI/ML — get dedicated interview question sheets tailored to your exact target role."
+        title="Competency Blueprints by Engineering Role"
+        description="Targeted technical roadmaps and focus areas spanning Frontend, Backend, Fullstack, Mobile, DevOps, and Machine Learning."
       >
         <RoleWiseMockup />
       </FeatureShowcase>
 
       <FeatureShowcase
         label="Interview Questions"
-        title="Most Asked Interview Questions"
-        description="Get comprehensive interview questions organized by technology and topic. Search for exactly what you need to prepare."
+        title="Filterable Tech Q&A with Global ⌘K Navigation"
+        description="Deep-dive interview questions indexed by language and core concept. Jump directly to any problem across the platform using global ⌘K search."
         reverse
       >
         <InterviewQuestionsMockup />
@@ -74,16 +74,16 @@ export default function HomePage() {
 
       <FeatureShowcase
         label="SQL Sheet"
-        title="Top SQL Interview Queries"
-        description="Master every SQL concept interviewers love — SELECT, JOINs, subqueries, aggregations, window functions — with progress tracking built in."
+        title="Production SQL Patterns & Query Breakdown"
+        description="Practice window functions, recursive CTEs, and complex joins with direct LeetCode problem links and unified progress tracking."
       >
         <SQLSheetMockup />
       </FeatureShowcase>
 
       <FeatureShowcase
         label="System Design"
-        title="Master System Design With The Best"
-        description="Learn HLD and LLD from curated playlists. Distributed systems, caching, messaging, load balancing, microservices — all organized for you."
+        title="HLD & LLD Architectural Blueprints"
+        description="Master distributed systems, caching tiers, event streaming, and object-oriented design patterns with curated engineering breakdowns."
         reverse
       >
         <SystemDesignMockup />
@@ -91,32 +91,20 @@ export default function HomePage() {
 
       <FeatureShowcase
         label="Notes"
-        title="Curated Study Notes — All In One Place"
-        description="Computer Networks, AWS, Java, Kubernetes and more — browse curated study summaries directly in the platform, no downloading or searching."
+        title="Offline-First Engineering Reference Notes"
+        description="High-signal reference summaries covering Operating Systems, DBMS internals, Computer Networks, and Cloud fundamentals right in your browser cache."
       >
         <NotesMockup />
       </FeatureShowcase>
 
       <FeatureShowcase
         label="Cold Email Templates"
-        title="Cold Email Templates That Actually Work"
-        description="Get professional email templates for job referrals, networking and career outreach — crafted for different roles and scenarios."
+        title="ATS-Friendly Outreach & Referral Formulas"
+        description="High-conversion outreach templates for engineering managers, founders, and recruiters with role-specific customization guides."
         reverse
       >
         <ColdEmailMockup />
       </FeatureShowcase>
-
-      {/* Many More Coming */}
-      <RevealSection className="py-16 text-center">
-        <div className="max-w-2xl mx-auto px-6">
-          <h3 className="text-2xl md:text-3xl font-bold mb-4">
-            Many more resources coming...
-          </h3>
-          <p className="text-secondary">
-            We&apos;re constantly adding new sheets, playlists, and tools to help you prepare better.
-          </p>
-        </div>
-      </RevealSection>
 
       {/* Creator */}
       <CreatorSection />

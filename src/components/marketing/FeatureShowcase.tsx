@@ -2,7 +2,17 @@
 
 import { useEffect, useRef, useState, ReactNode } from "react";
 
-export function RevealSection({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+export function RevealSection({ 
+  children, 
+  className = "", 
+  delay = 0,
+  id
+}: { 
+  children: ReactNode; 
+  className?: string; 
+  delay?: number;
+  id?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -22,6 +32,7 @@ export function RevealSection({ children, className = "", delay = 0 }: { childre
 
   return (
     <div
+      id={id}
       ref={ref}
       className={`reveal-section ${visible ? "visible" : ""} ${className}`}
     >
