@@ -1,6 +1,7 @@
 import { PatternsClient } from "../PatternsClient";
 import { dsaPatterns } from "@/data/patterns";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 export function generateStaticParams() {
   return dsaPatterns.map((pattern) => ({
@@ -8,8 +9,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: { params: { patternId: string } }): Metadata {
-  const pattern = dsaPatterns.find((p) => p.id === params.patternId);
+export async function generateMetadata({ params }: { params: Promise<{ patternId: string }> }): Promise<Metadata> {
+  const { patternId } = await params;
+  const pattern = dsaPatterns.find((p) => p.id === patternId);
   if (!pattern) {
     return { title: "Pattern Not Found" };
   }
@@ -19,6 +21,9 @@ export function generateMetadata({ params }: { params: { patternId: string } }):
   };
 }
 
-export default function PatternPage({ params }: { params: { patternId: string } }) {
-  return <PatternsClient patternId={params.patternId} />;
+export default async function PatternPage({ params }: { params: Promise<{ patternId: string }> }) {
+  const { patternId } = await params;
+  const pattern = dsaPatterns.find((p) => p.id === patternId);
+  if (!pattern) notFound();
+  return <PatternsClient patternId={patternId} />;
 }

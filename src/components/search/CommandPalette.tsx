@@ -17,15 +17,10 @@ export function CommandPalette() {
   const router = useRouter();
   const { isCompleted, isBookmarked, toggleComplete, toggleBookmark } = useProgress();
 
-  const [allItems, setAllItems] = useState<CatalogItem[]>([]);
-  const [fuse, setFuse] = useState<Fuse<CatalogItem> | null>(null);
-
-  useEffect(() => {
-    if (!isOpen || fuse) return;
-    const items = getAllCatalogItems();
-    setAllItems(items);
-    setFuse(
-      new Fuse(items, {
+  const allItems = useMemo(() => getAllCatalogItems(), []);
+  const fuse = useMemo(
+    () =>
+      new Fuse(allItems, {
         keys: [
           { name: "title", weight: 0.7 },
           { name: "topic", weight: 0.2 },
@@ -33,9 +28,9 @@ export function CommandPalette() {
         ],
         threshold: 0.35,
         ignoreLocation: true,
-      })
-    );
-  }, [isOpen, fuse]);
+      }),
+    [allItems]
+  );
 
   const results = useMemo(() => {
     if (!fuse) return [];

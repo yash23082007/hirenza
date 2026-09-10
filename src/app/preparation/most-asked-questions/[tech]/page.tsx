@@ -1,6 +1,7 @@
 import { MostAskedQuestionsClient } from "../MostAskedQuestionsClient";
 import { technologies, interviewQuestionsData } from "@/data";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 const availableTechnologies = technologies.filter(t => interviewQuestionsData[t.id]?.length > 0);
 
@@ -10,8 +11,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: { params: { tech: string } }): Metadata {
-  const tech = availableTechnologies.find((t) => t.id === params.tech);
+export async function generateMetadata({ params }: { params: Promise<{ tech: string }> }): Promise<Metadata> {
+  const { tech: techId } = await params;
+  const tech = availableTechnologies.find((t) => t.id === techId);
   if (!tech) {
     return { title: "Questions Not Found" };
   }
@@ -21,6 +23,9 @@ export function generateMetadata({ params }: { params: { tech: string } }): Meta
   };
 }
 
-export default function TechQuestionsPage({ params }: { params: { tech: string } }) {
-  return <MostAskedQuestionsClient techId={params.tech} />;
+export default async function TechQuestionsPage({ params }: { params: Promise<{ tech: string }> }) {
+  const { tech: techId } = await params;
+  const tech = availableTechnologies.find((t) => t.id === techId);
+  if (!tech) notFound();
+  return <MostAskedQuestionsClient techId={techId} />;
 }

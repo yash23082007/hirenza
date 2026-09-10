@@ -1,6 +1,7 @@
 import { DSASheetsClient } from "../DSASheetsClient";
 import { dsaSheets } from "@/data/dsaSheets";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 export function generateStaticParams() {
   return dsaSheets.map((sheet) => ({
@@ -8,8 +9,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: { params: { sheetId: string } }): Metadata {
-  const sheet = dsaSheets.find((s) => s.id === params.sheetId);
+export async function generateMetadata({ params }: { params: Promise<{ sheetId: string }> }): Promise<Metadata> {
+  const { sheetId } = await params;
+  const sheet = dsaSheets.find((s) => s.id === sheetId);
   if (!sheet) {
     return { title: "Sheet Not Found" };
   }
@@ -19,6 +21,9 @@ export function generateMetadata({ params }: { params: { sheetId: string } }): M
   };
 }
 
-export default function SheetPage({ params }: { params: { sheetId: string } }) {
-  return <DSASheetsClient sheetId={params.sheetId} />;
+export default async function SheetPage({ params }: { params: Promise<{ sheetId: string }> }) {
+  const { sheetId } = await params;
+  const sheet = dsaSheets.find((s) => s.id === sheetId);
+  if (!sheet) notFound();
+  return <DSASheetsClient sheetId={sheetId} />;
 }
