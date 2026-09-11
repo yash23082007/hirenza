@@ -87,13 +87,13 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
           </h1>
           <p className="text-secondary">
             Target high-frequency interview patterns with automated Company Readiness Scores and
-            curated problem archives.
+            curated problem archives across 45 tech companies.
           </p>
         </div>
 
         <Link
           href="/preparation/company-wise-dsa/compare"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-2 border border-border text-xs font-mono font-bold text-primary hover:border-purple-1/40 transition-colors shrink-0"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-2 border border-border text-xs font-bold text-primary hover:border-purple-1/40 transition-colors shrink-0"
         >
           <GitCompare size={15} className="text-purple-1" />
           <span>Compare Targets</span>
@@ -108,7 +108,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
               <Search size={16} className="text-muted" />
               <input
                 type="text"
-                placeholder="Search companies (e.g. Google, Amazon, Microsoft, Meta, Apple, Flipkart...)"
+                placeholder="Search 45 companies (e.g. Google, Amazon, Microsoft, Meta, Apple, Flipkart...)"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="bg-transparent flex-1 text-sm outline-none placeholder:text-muted"
@@ -116,7 +116,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {filteredCompanies.map(company => {
               const readiness = calculateReadiness(company);
               const solvedCount = company.problems.filter(p => isCompleted(`comp-${p.id}`)).length;
@@ -125,49 +125,46 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                 <div
                   key={company.id}
                   onClick={() => handleSelectCompany(company.id)}
-                  className="card p-6 cursor-pointer hover:border-purple-500/40 transition-all flex flex-col justify-between group rounded-2xl bg-surface-1 border border-border"
+                  className="card p-5 cursor-pointer hover:border-purple-500/40 transition-all flex flex-col justify-between group rounded-2xl bg-surface-1 border border-border"
                 >
                   <div>
-                    <div className="flex items-center justify-between gap-3 mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-surface-3 to-surface-2 border border-border flex items-center justify-center font-extrabold text-xl text-primary shadow-sm group-hover:scale-105 transition-transform">
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-surface-3 to-surface-2 border border-border flex items-center justify-center font-extrabold text-base text-primary shadow-sm group-hover:scale-105 transition-transform">
                           {company.logo}
                         </div>
                         <div>
-                          <h3 className="font-bold text-base group-hover:text-purple-400 transition-colors">
+                          <h3 className="font-bold text-sm group-hover:text-purple-400 transition-colors">
                             {company.name}
                           </h3>
-                          <span className="text-[10px] text-muted font-mono block">
-                            {company.problems.length > 0 ? `${company.problems.length} Curated Questions` : "Directory listing"}
-                          </span>
-                          <span className={`inline-flex items-center gap-1 text-[10px] font-medium mt-0.5 ${company.problems.length > 0 ? "text-emerald-400" : "text-muted"}`}>
-                            <ShieldCheck size={11} /> {company.problems.length > 0 ? "Curated track" : "Coverage queued"}
+                          <span className="text-[10px] text-muted block">
+                            {company.problems.length} Problems
                           </span>
                         </div>
                       </div>
 
                       <div className="text-right">
-                        <span className="text-sm font-extrabold text-purple-1 font-mono">
+                        <span className="text-xs font-extrabold text-purple-1 font-mono">
                           {readiness}%
                         </span>
-                        <span className="text-[10px] text-muted block">Ready</span>
+                        <span className="text-[9px] text-muted block">Ready</span>
                       </div>
                     </div>
 
-                    <p className="text-xs text-secondary leading-relaxed line-clamp-2 mb-4">
+                    <p className="text-xs text-secondary leading-relaxed line-clamp-2 mb-3">
                       {company.description}
                     </p>
 
-                    <div className="w-full h-1.5 bg-surface-3 rounded-full overflow-hidden mb-4">
+                    <div className="w-full h-1.5 bg-surface-3 rounded-full overflow-hidden mb-3">
                       <div
                         className="h-full bg-purple-1 rounded-full transition-all"
                         style={{ width: `${readiness}%` }}
                       />
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] text-muted">
+                    <div className="flex items-center justify-between text-[10px] text-muted">
                       <span>{solvedCount} solved</span>
-                      <span className="flex items-center gap-1.5">
+                      <span className="flex items-center gap-1">
                         <span className="text-green-400 font-medium">
                           {company.difficultyBreakdown.easy}E
                         </span>
@@ -183,8 +180,8 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                     </div>
                   </div>
 
-                  <div className="mt-5 pt-3 border-t border-border-soft flex items-center justify-between text-xs font-semibold text-purple-400 group-hover:translate-x-0.5 transition-transform">
-                    <span>Open Company Track</span>
+                  <div className="mt-4 pt-2.5 border-t border-border-soft flex items-center justify-between text-xs font-semibold text-purple-400 group-hover:translate-x-0.5 transition-transform">
+                    <span>Open Track</span>
                     <span>→</span>
                   </div>
                 </div>

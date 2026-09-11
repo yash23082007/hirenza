@@ -26,8 +26,15 @@ export async function GET() {
       throw new Error("Failed to fetch LeetCode");
     }
 
+    interface LeetCodeRawContest {
+      title: string;
+      titleSlug: string;
+      startTime: number;
+      duration: number;
+    }
+
     const lcData = await lcResponse.json();
-    const lcContests = lcData?.data?.topTwoContests?.map((c: any) => ({
+    const lcContests = lcData?.data?.topTwoContests?.map((c: LeetCodeRawContest) => ({
       id: `lc-${c.titleSlug}`,
       platform: "LeetCode",
       title: c.title,

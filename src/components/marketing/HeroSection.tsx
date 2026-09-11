@@ -116,6 +116,16 @@ export function HeroSection() {
         </div>
       </div>
 
+      {/* Ambient Violet/Fuchsia/Indigo Glow Orb */}
+      <div
+        aria-hidden="true"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[850px] rounded-full pointer-events-none -z-10"
+        style={{
+          background: "radial-gradient(circle, rgba(108, 71, 255, 0.14) 0%, rgba(187, 30, 245, 0.07) 45%, transparent 70%)",
+          filter: "blur(120px)",
+        }}
+      />
+
       {/* Hero Content - Staggered Entrance */}
       <div
         ref={heroRef}
@@ -172,7 +182,7 @@ export function HeroSection() {
           </Link>
           <a
             href="#features"
-            className="inline-flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-semibold text-secondary hover:text-primary bg-surface-2 hover:bg-surface-3 border border-border transition-all"
+            className="cta-dark inline-flex items-center gap-2 px-6 py-4 text-sm font-semibold"
           >
             Take the 60-sec tour
           </a>

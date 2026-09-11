@@ -18,7 +18,6 @@ import {
 import Link from "next/link";
 import { useState, useMemo } from "react";
 import Image from "next/image";
-import { ResourceCard } from "@/components/ui/primitives/ResourceCard";
 import { useProgress } from "@/hooks/useProgress";
 import { FocusTimer } from "@/components/features/FocusTimer";
 import { ProgressRing } from "@/components/ui/ProgressRing";
@@ -626,85 +625,50 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {dsaSheets.map(sheet => {
           const totalProblems = sheet.topics.reduce((sum, t) => sum + t.problems.length, 0);
-          const solvedInThisSheet = sheet.topics
-            .flatMap(t => t.problems)
-            .filter(
-              p => getStatus(p.id) === "solved" || getStatus(p.id) === "mastered"
-            ).length;
-          const percent =
-            totalProblems > 0 ? Math.round((solvedInThisSheet / totalProblems) * 100) : 0;
 
           return (
-            <ResourceCard
+            <Link
               key={sheet.id}
-              title={sheet.name}
-              description={`by ${sheet.educator} • ${sheet.description}`}
-              badge={{
-                text: sheet.level,
-                variant: sheet.level === "Beginner" ? "green" : sheet.level === "Intermediate" ? "orange" : "purple",
-              }}
-              visual={
-                sheet.banner ? (
-                  <div className="relative w-full aspect-[16/9] overflow-hidden border border-border bg-surface-2 group-hover:scale-[1.01] transition-transform">
-                    <Image
-                      src={sheet.banner}
-                      alt={`${sheet.name} banner`}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      priority={sheet.id === "striver-a2z" || sheet.id === "neetcode-150"}
-                    />
-                  </div>
-                ) : (
-                  <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0 mb-2">
-                    <BookOpen size={20} className="text-purple-300" />
-                  </div>
-                )
-              }
-              tags={sheet.topics.slice(0, 4).map(t => `${t.name} (${t.problems.length})`)}
+              href={`/preparation/dsa-sheets/${sheet.id}`}
+              className="group flex flex-col rounded-2xl border border-border bg-surface-1 overflow-hidden hover:border-border-hover hover-lift transition-all"
             >
-              <div className="mt-2 mb-1">
-                <div className="flex justify-between text-xs text-muted mb-1.5">
-                  <span>Progress</span>
-                  <span className="font-semibold text-primary">
-                    {solvedInThisSheet} / {totalProblems} ({percent}%)
+              <div className="relative w-full aspect-[16/9] overflow-hidden bg-surface-2">
+                {sheet.banner ? (
+                  <Image
+                    src={sheet.banner}
+                    alt={`${sheet.name} banner`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    priority={sheet.id === "striver-a2z" || sheet.id === "neetcode-150"}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-purple-500/10">
+                    <BookOpen size={28} className="text-purple-300" />
+                  </div>
+                )}
+                <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-black/60 backdrop-blur-md text-white border border-white/10">
+                  {sheet.level}
+                </span>
+              </div>
+              <div className="p-4 flex flex-col flex-1 justify-between">
+                <div>
+                  <h2 className="font-bold text-base text-primary group-hover:text-cta transition-colors line-clamp-1">
+                    {sheet.name}
+                  </h2>
+                  <p className="text-xs text-muted mt-1">by {sheet.educator}</p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-border-soft flex items-center justify-between text-xs text-secondary">
+                  <span className="font-medium text-primary">{totalProblems} Problems</span>
+                  <span className="text-xs font-semibold text-cta group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1">
+                    View &rarr;
                   </span>
                 </div>
-                <div className="w-full h-1.5 bg-surface-3 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-purple-1 rounded-full transition-all"
-                    style={{ width: `${percent}%` }}
-                  />
-                </div>
               </div>
-
-              {sheet.topics.length > 4 && (
-                <div className="mt-1 text-[11px] text-muted">
-                  +{sheet.topics.length - 4} more topics
-                </div>
-              )}
-              
-              <div className="flex items-center gap-3 pt-4 mt-2">
-                <Link
-                  href={`/preparation/dsa-sheets/${sheet.id}`}
-                  className="flex-1 text-center py-2 bg-purple-1 text-white rounded-xl text-xs font-bold hover:opacity-90 transition-opacity"
-                >
-                  Open Sheet & Tracker →
-                </Link>
-                <a
-                  href={sheet.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-2 bg-surface-3 hover:bg-surface-hover border border-border text-muted hover:text-secondary rounded-xl text-xs font-medium transition-colors"
-                  title="Official Source"
-                >
-                  <ExternalLink size={14} />
-                </a>
-              </div>
-            </ResourceCard>
+            </Link>
           );
         })}
       </div>

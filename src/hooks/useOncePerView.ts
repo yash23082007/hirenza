@@ -1,6 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useSyncExternalStore } from "react";
+
+function subscribeReducedMotion(callback: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mql.addEventListener("change", callback);
+  return () => mql.removeEventListener("change", callback);
+}
+
+function getReducedMotionSnapshot() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function getReducedMotionServerSnapshot() {
+  return false;
+}
+
+export function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getReducedMotionServerSnapshot
+  );
+}
 
 /**
  * A hook that starts an animation only when the element scrolls into view,
@@ -15,16 +39,7 @@ export function useOncePerView(totalSteps: number, intervalMs: number) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  // Detect reduced-motion preference
-  useEffect(() => {
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   // IntersectionObserver: trigger animation when element enters viewport
   const startAnimation = useCallback(() => {
@@ -81,22 +96,7 @@ export function useOncePerViewTypewriter(words: readonly string[], charDelayMs: 
   const [charCount, setCharCount] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
-
-  // If reduced motion: show first word fully typed, skip animation
-  useEffect(() => {
-    if (prefersReducedMotion && words.length > 0) {
-      setCharCount(words[0].length);
-    }
-  }, [prefersReducedMotion, words]);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const startAnimation = useCallback(() => {
     if (hasAnimated || prefersReducedMotion) return;
@@ -159,7 +159,9 @@ export function useOncePerViewTypewriter(words: readonly string[], charDelayMs: 
     return () => clearInterval(timer);
   }, [isAnimating, words, charDelayMs, prefersReducedMotion]);
 
-  const displayedText = words[wordIndex]?.slice(0, charCount) || "";
+  const displayedText = prefersReducedMotion
+    ? (words[0] || "")
+    : (words[wordIndex]?.slice(0, charCount) || "");
 
   return { ref, wordIndex, displayedText, isAnimating, prefersReducedMotion };
 }

@@ -82,7 +82,7 @@ export function CompanyWiseMockup() {
     color: companyColors[c.id] || "#7a33f6",
   }));
 
-  const { ref, wordIndex, displayedText, prefersReducedMotion } = useOncePerViewTypewriter(COMPANY_QUERIES, 180);
+  const { ref, displayedText, prefersReducedMotion } = useOncePerViewTypewriter(COMPANY_QUERIES, 180);
   // If reduced motion, show first query fully
   const searchText = prefersReducedMotion ? COMPANY_QUERIES[0] : displayedText;
 

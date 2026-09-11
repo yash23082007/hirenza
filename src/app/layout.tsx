@@ -5,11 +5,17 @@ import { ClientCommandPalette } from "@/components/search/ClientCommandPalette";
 import { AnnouncementBar } from "@/components/navigation/AnnouncementBar";
 import { PwaRegistrar } from "@/components/features/PwaRegistrar";
 import { SITE_URL } from "@/lib/site";
+import { ScrollProgressBar } from "@/components/ui/ScrollProgressBar";
 import "./globals.css";
 
-import { Inter } from "next/font/google";
+import { Lexend } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const lexend = Lexend({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -78,7 +84,8 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${lexend.className} ${lexend.variable} font-sans antialiased`}>
+        <ScrollProgressBar />
         <ThemeProvider>
           <ProgressProvider>
             <AnnouncementBar />

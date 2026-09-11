@@ -32,7 +32,10 @@ const config: Config = {
         // Border hover alias
         "border-hover": "var(--border)",
 
-        // Brand colors (static, don't change with theme)
+        // Brand & CTA tokens
+        cta: "var(--cta)",
+        "cta-hover": "var(--cta-hover)",
+        "brand-violet": "var(--brand-violet)",
         "purple-1": "var(--purple-1)",
         "purple-2": "var(--purple-2)",
         "brand-yellow": "var(--brand-yellow)",
@@ -41,7 +44,7 @@ const config: Config = {
         "brand-red": "var(--brand-red)",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["var(--font-sans)", "Lexend", "system-ui", "sans-serif"],
       },
       borderRadius: {
         "4xl": "2rem",

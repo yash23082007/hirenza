@@ -28,7 +28,7 @@ export function SectionHeading({
       <div>
         {eyebrow && (
           <div className="inline-flex items-center gap-2 mb-1.5">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-orange-400 font-semibold">
+            <span className="text-[11px] uppercase tracking-wider text-orange-400 font-semibold">
               {eyebrow}
             </span>
           </div>

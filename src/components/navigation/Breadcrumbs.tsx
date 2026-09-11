@@ -42,7 +42,7 @@ export function Breadcrumbs() {
   const segments = pathname.split("/").filter(Boolean);
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-1.5 text-xs text-muted font-mono flex-wrap">
+    <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-1.5 text-xs text-muted flex-wrap">
       <Link href="/" className="hover:text-primary transition-colors flex items-center gap-1">
         <Home size={12} />
         <span>Home</span>

@@ -17,6 +17,7 @@ import {
   Send,
 } from "lucide-react";
 import { SectionHeading } from "@/components/ui/primitives/SectionHeading";
+import { GiscusEmbed } from "@/components/community/GiscusEmbed";
 
 const userExperiencesStorageKey = "hirenza-user-interview-experiences";
 
@@ -456,8 +457,8 @@ function InterviewExperiencesContent() {
               </form>
             )}
           </div>
-        </div>
-      )}
+      {/* Community discussions (T8.1) */}
+      <GiscusEmbed />
     </div>
   );
 }

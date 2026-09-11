@@ -10,6 +10,7 @@ import { companies } from "@/data/companies";
 import { ReadinessExplainer } from "@/components/features/ReadinessExplainer";
 import { WeakestPatternWidget } from "@/components/dashboard/WeakestPatternWidget";
 import { ContestTracker } from "@/components/features/ContestTracker";
+import { SkillRadarChart } from "@/components/dashboard/SkillRadarChart";
 
 export default function DashboardPage() {
   const { moduleStats, topicMastery, revisionQueue, data, allBookmarks } = useProgress();
@@ -68,6 +69,39 @@ export default function DashboardPage() {
     { name: "Package-wise DSA", key: "package-wise", href: "/preparation/package-wise-dsa" },
     { name: "Company DSA", key: "companies", href: "/preparation/company-wise-dsa" },
   ];
+
+  const radarSkills = useMemo(() => [
+    {
+      label: "DSA Sheets",
+      value: moduleStats["dsa"]?.percent || 0,
+      total: moduleStats["dsa"]?.total || 1,
+      solved: moduleStats["dsa"]?.solved || 0,
+    },
+    {
+      label: "System Design",
+      value: moduleStats["system-design"]?.percent || 0,
+      total: moduleStats["system-design"]?.total || 1,
+      solved: moduleStats["system-design"]?.solved || 0,
+    },
+    {
+      label: "SQL Sheet",
+      value: moduleStats["sql"]?.percent || 0,
+      total: moduleStats["sql"]?.total || 1,
+      solved: moduleStats["sql"]?.solved || 0,
+    },
+    {
+      label: "HR Questions",
+      value: moduleStats["hr-questions"]?.percent || 0,
+      total: moduleStats["hr-questions"]?.total || 1,
+      solved: moduleStats["hr-questions"]?.solved || 0,
+    },
+    {
+      label: "Interview Qs",
+      value: moduleStats["most-asked-questions"]?.percent || 0,
+      total: moduleStats["most-asked-questions"]?.total || 1,
+      solved: moduleStats["most-asked-questions"]?.solved || 0,
+    },
+  ], [moduleStats]);
 
   return (
     <div className="space-y-8">
@@ -237,10 +271,78 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Skill Analysis & Category Breakdown (Row 2 per Appendix I.5) */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Skill Analysis Radar */}
+        <div className="border border-border rounded-xl bg-surface-2 p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <h2 className="text-lg font-bold">Skill Analysis</h2>
+              <span className="text-xs text-muted">5 Competency Axes</span>
+            </div>
+            <p className="text-xs text-muted mb-4">
+              Real-time mastery radar across DSA, System Design, SQL, HR, and Interview Questions.
+            </p>
+          </div>
+          <SkillRadarChart skills={radarSkills} />
+          <div className="mt-4 pt-3 border-t border-border grid grid-cols-5 gap-1.5 text-center">
+            {radarSkills.map(s => (
+              <div key={s.label} className="p-1.5 rounded-lg bg-surface-3/50 border border-border-soft">
+                <div className="text-[10px] text-muted truncate">{s.label.split(" ")[0]}</div>
+                <div className="text-xs font-semibold mt-0.5">{s.value}%</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Category Breakdown */}
+        <div className="border border-border rounded-xl bg-surface-2 p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <h2 className="text-lg font-bold">Category Breakdown</h2>
+              <Link href="/preparation/20-patterns" className="text-xs text-purple-400 hover:underline">
+                Explore Patterns →
+              </Link>
+            </div>
+            <p className="text-xs text-muted mb-4">
+              Detailed tracking across your core data structure and algorithmic patterns.
+            </p>
+          </div>
+          <div className="space-y-4 my-auto">
+            {topicMastery.map(cat => (
+              <div key={cat.topic}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-medium">{cat.topic}</span>
+                  <span className="text-xs text-muted">
+                    {cat.solved}/{cat.total} ({cat.percent}%)
+                  </span>
+                </div>
+                <div className="h-2 bg-surface-3 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full ${cat.color} rounded-full transition-all duration-500`}
+                    style={{ width: `${cat.percent}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs text-muted">
+            <span>Overall Algorithms Mastery</span>
+            <span className="font-semibold text-primary">
+              {Math.round(
+                (topicMastery.reduce((acc, c) => acc + c.solved, 0) /
+                  Math.max(1, topicMastery.reduce((acc, c) => acc + c.total, 0))) *
+                  100
+              )}%
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Algorithmic Focus & Weakness Radar */}
       <WeakestPatternWidget />
 
-      {/* Real Skill Analysis */}
+      {/* Detailed Module Preparation Progress */}
       <div>
         <h2 className="text-xl font-bold mb-4">Module Preparation Progress</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -273,31 +375,6 @@ export default function DashboardPage() {
               </Link>
             );
           })}
-        </div>
-      </div>
-
-      {/* Real Category Breakdown */}
-      <div>
-        <h2 className="text-xl font-bold mb-4">Real Topic Mastery Breakdown</h2>
-        <div className="border border-border rounded-xl bg-surface-2 p-6">
-          <div className="space-y-5">
-            {topicMastery.map(cat => (
-              <div key={cat.topic}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-sm font-medium">{cat.topic}</span>
-                  <span className="text-xs text-muted">
-                    {cat.solved}/{cat.total} ({cat.percent}%)
-                  </span>
-                </div>
-                <div className="h-2 bg-surface-3 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full ${cat.color} rounded-full transition-all duration-500`}
-                    style={{ width: `${cat.percent}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 

@@ -91,13 +91,18 @@ function downloadIcsCalendar(contest: ContestItem) {
   URL.revokeObjectURL(url);
 }
 
+let cachedClientTime = Date.now();
+
 function subscribeTime(callback: () => void) {
-  const interval = setInterval(callback, 60000);
+  const interval = setInterval(() => {
+    cachedClientTime = Date.now();
+    callback();
+  }, 60000);
   return () => clearInterval(interval);
 }
 
 function getClientTime() {
-  return Date.now();
+  return cachedClientTime;
 }
 
 function getServerTime() {

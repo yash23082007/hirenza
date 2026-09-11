@@ -121,7 +121,8 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
 
   const toggleGroup = (key: string, isChildOpen: boolean) => {
     setExpandedGroups(prev => {
-      const current = prev[key] !== undefined ? prev[key] : isChildOpen;
+      const defaultState = key.includes("DSA Sheets") ? true : isChildOpen;
+      const current = prev[key] !== undefined ? prev[key] : defaultState;
       return { ...prev, [key]: !current };
     });
   };
@@ -138,7 +139,8 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile }: SidebarProps) 
     const hasChildren = item.children && item.children.length > 0;
     const isChildOpen = Boolean(isChildActive(item.children));
     const groupKey = `${groupLabel}-${item.label}`;
-    const expanded = expandedGroups[groupKey] !== undefined ? expandedGroups[groupKey] : isChildOpen;
+    const defaultOpen = item.label === "DSA Sheets" ? true : isChildOpen;
+    const expanded = expandedGroups[groupKey] !== undefined ? expandedGroups[groupKey] : defaultOpen;
     const active = isActive(item.href);
 
     return (

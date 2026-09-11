@@ -65,6 +65,12 @@ export function MarketingNavbar() {
           >
             <User size={16} />
           </Link>
+          <Link
+            href="/preparation"
+            className="cta-button text-xs px-4 py-1.5 hidden sm:inline-flex items-center font-semibold"
+          >
+            Get Started
+          </Link>
           <button
             className="md:hidden p-1.5 text-secondary hover:text-primary"
             onClick={() => setMobileOpen(!mobileOpen)}
