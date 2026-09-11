@@ -24,7 +24,7 @@ export function MarketingNavbar() {
       }`}
       style={{ animation: "navbarEnter 0.8s cubic-bezier(0.22,1,0.36,1) forwards" }}
     >
-      <div className="nav-pill px-6 py-3 flex items-center justify-between shadow-2xl">
+      <div className="nav-pill px-4 py-2.5 sm:px-6 sm:py-3 flex items-center justify-between shadow-2xl">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 text-primary font-extrabold text-lg tracking-tight">
           <HirenzaLogo size={24} />

@@ -179,7 +179,7 @@ export function PatternsClient({ patternId }: { patternId?: string }) {
                               : "bg-surface-2 border-border-soft hover:border-border"
                           }`}
                         >
-                          <div className="flex items-center gap-3 min-w-0">
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
                             <button
                               type="button"
                               onClick={e => {
@@ -204,7 +204,7 @@ export function PatternsClient({ patternId }: { patternId?: string }) {
                             </button>
 
                             <span
-                              className={`text-sm font-medium ${
+                              className={`text-sm font-medium truncate ${
                                 isSolved ? "text-muted line-through" : "text-primary"
                               }`}
                             >

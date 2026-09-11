@@ -52,7 +52,7 @@ export function ApplicationLayout({ children }: { children: ReactNode }) {
           <Menu size={22} />
         </button>
 
-        <main className="w-full min-w-0 max-w-[1350px] p-6 md:p-10">
+        <main className="w-full min-w-0 max-w-[1350px] p-4 sm:p-6 md:p-10">
           <Breadcrumbs />
           {children}
           <ShortcutsOverlay />

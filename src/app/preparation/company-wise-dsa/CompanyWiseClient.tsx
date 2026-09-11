@@ -248,7 +248,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
               </div>
 
               {/* Readiness Score meter with ProgressRing */}
-              <div className="flex items-center gap-5 bg-surface-3 p-4 rounded-2xl border border-border shrink-0">
+              <div className="flex items-center gap-5 bg-surface-3 p-4 rounded-2xl border border-border shrink-0 w-full sm:w-auto">
                 <ProgressRing
                   completed={
                     selectedCompany.problems.filter(p => isCompleted(`comp-${p.id}`)).length
@@ -277,7 +277,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
               </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-3 mt-6 pt-5 border-t border-border text-center">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-5 border-t border-border text-center">
               <div className="bg-surface-3/50 p-2.5 rounded-xl">
                 <div className="text-lg font-bold">{selectedCompany.totalQuestions}</div>
                 <div className="text-[11px] text-muted">Total Problems</div>
@@ -417,7 +417,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                         return (
                           <div
                             key={problem.id}
-                            className={`border rounded-xl p-4 transition-all flex items-center justify-between gap-4 ${
+                            className={`border rounded-xl p-3.5 sm:p-4 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 ${
                               isSolved
                                 ? "bg-green-950/15 border-green-500/30"
                                 : "bg-surface-2 border-border hover:border-purple-500/20"
@@ -433,7 +433,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                                     difficulty: problem.difficulty,
                                   })
                                 }
-                                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                                className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ${
                                   isSolved
                                     ? "bg-emerald-500 text-white"
                                     : "bg-surface-3 text-muted hover:text-secondary"
@@ -447,7 +447,7 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                               <button
                                 type="button"
                                 onClick={() => toggleBookmark(progressId)}
-                                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                                className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ${
                                   isStarred
                                     ? "text-amber-400 bg-amber-500/10"
                                     : "text-muted hover:text-secondary"
@@ -492,14 +492,14 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                                   )}
                                 </div>
 
-                                <div className="flex items-center gap-3 text-xs text-muted">
+                                <div className="flex items-center gap-3 text-xs text-muted flex-wrap">
                                   <span>Topic: {problem.topic}</span>
                                   {problem.pattern && <span>• Pattern: {problem.pattern}</span>}
                                 </div>
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-2 shrink-0">
+                            <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
                               {problem.leetcodeUrl && (
                                 <a
                                   href={problem.leetcodeUrl}
