@@ -134,14 +134,15 @@ function InterviewExperiencesContent() {
         title="Technical Interview Experiences"
         subtitle="Real round breakdowns from top tech companies. Understand what to expect at each stage from online assessments to system design and executive fit."
         actions={
-          <button
-            type="button"
-            onClick={() => setIsSubmitModalOpen(true)}
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSc_example_form/viewform"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-1 hover:opacity-90 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
           >
             <PlusCircle size={15} />
             <span>Submit Your Experience</span>
-          </button>
+          </a>
         }
       />
 
@@ -357,54 +358,16 @@ function InterviewExperiencesContent() {
         <p className="text-center text-muted py-12">No experiences found for this filter.</p>
       )}
 
-      {/* Experience Submission Modal (T8.4) */}
-      {isSubmitModalOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in"
+      {/* Submit Experience CTA */}
+      <div className="card p-6 text-center rounded-2xl bg-surface-1 border border-border mt-6">
+        <h3 className="text-base font-bold text-primary mb-1">Want to share your interview experience?</h3>
+        <p className="text-xs text-muted mb-4">Help fellow candidates by contributing your debrief to our community archive.</p>
+        <a
+          href="https://forms.gle/your-google-form-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-1 hover:opacity-90 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
         >
-          <div className="bg-surface-1 border border-border rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border-soft">
-              <div className="flex items-center gap-2">
-                <Briefcase size={18} className="text-purple-400" />
-                <h3 className="font-bold text-base text-primary">Submit Interview Experience</h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsSubmitModalOpen(false)}
-                className="p-1.5 rounded-lg text-muted hover:text-primary hover:bg-surface-2 transition-colors"
-                aria-label="Close modal"
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            {submittedMessage ? (
-              <div className="p-8 text-center space-y-2">
-                <div className="w-12 h-12 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center mx-auto mb-3">
-                  <CheckCircle2 size={24} />
-                </div>
-                <h4 className="font-bold text-lg text-primary">Experience Submitted!</h4>
-                <p className="text-xs text-muted">
-                  Thank you for contributing to the community archive. Your debrief is now live.
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold text-muted block mb-1">Company</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Google, Flipkart"
-                      value={formData.company}
-                      onChange={e => setFormData({ ...formData, company: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary outline-none focus:border-purple-1/60"
-                    />
-                  </div>
-
                   <div>
                     <label className="text-xs font-semibold text-muted block mb-1">Role</label>
                     <input
