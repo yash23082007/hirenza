@@ -15,6 +15,8 @@ export interface InterviewExperience {
   tips: string[];
   submittedBy: string;
   date: string;
+  verificationStatus?: "verified" | "community" | "pending";
+  sourceUrl?: string;
 }
 
 export const interviewExperiencesData: InterviewExperience[] = [

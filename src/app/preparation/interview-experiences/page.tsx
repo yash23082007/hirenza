@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useMemo } from "react";
+import { Suspense, useState, useMemo, useSyncExternalStore } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { interviewExperiencesData, InterviewExperience } from "@/data";
 import {
@@ -18,13 +18,40 @@ import {
 } from "lucide-react";
 import { SectionHeading } from "@/components/ui/primitives/SectionHeading";
 
+const userExperiencesStorageKey = "hirenza-user-interview-experiences";
+
+function subscribeToUserExperiences(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  return () => window.removeEventListener("storage", onChange);
+}
+
+function getUserExperiencesSnapshot() {
+  return localStorage.getItem(userExperiencesStorageKey) || "[]";
+}
+
+function getServerUserExperiencesSnapshot() {
+  return "[]";
+}
+
 function InterviewExperiencesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [expandedExp, setExpandedExp] = useState<string | null>(null);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [submittedMessage, setSubmittedMessage] = useState(false);
-  const [userExperiences, setUserExperiences] = useState<InterviewExperience[]>([]);
+  const storedExperiences = useSyncExternalStore(
+    subscribeToUserExperiences,
+    getUserExperiencesSnapshot,
+    getServerUserExperiencesSnapshot
+  );
+  const userExperiences = useMemo<InterviewExperience[]>(() => {
+    try {
+      const parsed = JSON.parse(storedExperiences);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }, [storedExperiences]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -89,6 +116,7 @@ function InterviewExperiencesContent() {
       outcome: formData.outcome,
       date: "2026",
       submittedBy: formData.submittedBy,
+      verificationStatus: "pending",
       rounds: [
         {
           name: formData.round1Name,
@@ -105,7 +133,8 @@ function InterviewExperiencesContent() {
       tips: [formData.tips],
     };
 
-    setUserExperiences(prev => [newExp, ...prev]);
+    localStorage.setItem(userExperiencesStorageKey, JSON.stringify([newExp, ...userExperiences]));
+    window.dispatchEvent(new Event("storage"));
     setSubmittedMessage(true);
     setTimeout(() => {
       setSubmittedMessage(false);
@@ -130,19 +159,18 @@ function InterviewExperiencesContent() {
     <div className="space-y-6">
       {/* Section Heading with Submit Action (T8.4) */}
       <SectionHeading
-        eyebrow="Verified Community Debriefs"
+        eyebrow="Community Interview Debriefs"
         title="Technical Interview Experiences"
         subtitle="Real round breakdowns from top tech companies. Understand what to expect at each stage from online assessments to system design and executive fit."
         actions={
-          <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSc_example_form/viewform"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => setIsSubmitModalOpen(true)}
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-1 hover:opacity-90 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
           >
             <PlusCircle size={15} />
             <span>Submit Your Experience</span>
-          </a>
+          </button>
         }
       />
 
@@ -217,9 +245,13 @@ function InterviewExperiencesContent() {
                           <CheckCircle2 size={11} /> Offer Received
                         </span>
                       )}
-                      {/* Last Verified Stamp (T8.4) */}
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface-3 text-muted border border-border-soft flex items-center gap-1">
-                        <ShieldCheck size={11} className="text-purple-400" /> Verified {exp.date}
+                        <ShieldCheck size={11} className="text-purple-400" />
+                        {exp.verificationStatus === "verified"
+                          ? `Verified ${exp.date}`
+                          : exp.verificationStatus === "pending"
+                            ? "Pending review"
+                            : "Community report"}
                       </span>
                     </div>
 
@@ -362,108 +394,64 @@ function InterviewExperiencesContent() {
       <div className="card p-6 text-center rounded-2xl bg-surface-1 border border-border mt-6">
         <h3 className="text-base font-bold text-primary mb-1">Want to share your interview experience?</h3>
         <p className="text-xs text-muted mb-4">Help fellow candidates by contributing your debrief to our community archive.</p>
-        <a
-          href="https://forms.gle/your-google-form-link"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => setIsSubmitModalOpen(true)}
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-1 hover:opacity-90 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
         >
-                  <div>
-                    <label className="text-xs font-semibold text-muted block mb-1">Role</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. SDE-1, Full Stack"
-                      value={formData.role}
-                      onChange={e => setFormData({ ...formData, role: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary outline-none focus:border-purple-1/60"
-                    />
-                  </div>
-                </div>
+          <PlusCircle size={15} />
+          Submit locally
+        </button>
+      </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold text-muted block mb-1">Difficulty</label>
-                    <select
-                      value={formData.difficulty}
-                      onChange={e =>
-                        setFormData({
-                          ...formData,
-                          difficulty: e.target.value as "Easy" | "Medium" | "Hard",
-                        })
-                      }
-                      className="w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-secondary outline-none"
-                    >
-                      <option value="Easy">Easy</option>
-                      <option value="Medium">Medium</option>
-                      <option value="Hard">Hard</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-muted block mb-1">Outcome</label>
-                    <select
-                      value={formData.outcome}
-                      onChange={e =>
-                        setFormData({
-                          ...formData,
-                          outcome: e.target.value as "Selected" | "Rejected" | "In Process",
-                        })
-                      }
-                      className="w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-secondary outline-none"
-                    >
-                      <option value="Selected">Selected</option>
-                      <option value="Rejected">Rejected</option>
-                      <option value="In Process">In Process</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-muted block mb-1">
-                    Round 1 Breakdown
+      {isSubmitModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="submit-experience-title">
+          <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-surface-1 p-6 shadow-2xl">
+            <div className="flex items-center justify-between gap-4 mb-5">
+              <div>
+                <h2 id="submit-experience-title" className="text-lg font-bold text-primary">Add an interview debrief</h2>
+                <p className="text-xs text-muted mt-1">Saved in this browser and marked pending review.</p>
+              </div>
+              <button type="button" onClick={() => setIsSubmitModalOpen(false)} className="p-2 text-muted hover:text-primary" aria-label="Close submission form">
+                <X size={18} />
+              </button>
+            </div>
+            {submittedMessage ? (
+              <p className="rounded-xl bg-green-500/10 border border-green-500/20 p-4 text-sm text-green-300">Saved to your local archive.</p>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <label className="text-xs font-semibold text-muted">Company
+                    <input required value={formData.company} onChange={e => setFormData({ ...formData, company: e.target.value })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary" placeholder="e.g. Google" />
                   </label>
-                  <input
-                    type="text"
-                    value={formData.round1Name}
-                    onChange={e => setFormData({ ...formData, round1Name: e.target.value })}
-                    className="w-full px-3 py-1.5 rounded-xl bg-surface-2 border border-border text-xs text-primary outline-none mb-1.5"
-                  />
-                  <textarea
-                    rows={2}
-                    value={formData.round1Desc}
-                    onChange={e => setFormData({ ...formData, round1Desc: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-muted block mb-1">
-                    Preparation Tips for Candidates
+                  <label className="text-xs font-semibold text-muted">Role
+                    <input required value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary" placeholder="e.g. SDE-1" />
                   </label>
-                  <textarea
-                    rows={2}
-                    value={formData.tips}
-                    onChange={e => setFormData({ ...formData, tips: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary outline-none"
-                  />
                 </div>
-
-                <div className="pt-3 border-t border-border-soft flex items-center justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsSubmitModalOpen(false)}
-                    className="px-4 py-2 rounded-xl text-xs text-muted hover:text-primary transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-1 hover:opacity-90 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
-                  >
-                    <Send size={13} />
-                    <span>Submit Experience</span>
-                  </button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <label className="text-xs font-semibold text-muted">Difficulty
+                    <select value={formData.difficulty} onChange={e => setFormData({ ...formData, difficulty: e.target.value as "Easy" | "Medium" | "Hard" })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary">
+                      <option>Easy</option><option>Medium</option><option>Hard</option>
+                    </select>
+                  </label>
+                  <label className="text-xs font-semibold text-muted">Outcome
+                    <select value={formData.outcome} onChange={e => setFormData({ ...formData, outcome: e.target.value as "Selected" | "Rejected" | "In Process" })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary">
+                      <option>Selected</option><option>Rejected</option><option>In Process</option>
+                    </select>
+                  </label>
+                </div>
+                <label className="text-xs font-semibold text-muted block">First round
+                  <input value={formData.round1Name} onChange={e => setFormData({ ...formData, round1Name: e.target.value })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary" />
+                </label>
+                <label className="text-xs font-semibold text-muted block">Round details
+                  <textarea rows={3} value={formData.round1Desc} onChange={e => setFormData({ ...formData, round1Desc: e.target.value })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary" />
+                </label>
+                <label className="text-xs font-semibold text-muted block">Preparation tip
+                  <textarea rows={2} value={formData.tips} onChange={e => setFormData({ ...formData, tips: e.target.value })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary" />
+                </label>
+                <div className="flex justify-end gap-2 pt-2">
+                  <button type="button" onClick={() => setIsSubmitModalOpen(false)} className="px-4 py-2 rounded-xl text-xs text-muted hover:text-primary">Cancel</button>
+                  <button type="submit" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-1 text-white text-xs font-semibold"><Send size={13} /> Save debrief</button>
                 </div>
               </form>
             )}

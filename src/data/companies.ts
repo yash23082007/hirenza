@@ -193,7 +193,52 @@ const rawCompanies: Array<Omit<Company, "totalQuestions" | "difficultyBreakdown"
   },
 ];
 
-export const companies: Company[] = rawCompanies.map(c => ({
+const directoryCompanies: Array<Pick<Company, "id" | "name" | "logo" | "description">> = [
+  ["uber", "Uber", "U", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["netflix", "Netflix", "N", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["adobe", "Adobe", "A", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["atlassian", "Atlassian", "A", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["salesforce", "Salesforce", "S", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["linkedin", "LinkedIn", "L", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["walmart", "Walmart", "W", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["goldman-sachs", "Goldman Sachs", "G", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["jpmorgan", "JPMorgan Chase", "J", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["morgan-stanley", "Morgan Stanley", "M", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["cisco", "Cisco", "C", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["intel", "Intel", "I", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["nvidia", "NVIDIA", "N", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["oracle", "Oracle", "O", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["samsung", "Samsung", "S", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["paypal", "PayPal", "P", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["stripe", "Stripe", "S", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["airbnb", "Airbnb", "A", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["bloomberg", "Bloomberg", "B", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["expedia", "Expedia", "E", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["servicenow", "ServiceNow", "S", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["vmware", "VMware", "V", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["qualcomm", "Qualcomm", "Q", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["zoho", "Zoho", "Z", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["tcs", "TCS", "T", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["infosys", "Infosys", "I", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["wipro", "Wipro", "W", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["accenture", "Accenture", "A", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["cognizant", "Cognizant", "C", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["deloitte", "Deloitte", "D", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["ibm", "IBM", "I", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["swiggy", "Swiggy", "S", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["zomato", "Zomato", "Z", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["razorpay", "Razorpay", "R", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["phonepe", "PhonePe", "P", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["groww", "Groww", "G", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+  ["myntra", "Myntra", "M", "Company DSA directory entry; curated coverage is being expanded from public problem sources."],
+].map(([id, name, logo, description]) => ({ id, name, logo, description }));
+
+const allCompanies = [
+  ...rawCompanies,
+  ...directoryCompanies.map(company => ({ ...company, problems: [] })),
+];
+
+export const companies: Company[] = allCompanies.map(c => ({
   id: c.id,
   name: c.name,
   logo: c.logo,

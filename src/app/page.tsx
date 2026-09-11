@@ -7,6 +7,7 @@ import { PaletteDemo } from "@/components/marketing/PaletteDemo";
 import { ATSLinterDemo } from "@/components/marketing/ATSLinterDemo";
 import { FeatureShowcase, RevealSection } from "@/components/marketing/FeatureShowcase";
 import { TwoColumnShowcase } from "@/components/marketing/TwoColumnShowcase";
+import { CompanyDirectory } from "@/components/marketing/CompanyDirectory";
 import {
   RoleWiseMockup,
   InterviewQuestionsMockup,
@@ -50,6 +51,8 @@ export default function HomePage() {
 
       {/* Flagship Two-Column Showcase (Hynts §§6–10 Parity) */}
       <TwoColumnShowcase />
+
+      <CompanyDirectory />
 
       <FeatureShowcase
         label="Role Wise Sheets"

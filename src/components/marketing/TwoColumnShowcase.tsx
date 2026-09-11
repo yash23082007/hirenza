@@ -47,17 +47,17 @@ export function TwoColumnShowcase() {
                 Company DSA Archives
               </span>
               <h3 className="text-2xl md:text-3xl font-extrabold text-primary tracking-tight mb-3">
-                Targeted Archives for {TOTAL_COMPANIES} Engineering Leaders
+                A company directory for your next target
               </h3>
               <p className="text-secondary text-sm md:text-base leading-relaxed mb-4">
-                Weighted readiness scores calibrated from actual OA and technical onsite interview
-                questions. Filter by frequency, difficulty, and algorithmic pattern.
+                Browse {TOTAL_COMPANIES} company targets, then open the curated tracks with problem-level
+                progress, frequency, difficulty, and algorithmic pattern filters.
               </p>
               <Link
                 href="/preparation/company-wise-dsa"
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-purple-300 hover:text-purple-200 transition-colors"
               >
-                View Company Tracks <ArrowUpRight size={14} />
+                Browse Company DSA <ArrowUpRight size={14} />
               </Link>
             </div>
 

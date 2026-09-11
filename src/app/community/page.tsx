@@ -137,7 +137,6 @@ export default function CommunityPage() {
             </p>
           </div>
         </div>
-        </div>
       </section>
 
       <section className="py-16 px-6 border-t border-border">

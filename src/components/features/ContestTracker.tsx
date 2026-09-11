@@ -104,6 +104,12 @@ function getServerTime() {
   return 0;
 }
 
+function getUpcomingContests(items: ContestItem[], now: number) {
+  return items
+    .filter(contest => new Date(contest.startTime).getTime() + contest.durationMinutes * 60000 > now)
+    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+}
+
 export function ContestTracker({ className = "" }: { className?: string }) {
   const [platformFilter, setPlatformFilter] = useState<string>("All");
   const [contests, setContests] = useState<ContestItem[]>(() => {
@@ -194,9 +200,10 @@ export function ContestTracker({ className = "" }: { className?: string }) {
   }, []);
 
   const filteredContests = useMemo(() => {
-    if (platformFilter === "All") return contests;
-    return contests.filter(c => c.platform === platformFilter);
-  }, [platformFilter, contests]);
+    const upcoming = getUpcomingContests(contests, now);
+    if (platformFilter === "All") return upcoming;
+    return upcoming.filter(c => c.platform === platformFilter);
+  }, [platformFilter, contests, now]);
 
   const platformBadgeColor = (platform: ContestItem["platform"]) => {
     switch (platform) {

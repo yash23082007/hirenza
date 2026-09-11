@@ -1,20 +1,11 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import Giscus from "@giscus/react";
-import { useEffect, useState } from "react";
+import { useTheme } from "@/hooks/useTheme";
 
 export function GiscusEmbed() {
-  const { theme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return <div className="h-40 animate-pulse bg-surface-2 rounded-xl"></div>;
-
-  const giscusTheme = resolvedTheme === "dark" || theme === "dark" ? "transparent_dark" : "light";
+  const { theme } = useTheme();
+  const giscusTheme = theme === "dark" ? "transparent_dark" : "light";
 
   return (
     <div className="mt-16 pt-8 border-t border-border w-full">

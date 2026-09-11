@@ -138,10 +138,10 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                             {company.name}
                           </h3>
                           <span className="text-[10px] text-muted font-mono block">
-                            {company.problems.length} Curated Questions
+                            {company.problems.length > 0 ? `${company.problems.length} Curated Questions` : "Directory listing"}
                           </span>
-                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400 font-medium mt-0.5">
-                            <ShieldCheck size={11} /> 2026 Verified
+                          <span className={`inline-flex items-center gap-1 text-[10px] font-medium mt-0.5 ${company.problems.length > 0 ? "text-emerald-400" : "text-muted"}`}>
+                            <ShieldCheck size={11} /> {company.problems.length > 0 ? "Curated track" : "Coverage queued"}
                           </span>
                         </div>
                       </div>
