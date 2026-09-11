@@ -18,9 +18,8 @@ const ANNOUNCEMENTS: Announcement[] = [
     id: "placement-checklist",
     icon: <Sparkles size={13} className="text-amber-800 fill-amber-800" />,
     text: "Get the 90-day placement checklist: curated roadmap, pattern weights & weekly milestones.",
-    linkText: "Get Free Checklist",
-    href: "https://docs.google.com/forms/d/e/1FAIpQLSc_fake_placeholder_link/viewform",
-    external: true,
+    linkText: "Generate Free Plan",
+    href: "/onboarding",
   },
   {
     id: "daily-challenge",

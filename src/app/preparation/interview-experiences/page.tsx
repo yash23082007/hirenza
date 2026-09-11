@@ -457,6 +457,9 @@ function InterviewExperiencesContent() {
               </form>
             )}
           </div>
+        </div>
+      )}
+
       {/* Community discussions (T8.1) */}
       <GiscusEmbed />
     </div>
