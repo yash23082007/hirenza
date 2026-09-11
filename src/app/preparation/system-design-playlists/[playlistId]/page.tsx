@@ -5,6 +5,7 @@ import { ExternalLink, Network, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
+import { ResourceCard } from "@/components/ui/primitives/ResourceCard";
 
 export default function SystemDesignPlaylistDetailPage() {
   const params = useParams();
@@ -35,16 +36,14 @@ export default function SystemDesignPlaylistDetailPage() {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredPlaylists.map(playlist => (
-          <a
+          <ResourceCard
             key={playlist.id}
             href={playlist.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group card overflow-hidden flex flex-col justify-between hover:border-purple-500/40 transition-all block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-1"
-          >
-            <div>
-              {/* Graphical Playlist Cover Art */}
-              <div className={`aspect-video rounded-xl bg-gradient-to-br ${playlist.gradient || "from-slate-800 to-indigo-950"} p-5 flex flex-col justify-between relative overflow-hidden shadow-inner`}>
+            className="group !p-0 !gap-0 overflow-hidden"
+            visual={
+              <div className={`aspect-video bg-gradient-to-br ${playlist.gradient || "from-slate-800 to-indigo-950"} p-5 flex flex-col justify-between relative overflow-hidden shadow-inner`}>
                 <div className="flex items-center justify-between z-10">
                   <span className="text-[10px] font-bold uppercase tracking-wider bg-black/50 backdrop-blur-md px-2.5 py-1 rounded-full text-white/90 border border-white/10">
                     {playlist.tag || "System Design"}
@@ -61,24 +60,23 @@ export default function SystemDesignPlaylistDetailPage() {
                   </h3>
                 </div>
               </div>
-
-              {/* Card Body */}
-              <div className="p-4">
-                <p className="text-xs text-secondary line-clamp-2 leading-relaxed">
-                  {playlist.description}
-                </p>
-              </div>
+            }
+          >
+            <div className="p-4 pt-0">
+              <p className="text-xs text-secondary line-clamp-2 leading-relaxed">
+                {playlist.description}
+              </p>
             </div>
-
-            <div className="p-4 pt-0 flex items-center justify-between border-t border-border-soft mt-2 text-xs">
-              <span className="text-muted flex items-center gap-1 font-medium">
+            
+            <div className="p-4 pt-0 mt-auto border-t border-border-soft flex flex-row items-center justify-between text-xs w-full pb-3 mb-1">
+              <span className="text-muted flex items-center gap-1 font-medium mt-3">
                 <Network size={14} className="text-purple-1" /> Architecture Guide
               </span>
-              <span className="text-purple-1 font-bold group-hover:underline inline-flex items-center gap-1">
+              <span className="text-purple-1 font-bold group-hover:underline inline-flex items-center gap-1 mt-3">
                 Explore Resource <ExternalLink size={11} />
               </span>
             </div>
-          </a>
+          </ResourceCard>
         ))}
       </div>
     </div>

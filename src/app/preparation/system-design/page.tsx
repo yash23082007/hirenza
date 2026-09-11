@@ -6,6 +6,7 @@ import { useProgress } from "@/hooks/useProgress";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { Building2, Check, Star } from "lucide-react";
 import { QuestionRow } from "@/components/ui/primitives/QuestionRow";
+import { GiscusEmbed } from "@/components/community/GiscusEmbed";
 
 export default function SystemDesignSheetPage() {
   const { isCompleted, isBookmarked, toggleComplete, toggleBookmark } = useProgress();
@@ -199,6 +200,8 @@ export default function SystemDesignSheetPage() {
           <p>No system design topics match this filter.</p>
         </div>
       )}
+      
+      <GiscusEmbed />
     </div>
   );
 }

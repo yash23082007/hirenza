@@ -22,6 +22,7 @@ import { ResourceCard } from "@/components/ui/primitives/ResourceCard";
 import { useProgress } from "@/hooks/useProgress";
 import { FocusTimer } from "@/components/features/FocusTimer";
 import { ProgressRing } from "@/components/ui/ProgressRing";
+import { GiscusEmbed } from "@/components/community/GiscusEmbed";
 
 export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
   const { getStatus, setStatus, isBookmarked, toggleBookmark } = useProgress();
@@ -607,6 +608,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
             );
           })}
         </div>
+        <GiscusEmbed />
       </div>
     );
   }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import React from "react";
 
 export interface ResourceCardProps {
-  title: string;
+  title?: string;
   description?: string;
   visual?: React.ReactNode;
   meta?: React.ReactNode;
@@ -15,6 +15,8 @@ export interface ResourceCardProps {
   };
   actions?: React.ReactNode;
   href?: string;
+  target?: string;
+  rel?: string;
   onClick?: () => void;
   className?: string;
   children?: React.ReactNode;
@@ -29,6 +31,8 @@ export function ResourceCard({
   badge,
   actions,
   href,
+  target,
+  rel,
   onClick,
   className = "",
   children,
@@ -52,9 +56,11 @@ export function ResourceCard({
         {visual && <div className="mb-4 overflow-hidden rounded-xl">{visual}</div>}
 
         <div className="flex items-start justify-between gap-3 mb-2">
-          <h3 className="font-semibold text-primary text-base group-hover:text-purple-300 transition-colors line-clamp-1">
-            {title}
-          </h3>
+          {title && (
+            <h3 className="font-semibold text-primary text-base group-hover:text-purple-300 transition-colors line-clamp-1">
+              {title}
+            </h3>
+          )}
           {badge && (
             <span
               className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full border shrink-0 ${
@@ -99,7 +105,7 @@ export function ResourceCard({
 
   if (href) {
     return (
-      <Link href={href} className="block no-underline">
+      <Link href={href} target={target} rel={rel} className="block no-underline">
         {cardContent}
       </Link>
     );

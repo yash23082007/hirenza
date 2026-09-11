@@ -16,28 +16,29 @@ interface Announcement {
 const ANNOUNCEMENTS: Announcement[] = [
   {
     id: "placement-checklist",
-    icon: <Sparkles size={13} className="text-amber-300 fill-amber-300/40" />,
+    icon: <Sparkles size={13} className="text-amber-800 fill-amber-800" />,
     text: "Get the 90-day placement checklist: curated roadmap, pattern weights & weekly milestones.",
     linkText: "Get Free Checklist",
-    href: "/onboarding",
+    href: "https://docs.google.com/forms/d/e/1FAIpQLSc_fake_placeholder_link/viewform",
+    external: true,
   },
   {
     id: "daily-challenge",
-    icon: <Zap size={13} className="text-purple-400 fill-purple-400/30" />,
+    icon: <Zap size={13} className="text-amber-900 fill-amber-900/60" />,
     text: "Daily Challenge is live: practice one high-frequency question each day.",
     linkText: "Solve Today's Problem",
     href: "/preparation/daily",
   },
   {
     id: "private-architecture",
-    icon: <ShieldCheck size={13} className="text-emerald-400" />,
+    icon: <ShieldCheck size={13} className="text-emerald-700" />,
     text: "Private by architecture: 100% offline-first, client storage, zero server tracking.",
     linkText: "Learn More",
     href: "/about",
   },
   {
     id: "algorithmic-patterns",
-    icon: <Tag size={13} className="text-cyan-400" />,
+    icon: <Tag size={13} className="text-blue-700" />,
     text: "Master 20 essential algorithmic patterns to tackle FAANG interview rounds.",
     linkText: "View Patterns",
     href: "/preparation/20-patterns",
@@ -85,25 +86,25 @@ export function AnnouncementBar() {
   const current = ANNOUNCEMENTS[currentIndex];
 
   return (
-    <aside aria-label="Announcement" className="relative z-40 bg-gradient-to-r from-purple-950/70 via-surface-2 to-purple-950/70 border-b border-purple-1/20 py-2 px-4 text-xs">
+    <aside aria-label="Announcement" className="relative z-40 bg-brand-yellow border-b border-amber-500/20 py-2 px-4 text-xs">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-        <div className="flex-1 flex items-center justify-center gap-2 text-center text-secondary">
+        <div className="flex-1 flex items-center justify-center gap-2 text-center text-amber-950">
           <span className="flex-shrink-0">{current.icon}</span>
-          <span>{current.text}</span>
+          <span className="font-medium">{current.text}</span>
           <Link
             href={current.href}
             target={current.external ? "_blank" : undefined}
             rel={current.external ? "noopener noreferrer" : undefined}
-            className="inline-flex items-center gap-1 font-semibold text-primary hover:text-purple-1 underline underline-offset-2 ml-1"
+            className="inline-flex items-center gap-1 font-bold text-black hover:text-amber-800 underline underline-offset-2 ml-1"
           >
             <span>{current.linkText}</span>
             <ArrowRight size={11} />
           </Link>
         </div>
-
         <button
           onClick={handleDismiss}
-          className="text-muted hover:text-primary transition-colors p-1 rounded-md hover:bg-surface-3 flex-shrink-0"
+          className="flex-shrink-0 text-amber-800 hover:text-black transition-colors"
+          title="Dismiss"
           aria-label="Dismiss announcement"
         >
           <X size={14} />
