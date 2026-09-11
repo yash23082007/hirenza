@@ -140,41 +140,50 @@ export function ContestTracker({ className = "" }: { className?: string }) {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 4000);
 
-        const response = await fetch("https://codeforces.com/api/contest.list?gym=false", {
-          signal: controller.signal,
-        });
+        const [cfResponse, lcResponse] = await Promise.all([
+          fetch("https://codeforces.com/api/contest.list?gym=false", { signal: controller.signal }).catch(() => null),
+          fetch("/api/contests", { signal: controller.signal }).catch(() => null)
+        ]);
         clearTimeout(timeout);
 
-        if (!response.ok) return;
-        const data = await response.json();
+        let upcomingCf: ContestItem[] = [];
+        let upcomingLc: ContestItem[] = [];
 
-        if (data.status === "OK" && Array.isArray(data.result)) {
-          // Filter upcoming contests (phase === "BEFORE")
-          const upcomingCf: ContestItem[] = data.result
-            .filter((c: { phase: string; startTimeSeconds: number }) => c.phase === "BEFORE" && c.startTimeSeconds)
-            .slice(0, 5)
-            .map((c: { id: number; name: string; startTimeSeconds: number; durationSeconds: number }) => ({
-              id: `cf-${c.id}`,
-              platform: "Codeforces" as const,
-              title: c.name,
-              startTime: new Date(c.startTimeSeconds * 1000).toISOString(),
-              durationMinutes: Math.round(c.durationSeconds / 60),
-              url: `https://codeforces.com/contest/${c.id}`,
-            }));
-
-          if (upcomingCf.length > 0) {
-            // Merge with non-Codeforces deterministic contests
-            const nonCf = UPCOMING_CONTESTS.filter(c => c.platform !== "Codeforces");
-            const merged = [...upcomingCf, ...nonCf].sort(
-              (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-            );
-
-            setContests(merged);
-            localStorage.setItem(
-              "hirenza-contests-cache",
-              JSON.stringify({ timestamp: Date.now(), items: merged })
-            );
+        if (cfResponse?.ok) {
+          const data = await cfResponse.json();
+          if (data.status === "OK" && Array.isArray(data.result)) {
+            upcomingCf = data.result
+              .filter((c: { phase: string; startTimeSeconds: number }) => c.phase === "BEFORE" && c.startTimeSeconds)
+              .slice(0, 5)
+              .map((c: { id: number; name: string; startTimeSeconds: number; durationSeconds: number }) => ({
+                id: `cf-${c.id}`,
+                platform: "Codeforces" as const,
+                title: c.name,
+                startTime: new Date(c.startTimeSeconds * 1000).toISOString(),
+                durationMinutes: Math.round(c.durationSeconds / 60),
+                url: `https://codeforces.com/contest/${c.id}`,
+              }));
           }
+        }
+
+        if (lcResponse?.ok) {
+          const data = await lcResponse.json();
+          if (data.success && Array.isArray(data.leetcode)) {
+            upcomingLc = data.leetcode;
+          }
+        }
+
+        if (upcomingCf.length > 0 || upcomingLc.length > 0) {
+          const nonCfLc = UPCOMING_CONTESTS.filter(c => c.platform !== "Codeforces" && c.platform !== "LeetCode");
+          const merged = [...upcomingCf, ...upcomingLc, ...nonCfLc].sort(
+            (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+          );
+
+          setContests(merged);
+          localStorage.setItem(
+            "hirenza-contests-cache",
+            JSON.stringify({ timestamp: Date.now(), items: merged })
+          );
         }
       } catch {
         // Offline or API unreachable: gracefully stay on default deterministic schedule

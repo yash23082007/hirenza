@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MarketingNavbar } from "@/components/navigation/MarketingNavbar";
 import { Footer } from "@/components/marketing/Footer";
 import { Users, MessageSquare, Briefcase, ArrowRight, ExternalLink } from "lucide-react";
+import { GiscusEmbed } from "@/components/community/GiscusEmbed";
 
 export const metadata: Metadata = {
   title: "Community Discussions & Engineering Circles",
@@ -135,6 +136,13 @@ export default function CommunityPage() {
               • <strong className="text-primary">Constructive Code Reviews:</strong> Suggest asymptotic space and time optimizations respectfully, with concrete dry-run examples.
             </p>
           </div>
+        </div>
+        </div>
+      </section>
+
+      <section className="py-16 px-6 border-t border-border">
+        <div className="max-w-4xl mx-auto">
+          <GiscusEmbed />
         </div>
       </section>
 

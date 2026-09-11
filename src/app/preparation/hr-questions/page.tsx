@@ -9,6 +9,7 @@ import { FilterTabs } from "@/components/ui/primitives/FilterTabs";
 import { SearchBar } from "@/components/ui/primitives/SearchBar";
 import { SectionHeading } from "@/components/ui/primitives/SectionHeading";
 import { Timer, Play, Pause, RotateCcw, Lightbulb, Check, Star } from "lucide-react";
+import { GiscusEmbed } from "@/components/community/GiscusEmbed";
 
 export default function HRQuestionsPage() {
   const { isCompleted, isBookmarked, toggleComplete, toggleBookmark } = useProgress();
@@ -385,6 +386,8 @@ export default function HRQuestionsPage() {
           </div>
         )}
       </div>
+
+      <GiscusEmbed />
     </div>
   );
 }

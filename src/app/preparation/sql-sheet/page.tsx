@@ -1,6 +1,7 @@
 import { sqlQuestions } from "@/data";
 import { TOTAL_SQL_QUESTIONS } from "@/data/stats";
 import { QuestionList } from "@/components/questions/QuestionList";
+import { GiscusEmbed } from "@/components/community/GiscusEmbed";
 
 export const metadata = {
   title: `Top ${TOTAL_SQL_QUESTIONS} SQL Interview Queries for SDE & Analyst Roles (2026)`,
@@ -39,6 +40,7 @@ export default function SQLSheetPage() {
       </div>
 
       <QuestionList questions={questions} storageKey="sql" />
+      <GiscusEmbed />
     </div>
   );
 }
