@@ -417,7 +417,8 @@ export function CompanyWiseClient({ companyId }: { companyId?: string }) {
                         return (
                           <div
                             key={problem.id}
-                            className={`border rounded-xl p-3.5 sm:p-4 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 ${
+                            id={`problem-${problem.id}`}
+                            className={`border rounded-xl p-3.5 sm:p-4 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 scroll-mt-24 target:ring-2 target:ring-purple-1/60 target:bg-purple-900/10 ${
                               isSolved
                                 ? "bg-green-950/15 border-green-500/30"
                                 : "bg-surface-2 border-border hover:border-purple-500/20"

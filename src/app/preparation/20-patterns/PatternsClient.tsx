@@ -173,7 +173,8 @@ export function PatternsClient({ patternId }: { patternId?: string }) {
                       return (
                         <div
                           key={pIdx}
-                          className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${
+                          id={`problem-pat-${pattern.id}-${pIdx}`}
+                          className={`flex items-center justify-between p-3.5 rounded-xl border transition-all scroll-mt-24 target:ring-2 target:ring-purple-1/60 target:bg-purple-900/10 ${
                             isSolved
                               ? "bg-green-950/20 border-green-500/30"
                               : "bg-surface-2 border-border-soft hover:border-border"

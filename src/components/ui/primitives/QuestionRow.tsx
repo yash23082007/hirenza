@@ -22,6 +22,7 @@ export interface QuestionRowProps {
 }
 
 export function QuestionRow({
+  id,
   index,
   title,
   subtitle,
@@ -66,7 +67,10 @@ export function QuestionRow({
   const hasExpandable = Boolean(expandableContent);
 
   return (
-    <div className="transition-colors">
+    <div
+      id={id ? `problem-${id}` : undefined}
+      className="transition-colors scroll-mt-24 target:ring-2 target:ring-purple-1/60 target:bg-purple-900/10 rounded-xl"
+    >
       <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 hover:bg-surface-hover/70 transition-colors gap-3">
         {/* Eye path: Checkbox -> Index -> Title */}
         <div className="flex items-center gap-3 min-w-0 flex-1">

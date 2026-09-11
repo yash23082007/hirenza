@@ -46,7 +46,7 @@ export function getAllCatalogItems(): CatalogItem[] {
           topic: p.topic || t.name,
           difficulty: p.difficulty,
           urls,
-          href: `/preparation/dsa-sheets/${sheet.id}`,
+          href: `/preparation/dsa-sheets/${sheet.id}#problem-${p.id}`,
           frequency: p.frequency,
         });
       });
@@ -68,7 +68,7 @@ export function getAllCatalogItems(): CatalogItem[] {
       topic: q.category || q.topic,
       difficulty: q.difficulty,
       urls,
-      href: "/preparation/sql-sheet",
+      href: `/preparation/sql-sheet#problem-sql-${q.id}`,
     });
   });
 
@@ -85,7 +85,7 @@ export function getAllCatalogItems(): CatalogItem[] {
       topic: sd.category,
       difficulty: "Medium",
       urls,
-      href: "/preparation/system-design",
+      href: `/preparation/system-design#problem-sd-${sd.id}`,
       hint: sd.description,
     });
   });
@@ -104,7 +104,7 @@ export function getAllCatalogItems(): CatalogItem[] {
         topic: q.topic || q.category,
         difficulty: q.difficulty,
         urls,
-        href: "/preparation/core-subjects",
+        href: `/preparation/core-subjects#problem-cs-${q.id}`,
       });
     });
   });
@@ -123,7 +123,7 @@ export function getAllCatalogItems(): CatalogItem[] {
         topic: p.topic,
         difficulty: p.difficulty,
         urls,
-        href: "/preparation/package-wise-dsa",
+        href: `/preparation/package-wise-dsa#problem-pkg-${p.id}`,
         frequency: p.frequency,
       });
     });
@@ -144,7 +144,7 @@ export function getAllCatalogItems(): CatalogItem[] {
         topic: p.topic,
         difficulty: p.difficulty,
         urls,
-        href: `/preparation/company-wise-dsa/${c.id}`,
+        href: `/preparation/company-wise-dsa/${c.id}#problem-${p.id}`,
         frequency: p.frequency,
       });
     });
@@ -164,7 +164,7 @@ export function getAllCatalogItems(): CatalogItem[] {
         topic: pat.name,
         difficulty: p.difficulty,
         urls,
-        href: `/preparation/20-patterns/${pat.id}`,
+        href: `/preparation/20-patterns/${pat.id}#problem-pat-${pat.id}-${idx}`,
         hint: pat.description,
       });
     });

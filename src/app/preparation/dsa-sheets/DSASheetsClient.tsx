@@ -451,7 +451,8 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                           return (
                             <div
                               key={problem.id}
-                              className={`p-3.5 rounded-xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-3 ${
+                              id={`problem-${problem.id}`}
+                              className={`p-3.5 rounded-xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-3 scroll-mt-24 target:ring-2 target:ring-purple-1/60 target:bg-purple-900/10 ${
                                 status === "mastered"
                                   ? "bg-purple-950/20 border-purple-500/30"
                                   : status === "solved"
