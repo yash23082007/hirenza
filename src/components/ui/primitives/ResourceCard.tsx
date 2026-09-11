@@ -17,6 +17,7 @@ export interface ResourceCardProps {
   href?: string;
   onClick?: () => void;
   className?: string;
+  children?: React.ReactNode;
 }
 
 export function ResourceCard({
@@ -30,6 +31,7 @@ export function ResourceCard({
   href,
   onClick,
   className = "",
+  children,
 }: ResourceCardProps) {
   const badgeClasses = {
     default: "bg-surface-3 text-secondary border-border-soft",
@@ -82,6 +84,8 @@ export function ResourceCard({
             ))}
           </div>
         )}
+
+        {children && <div className="mb-3">{children}</div>}
       </div>
 
       {(meta || actions) && (

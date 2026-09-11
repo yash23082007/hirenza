@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { resumeTips, resumeSections, resumeMistakes, atsTips, resumeTemplates } from "@/data";
+import { ResourceCard } from "@/components/ui/primitives/ResourceCard";
 import {
   FileText,
   AlertTriangle,
@@ -477,58 +478,48 @@ export default function ResumePage() {
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {resumeTemplates.map(template => (
-              <div key={template.id} className="card p-6 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <h3 className="font-bold text-base text-primary">{template.name}</h3>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-1/10 text-purple-400 font-bold border border-purple-1/20 shrink-0">
-                      {template.style}
-                    </span>
-                  </div>
-                  <p className="text-xs text-secondary mb-4 leading-relaxed">{template.description}</p>
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {template.tags.map((tag, i) => (
-                      <span key={i} className="text-[10px] px-2 py-0.5 rounded bg-surface-3 text-muted">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+              <ResourceCard
+                key={template.id}
+                title={template.name}
+                description={template.description}
+                badge={{ text: template.style, variant: "purple" }}
+                tags={template.tags}
+                actions={
+                  <div className="flex flex-col gap-2 w-full">
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setPreviewTemplate(template.id)}
+                        className="inline-flex items-center justify-center gap-1.5 py-2 rounded-lg bg-surface-3 hover:bg-surface-hover text-secondary font-medium transition-colors cursor-pointer"
+                      >
+                        <Eye size={13} /> Preview
+                      </button>
+                      <button
+                        onClick={() => downloadRealTemplate(template)}
+                        className="inline-flex items-center justify-center gap-1.5 py-2 rounded-lg bg-purple-1 text-white font-medium hover:bg-purple-1/90 transition-colors cursor-pointer"
+                      >
+                        <Download size={13} /> .md
+                      </button>
+                      <button
+                        onClick={() => downloadLatexTemplate(template)}
+                        className="col-span-2 inline-flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-surface-2 border border-border hover:border-purple-1/30 text-secondary hover:text-primary font-medium transition-colors cursor-pointer text-[11px]"
+                      >
+                        <Download size={12} /> Download LaTeX (.tex)
+                      </button>
+                    </div>
 
-                <div className="pt-4 border-t border-border flex flex-col gap-2 text-xs">
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => setPreviewTemplate(template.id)}
-                      className="inline-flex items-center justify-center gap-1.5 py-2 rounded-lg bg-surface-3 hover:bg-surface-hover text-secondary font-medium transition-colors cursor-pointer"
-                    >
-                      <Eye size={13} /> Preview
-                    </button>
-                    <button
-                      onClick={() => downloadRealTemplate(template)}
-                      className="inline-flex items-center justify-center gap-1.5 py-2 rounded-lg bg-purple-1 text-white font-medium hover:bg-purple-1/90 transition-colors cursor-pointer"
-                    >
-                      <Download size={13} /> .md
-                    </button>
-                    <button
-                      onClick={() => downloadLatexTemplate(template)}
-                      className="col-span-2 inline-flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-surface-2 border border-border hover:border-purple-1/30 text-secondary hover:text-primary font-medium transition-colors cursor-pointer text-[11px]"
-                    >
-                      <Download size={12} /> Download LaTeX (.tex)
-                    </button>
+                    {template.overleafUrl && (
+                      <a
+                        href={template.overleafUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 font-medium transition-colors border border-emerald-500/20 text-[11px]"
+                      >
+                        <ExternalLink size={12} /> Open in Overleaf
+                      </a>
+                    )}
                   </div>
-
-                  {template.overleafUrl && (
-                    <a
-                      href={template.overleafUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-1.5 py-1 text-muted hover:text-primary transition-colors text-[11px]"
-                    >
-                      Open in Overleaf LaTeX <ExternalLink size={11} />
-                    </a>
-                  )}
-                </div>
-              </div>
+                }
+              />
             ))}
           </div>
         </div>

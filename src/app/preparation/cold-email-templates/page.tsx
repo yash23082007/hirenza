@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { emailTemplates } from "@/data";
 import { Mail, Copy, Check, Sparkles, Download } from "lucide-react";
+import { ResourceCard } from "@/components/ui/primitives/ResourceCard";
 
 export default function ColdEmailTemplatesPage() {
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>("frontend-referral");
@@ -123,23 +124,18 @@ export default function ColdEmailTemplatesPage() {
 
             <div className="space-y-1.5 max-h-[260px] overflow-y-auto custom-scrollbar pr-1">
               {filteredTemplates.map(template => (
-                <button
+                <ResourceCard
                   key={template.id}
+                  title={template.title}
+                  description={template.description}
                   onClick={() => setSelectedTemplateId(template.id)}
-                  className={`w-full text-left p-3 rounded-xl border transition-all text-xs flex items-center justify-between cursor-pointer ${
+                  badge={{ text: template.category, variant: "orange" }}
+                  className={`!p-3 !rounded-xl !gap-2 !border-border-soft hover:!border-border ${
                     selectedTemplateId === template.id
-                      ? "bg-purple-950/30 border-purple-500/50 text-white font-bold"
-                      : "bg-surface-3 border-border-soft text-secondary hover:border-border hover:text-primary"
+                      ? "!bg-purple-950/30 !border-purple-500/50 [&_h3]:!text-white [&_p]:!text-purple-200/70"
+                      : "!bg-surface-3"
                   }`}
-                >
-                  <div className="min-w-0 flex-1 pr-2">
-                    <span className="truncate block">{template.title}</span>
-                    <span className="text-[10px] text-muted font-normal block truncate mt-0.5">{template.description}</span>
-                  </div>
-                  <span className="text-[10px] text-orange-400 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-md shrink-0">
-                    {template.category}
-                  </span>
-                </button>
+                />
               ))}
 
               {filteredTemplates.length === 0 && (

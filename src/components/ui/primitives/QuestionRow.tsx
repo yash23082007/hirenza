@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Star, ChevronDown, ChevronRight, ExternalLink } from "lucide-react";
+import { Check, Star, ChevronDown, ChevronRight, ExternalLink, Video } from "lucide-react";
 
 export interface QuestionRowProps {
   id: string;
@@ -15,7 +15,9 @@ export interface QuestionRowProps {
   onToggleBookmark: () => void;
   tags?: string[];
   externalUrl?: string;
+  videoUrl?: string;
   categoryBadge?: string;
+  type?: "HLD" | "LLD";
   expandableContent?: React.ReactNode;
 }
 
@@ -30,7 +32,9 @@ export function QuestionRow({
   onToggleBookmark,
   tags,
   externalUrl,
+  videoUrl,
   categoryBadge,
+  type,
   expandableContent,
 }: QuestionRowProps) {
   const [expanded, setExpanded] = useState(false);
@@ -43,6 +47,17 @@ export function QuestionRow({
         return "bg-orange-500/10 text-orange-400 border border-orange-500/20";
       case "Hard":
         return "bg-red-500/10 text-red-400 border border-red-500/20";
+      default:
+        return "bg-surface-3 text-secondary border border-border-soft";
+    }
+  };
+
+  const typeBadgeClass = (t?: string) => {
+    switch (t) {
+      case "HLD":
+        return "bg-blue-500/10 text-blue-400 border border-blue-500/20";
+      case "LLD":
+        return "bg-orange-500/10 text-orange-400 border border-orange-500/20";
       default:
         return "bg-surface-3 text-secondary border border-border-soft";
     }
@@ -147,6 +162,17 @@ export function QuestionRow({
             </span>
           )}
 
+          {/* Type Badge (HLD/LLD) */}
+          {type && (
+            <span
+              className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${typeBadgeClass(
+                type
+              )}`}
+            >
+              {type}
+            </span>
+          )}
+
           {/* External Link */}
           {externalUrl && (
             <a
@@ -158,6 +184,20 @@ export function QuestionRow({
               aria-label={`Open external link for ${title}`}
             >
               <ExternalLink size={14} />
+            </a>
+          )}
+
+          {/* Video Link */}
+          {videoUrl && (
+            <a
+              href={videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded transition-colors"
+              title="Watch breakdown video"
+              aria-label={`Watch breakdown video for ${title}`}
+            >
+              <Video size={14} />
             </a>
           )}
 

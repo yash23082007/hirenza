@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { technologies, interviewQuestionsData } from "@/data";
 import { Search, Code2, ArrowLeft, Star, CheckCircle2 } from "lucide-react";
 import { useProgress } from "@/hooks/useProgress";
+import { ResourceCard } from "@/components/ui/primitives/ResourceCard";
 
 const availableTechnologies = technologies.filter(t => interviewQuestionsData[t.id]?.length > 0);
 
@@ -193,28 +194,26 @@ export function MostAskedQuestionsClient({ techId }: { techId?: string }) {
             <h2 className="text-lg font-bold mb-4 text-secondary">{group}</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {groupTechs.map(tech => (
-                <div
+                <ResourceCard
                   key={tech.id}
+                  title={tech.name}
+                  description={tech.description}
                   onClick={() => handleSelectTech(tech.id)}
-                  className="card p-4 cursor-pointer hover:border-purple-1/30 transition-all group"
-                >
-                  <div
-                    className="w-12 h-12 rounded-xl mb-3 flex items-center justify-center text-lg font-bold group-hover:scale-105 transition-transform"
-                    style={{ background: `${tech.color}15`, color: tech.color }}
-                  >
-                    {tech.name.substring(0, 2)}
-                  </div>
-                  <h3 className="font-semibold text-sm mb-1 group-hover:text-purple-400 transition-colors">
-                    {tech.name}
-                  </h3>
-                  <p className="text-xs text-muted line-clamp-2 mb-3">{tech.description}</p>
-                  <div className="border-t border-border-soft pt-3 flex items-center gap-2">
-                    <Code2 size={12} className="text-muted" />
-                    <span className="text-xs text-secondary">
+                  visual={
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold group-hover:scale-105 transition-transform"
+                      style={{ background: `${tech.color}15`, color: tech.color }}
+                    >
+                      {tech.name.substring(0, 2)}
+                    </div>
+                  }
+                  meta={
+                    <span className="inline-flex items-center gap-2 text-xs font-medium text-secondary">
+                      <Code2 size={12} className="text-muted" />
                       {interviewQuestionsData[tech.id]?.length ?? 0} Questions
                     </span>
-                  </div>
-                </div>
+                  }
+                />
               ))}
             </div>
           </div>

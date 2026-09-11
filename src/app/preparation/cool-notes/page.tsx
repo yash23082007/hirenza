@@ -13,6 +13,7 @@ import {
   Bookmark,
 } from "lucide-react";
 import { useProgress } from "@/hooks/useProgress";
+import { ResourceCard } from "@/components/ui/primitives/ResourceCard";
 
 const PAGE_SIZE = 8;
 
@@ -305,48 +306,38 @@ function CoolNotesContent() {
       {/* Grid of Notes Cards */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {paginatedNotes.map(note => (
-          <div
+          <ResourceCard
             key={note.id}
+            title={note.title}
+            description={note.description}
             onClick={() => setActiveReadingNote(note)}
-            className="card p-5 cursor-pointer hover:border-purple-500/40 hover:-translate-y-1 transition-all flex flex-col justify-between group bg-surface-1 border border-border rounded-2xl shadow-sm"
-          >
-            <div>
-              {/* Visual Cover Banner with Custom Gradient */}
+            tags={[note.tag]}
+            meta={
+              <span className="inline-flex items-center gap-1 font-mono">
+                <Calendar size={11} /> {note.date}
+              </span>
+            }
+            actions={
+              <span className="text-purple-400 font-bold group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1">
+                Open Reader →
+              </span>
+            }
+            visual={
               <div
-                className={`w-full h-32 rounded-xl bg-gradient-to-br ${note.coverGradient} p-4 mb-4 flex flex-col justify-between text-white shadow-inner relative overflow-hidden group-hover:scale-[1.01] transition-transform`}
+                className={`w-full h-32 bg-gradient-to-br ${note.coverGradient} p-4 flex flex-col justify-between text-white shadow-inner relative overflow-hidden group-hover:scale-[1.02] transition-transform`}
               >
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-black/30 backdrop-blur-xs">
                     {note.category}
                   </span>
-                  <span className="text-xs opacity-80">{note.pages} pages</span>
+                  <span className="text-[11px] font-medium opacity-90">{note.pages} pages</span>
                 </div>
-                <div>
-                  <h4 className="font-extrabold text-sm leading-snug drop-shadow-sm">{note.title}</h4>
-                  <span className="text-[10px] opacity-90 block mt-0.5">{note.tag}</span>
+                <div className="text-4xl opacity-20 font-serif leading-none absolute -bottom-2 -right-2">
+                  {note.title.charAt(0)}
                 </div>
               </div>
-
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-[11px] text-muted">
-                  <span className="inline-flex items-center gap-1 font-mono">
-                    <Calendar size={11} /> {note.date}
-                  </span>
-                  <span className="text-purple-400 font-semibold">{note.tag}</span>
-                </div>
-                <p className="text-xs text-muted line-clamp-2 leading-relaxed">{note.description}</p>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-border-soft mt-4 flex items-center justify-between text-xs">
-              <span className="text-muted font-medium group-hover:text-secondary transition-colors">
-                Interactive Summary
-              </span>
-              <span className="text-purple-400 font-bold group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1">
-                Open Reader →
-              </span>
-            </div>
-          </div>
+            }
+          />
         ))}
       </div>
 

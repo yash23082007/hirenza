@@ -4,20 +4,12 @@ import { useState } from "react";
 import { systemDesignTopics } from "@/data/systemDesign";
 import { useProgress } from "@/hooks/useProgress";
 import { ProgressRing } from "@/components/ui/ProgressRing";
-import {
-  ExternalLink,
-  Video,
-  Check,
-  Star,
-  ChevronDown,
-  ChevronRight,
-  Building2,
-} from "lucide-react";
+import { Building2, Check, Star } from "lucide-react";
+import { QuestionRow } from "@/components/ui/primitives/QuestionRow";
 
 export default function SystemDesignSheetPage() {
   const { isCompleted, isBookmarked, toggleComplete, toggleBookmark } = useProgress();
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
-  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const getFullId = (id: string) => `sd-${id}`;
 
@@ -140,151 +132,30 @@ export default function SystemDesignSheetPage() {
           const fid = getFullId(topic.id);
           const solved = isCompleted(fid);
           const starred = isBookmarked(fid);
-          const isExpanded = expandedId === topic.id;
 
           return (
-            <div key={topic.id} className="transition-colors">
-              <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 hover:bg-surface-hover/70 transition-colors gap-3">
-                {/* Left: Checkbox + Number + Title */}
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <button
-                    type="button"
-                    role="checkbox"
-                    aria-checked={solved}
-                    aria-label={`Mark ${topic.title} as ${solved ? "incomplete" : "complete"}`}
-                    onClick={() =>
-                      toggleComplete(fid, {
-                        module: "system-design",
-                        topic: topic.category,
-                        difficulty: topic.designType === "HLD" ? "Hard" : "Medium",
-                      })
-                    }
-                    className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 cursor-pointer transition-all ${
-                      solved
-                        ? "bg-purple-1 border-purple-1"
-                        : "border-border hover:border-purple-1/60 bg-surface-2"
-                    }`}
-                  >
-                    {solved && <Check size={12} className="text-white stroke-[3]" />}
-                  </button>
-
-                  <span className="text-xs text-muted w-6 shrink-0 font-mono text-center">
-                    {idx + 1}.
-                  </span>
-
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    aria-expanded={isExpanded}
-                    onClick={() => setExpandedId(isExpanded ? null : topic.id)}
-                    onKeyDown={e => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        setExpandedId(isExpanded ? null : topic.id);
-                      }
-                    }}
-                    className="cursor-pointer min-w-0 flex-1 group"
-                  >
-                    <span
-                      className={`text-sm font-semibold transition-colors block truncate ${
-                        solved
-                          ? "text-muted line-through"
-                          : "text-primary group-hover:text-purple-400"
-                      }`}
-                    >
-                      {topic.title}
-                    </span>
-                    <span className="text-[11px] text-muted block truncate mt-0.5">
-                      {topic.description}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Right: Company Chips + HLD/LLD Badge + Links */}
-                <div className="flex items-center gap-3 shrink-0">
-                  {/* Company chips */}
-                  <div className="hidden md:flex items-center gap-1">
-                    {topic.companies.slice(0, 2).map(c => (
-                      <span
-                        key={c}
-                        className="text-[10px] font-medium px-2 py-0.5 rounded bg-surface-2 border border-border-soft text-secondary"
-                      >
-                        {c}
-                      </span>
-                    ))}
-                    {topic.companies.length > 2 && (
-                      <span className="text-[10px] text-muted">+{topic.companies.length - 2}</span>
-                    )}
-                  </div>
-
-                  {/* Type Badge */}
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
-                      topic.designType === "HLD"
-                        ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
-                        : "bg-orange-500/10 text-orange-400 border border-orange-500/20"
-                    }`}
-                  >
-                    {topic.designType}
-                  </span>
-
-                  {/* Star Bookmark */}
-                  <button
-                    type="button"
-                    onClick={() => toggleBookmark(fid)}
-                    className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                      starred
-                        ? "text-yellow-400 bg-yellow-400/10"
-                        : "text-muted hover:text-yellow-400 hover:bg-surface-3"
-                    }`}
-                    aria-label={starred ? `Remove bookmark from ${topic.title}` : `Bookmark ${topic.title}`}
-                  >
-                    <Star size={15} className={starred ? "fill-yellow-400" : ""} />
-                  </button>
-
-                  {/* Reference / Video Links */}
-                  <div className="flex items-center gap-1">
-                    {topic.referenceUrl && (
-                      <a
-                        href={topic.referenceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-1.5 text-muted hover:text-purple-400 hover:bg-surface-3 rounded transition-colors"
-                        title="View Architecture Reference"
-                        aria-label="View architecture reference"
-                      >
-                        <ExternalLink size={14} />
-                      </a>
-                    )}
-                    {topic.videoUrl && (
-                      <a
-                        href={topic.videoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded transition-colors"
-                        title="Watch System Design Breakdown"
-                        aria-label="Watch video breakdown"
-                      >
-                        <Video size={14} />
-                      </a>
-                    )}
-                  </div>
-
-                  {/* Chevron Toggle */}
-                  <button
-                    type="button"
-                    onClick={() => setExpandedId(isExpanded ? null : topic.id)}
-                    className="p-1 text-muted hover:text-primary rounded cursor-pointer"
-                    aria-label={isExpanded ? "Collapse concepts" : "Expand concepts"}
-                  >
-                    {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Expanded Concepts Drawer */}
-              {isExpanded && (
-                <div className="px-6 py-4 bg-surface-2/60 border-t border-border-soft text-xs space-y-3 animate-in fade-in duration-150">
+            <QuestionRow
+              key={topic.id}
+              id={fid}
+              index={idx + 1}
+              title={topic.title}
+              subtitle={topic.description}
+              solved={solved}
+              bookmarked={starred}
+              onToggleComplete={() =>
+                toggleComplete(fid, {
+                  module: "system-design",
+                  topic: topic.category,
+                  difficulty: topic.designType === "HLD" ? "Hard" : "Medium",
+                })
+              }
+              onToggleBookmark={() => toggleBookmark(fid)}
+              tags={topic.companies}
+              type={topic.designType}
+              externalUrl={topic.referenceUrl}
+              videoUrl={topic.videoUrl}
+              expandableContent={
+                <div className="space-y-3">
                   <div>
                     <h4 className="font-semibold text-secondary mb-1.5 uppercase tracking-wider text-[10px]">
                       Architecture Overview & Blueprint Requirements
@@ -317,8 +188,8 @@ export default function SystemDesignSheetPage() {
                     <span className="text-secondary font-medium">Category: {topic.category}</span>
                   </div>
                 </div>
-              )}
-            </div>
+              }
+            />
           );
         })}
       </div>

@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { useState, useMemo } from "react";
 import Image from "next/image";
+import { ResourceCard } from "@/components/ui/primitives/ResourceCard";
 import { useProgress } from "@/hooks/useProgress";
 import { FocusTimer } from "@/components/features/FocusTimer";
 import { ProgressRing } from "@/components/ui/ProgressRing";
@@ -635,13 +636,17 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
             totalProblems > 0 ? Math.round((solvedInThisSheet / totalProblems) * 100) : 0;
 
           return (
-            <div
+            <ResourceCard
               key={sheet.id}
-              className="card group p-5 flex flex-col justify-between hover:border-purple-500/40 transition-all rounded-2xl bg-surface-1 border border-border"
-            >
-              <div>
-                {sheet.banner && (
-                  <div className="relative w-full aspect-[16/9] mb-4 rounded-xl overflow-hidden border border-border bg-surface-2">
+              title={sheet.name}
+              description={`by ${sheet.educator} • ${sheet.description}`}
+              badge={{
+                text: sheet.level,
+                variant: sheet.level === "Beginner" ? "green" : sheet.level === "Intermediate" ? "orange" : "purple",
+              }}
+              visual={
+                sheet.banner ? (
+                  <div className="relative w-full aspect-[16/9] overflow-hidden border border-border bg-surface-2 group-hover:scale-[1.01] transition-transform">
                     <Image
                       src={sheet.banner}
                       alt={`${sheet.name} banner`}
@@ -650,90 +655,37 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       priority={sheet.id === "striver-a2z" || sheet.id === "neetcode-150"}
                     />
-                    <div className="absolute top-3 right-3">
-                      <span
-                        className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold backdrop-blur-md border ${
-                          sheet.level === "Beginner"
-                            ? "bg-green-500/20 text-green-300 border-green-500/40"
-                            : sheet.level === "Intermediate"
-                            ? "bg-orange-500/20 text-orange-300 border-orange-500/40"
-                            : "bg-red-500/20 text-red-300 border-red-500/40"
-                        }`}
-                      >
-                        {sheet.level}
-                      </span>
-                    </div>
                   </div>
-                )}
-
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <div className="flex items-center gap-2.5">
-                    {!sheet.banner && (
-                      <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0">
-                        <BookOpen size={18} className="text-purple-300" />
-                      </div>
-                    )}
-                    <div>
-                      <h3 className="text-lg font-bold text-primary group-hover:text-purple-300 transition-colors">
-                        {sheet.name}
-                      </h3>
-                      <p className="text-xs text-muted">by {sheet.educator}</p>
-                    </div>
+                ) : (
+                  <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0 mb-2">
+                    <BookOpen size={20} className="text-purple-300" />
                   </div>
-                  {!sheet.banner && (
-                    <span
-                      className={`text-xs px-2.5 py-0.5 rounded-full font-bold border ${
-                        sheet.level === "Beginner"
-                          ? "bg-green-500/10 text-green-400 border-green-500/20"
-                          : sheet.level === "Intermediate"
-                          ? "bg-orange-500/10 text-orange-400 border-orange-500/20"
-                          : "bg-red-500/10 text-red-400 border-red-500/20"
-                      }`}
-                    >
-                      {sheet.level}
-                    </span>
-                  )}
+                )
+              }
+              tags={sheet.topics.slice(0, 4).map(t => `${t.name} (${t.problems.length})`)}
+            >
+              <div className="mt-2 mb-1">
+                <div className="flex justify-between text-xs text-muted mb-1.5">
+                  <span>Progress</span>
+                  <span className="font-semibold text-primary">
+                    {solvedInThisSheet} / {totalProblems} ({percent}%)
+                  </span>
                 </div>
-
-                <p className="text-xs text-secondary mb-5 leading-relaxed line-clamp-2">
-                  {sheet.description}
-                </p>
-
-                {/* Progress bar */}
-                <div className="mb-4">
-                  <div className="flex justify-between text-xs text-muted mb-1.5">
-                    <span>Progress</span>
-                    <span className="font-semibold text-primary">
-                      {solvedInThisSheet} / {totalProblems} ({percent}%)
-                    </span>
-                  </div>
-                  <div className="w-full h-1.5 bg-surface-3 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-purple-1 rounded-full"
-                      style={{ width: `${percent}%` }}
-                    />
-                  </div>
-                </div>
-
-                {/* Topics Preview */}
-                <div className="flex flex-wrap gap-1.5 mb-6">
-                  {sheet.topics.slice(0, 4).map((t, idx) => (
-                    <span
-                      key={idx}
-                      className="text-[11px] bg-surface-3 px-2 py-0.5 rounded-md text-muted border border-border"
-                    >
-                      {t.name} ({t.problems.length})
-                    </span>
-                  ))}
-                  {sheet.topics.length > 4 && (
-                    <span className="text-[11px] bg-surface-3 px-2 py-0.5 rounded-md text-muted">
-                      +{sheet.topics.length - 4} more
-                    </span>
-                  )}
+                <div className="w-full h-1.5 bg-surface-3 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-purple-1 rounded-full transition-all"
+                    style={{ width: `${percent}%` }}
+                  />
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 pt-4 border-t border-border">
+              {sheet.topics.length > 4 && (
+                <div className="mt-1 text-[11px] text-muted">
+                  +{sheet.topics.length - 4} more topics
+                </div>
+              )}
+              
+              <div className="flex items-center gap-3 pt-4 mt-2">
                 <Link
                   href={`/preparation/dsa-sheets/${sheet.id}`}
                   className="flex-1 text-center py-2 bg-purple-1 text-white rounded-xl text-xs font-bold hover:opacity-90 transition-opacity"
@@ -750,7 +702,7 @@ export function DSASheetsClient({ sheetId }: { sheetId?: string }) {
                   <ExternalLink size={14} />
                 </a>
               </div>
-            </div>
+            </ResourceCard>
           );
         })}
       </div>
