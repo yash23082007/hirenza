@@ -19,55 +19,10 @@ import {
 import { SectionHeading } from "@/components/ui/primitives/SectionHeading";
 import { GiscusEmbed } from "@/components/community/GiscusEmbed";
 
-const userExperiencesStorageKey = "hirenza-user-interview-experiences";
-
-function subscribeToUserExperiences(onChange: () => void) {
-  window.addEventListener("storage", onChange);
-  return () => window.removeEventListener("storage", onChange);
-}
-
-function getUserExperiencesSnapshot() {
-  return localStorage.getItem(userExperiencesStorageKey) || "[]";
-}
-
-function getServerUserExperiencesSnapshot() {
-  return "[]";
-}
-
 function InterviewExperiencesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [expandedExp, setExpandedExp] = useState<string | null>(null);
-  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-  const [submittedMessage, setSubmittedMessage] = useState(false);
-  const storedExperiences = useSyncExternalStore(
-    subscribeToUserExperiences,
-    getUserExperiencesSnapshot,
-    getServerUserExperiencesSnapshot
-  );
-  const userExperiences = useMemo<InterviewExperience[]>(() => {
-    try {
-      const parsed = JSON.parse(storedExperiences);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }, [storedExperiences]);
-
-  // Form State
-  const [formData, setFormData] = useState({
-    company: "",
-    role: "",
-    difficulty: "Medium" as "Easy" | "Medium" | "Hard",
-    outcome: "Selected" as "Selected" | "Rejected" | "In Process",
-    roundsCount: 3,
-    round1Name: "Online Coding Assessment",
-    round1Desc: "2 DSA problems on arrays and graphs + 10 CS core MCQs.",
-    round2Name: "Technical Round (DSA & System Design)",
-    round2Desc: "Live problem solving on binary trees and low level design.",
-    tips: "Focus on explaining time complexity tradeoffs before coding.",
-    submittedBy: "Community Contributor",
-  });
 
   const companyFilter = searchParams.get("company") || "All";
 
@@ -82,10 +37,7 @@ function InterviewExperiencesContent() {
     }
   };
 
-  const allExperiences = useMemo(
-    () => [...userExperiences, ...interviewExperiencesData],
-    [userExperiences]
-  );
+  const allExperiences = interviewExperiencesData;
 
   const companies = useMemo(
     () => ["All", ...new Set(allExperiences.map(e => e.company))],
@@ -104,56 +56,10 @@ function InterviewExperiencesContent() {
     Hard: "bg-red-500/10 text-red-400 border border-red-500/20",
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.company || !formData.role) return;
-
-    const newExp: InterviewExperience = {
-      id: `user-exp-${Date.now()}`,
-      company: formData.company,
-      role: formData.role,
-      level: "SDE 1",
-      difficulty: formData.difficulty,
-      outcome: formData.outcome,
-      date: "2026",
-      submittedBy: formData.submittedBy,
-      verificationStatus: "pending",
-      rounds: [
-        {
-          name: formData.round1Name,
-          duration: "60 mins",
-          description: formData.round1Desc,
-        },
-        {
-          name: formData.round2Name,
-          duration: "60 mins",
-          description: formData.round2Desc,
-        },
-      ],
-      topics: ["Algorithms", "Data Structures", "System Design"],
-      tips: [formData.tips],
-    };
-
-    localStorage.setItem(userExperiencesStorageKey, JSON.stringify([newExp, ...userExperiences]));
-    window.dispatchEvent(new Event("storage"));
-    setSubmittedMessage(true);
-    setTimeout(() => {
-      setSubmittedMessage(false);
-      setIsSubmitModalOpen(false);
-      setFormData({
-        company: "",
-        role: "",
-        difficulty: "Medium",
-        outcome: "Selected",
-        roundsCount: 3,
-        round1Name: "Online Coding Assessment",
-        round1Desc: "2 DSA problems on arrays and graphs + 10 CS core MCQs.",
-        round2Name: "Technical Round (DSA & System Design)",
-        round2Desc: "Live problem solving on binary trees and low level design.",
-        tips: "Focus on explaining time complexity tradeoffs before coding.",
-        submittedBy: "Community Contributor",
-      });
-    }, 1500);
+  const diffColors: Record<string, string> = {
+    Easy: "bg-green-500/10 text-green-400 border border-green-500/20",
+    Medium: "bg-orange-500/10 text-orange-400 border border-orange-500/20",
+    Hard: "bg-red-500/10 text-red-400 border border-red-500/20",
   };
 
   return (
@@ -395,70 +301,16 @@ function InterviewExperiencesContent() {
       <div className="card p-6 text-center rounded-2xl bg-surface-1 border border-border mt-6">
         <h3 className="text-base font-bold text-primary mb-1">Want to share your interview experience?</h3>
         <p className="text-xs text-muted mb-4">Help fellow candidates by contributing your debrief to our community archive.</p>
-        <button
-          type="button"
-          onClick={() => setIsSubmitModalOpen(true)}
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSc_example_form/viewform"
+          target="_blank"
+          rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-1 hover:opacity-90 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
         >
           <PlusCircle size={15} />
-          Submit locally
-        </button>
+          Submit your experience
+        </a>
       </div>
-
-      {isSubmitModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="submit-experience-title">
-          <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-surface-1 p-6 shadow-2xl">
-            <div className="flex items-center justify-between gap-4 mb-5">
-              <div>
-                <h2 id="submit-experience-title" className="text-lg font-bold text-primary">Add an interview debrief</h2>
-                <p className="text-xs text-muted mt-1">Saved in this browser and marked pending review.</p>
-              </div>
-              <button type="button" onClick={() => setIsSubmitModalOpen(false)} className="p-2 text-muted hover:text-primary" aria-label="Close submission form">
-                <X size={18} />
-              </button>
-            </div>
-            {submittedMessage ? (
-              <p className="rounded-xl bg-green-500/10 border border-green-500/20 p-4 text-sm text-green-300">Saved to your local archive.</p>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <label className="text-xs font-semibold text-muted">Company
-                    <input required value={formData.company} onChange={e => setFormData({ ...formData, company: e.target.value })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary" placeholder="e.g. Google" />
-                  </label>
-                  <label className="text-xs font-semibold text-muted">Role
-                    <input required value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary" placeholder="e.g. SDE-1" />
-                  </label>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <label className="text-xs font-semibold text-muted">Difficulty
-                    <select value={formData.difficulty} onChange={e => setFormData({ ...formData, difficulty: e.target.value as "Easy" | "Medium" | "Hard" })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary">
-                      <option>Easy</option><option>Medium</option><option>Hard</option>
-                    </select>
-                  </label>
-                  <label className="text-xs font-semibold text-muted">Outcome
-                    <select value={formData.outcome} onChange={e => setFormData({ ...formData, outcome: e.target.value as "Selected" | "Rejected" | "In Process" })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary">
-                      <option>Selected</option><option>Rejected</option><option>In Process</option>
-                    </select>
-                  </label>
-                </div>
-                <label className="text-xs font-semibold text-muted block">First round
-                  <input value={formData.round1Name} onChange={e => setFormData({ ...formData, round1Name: e.target.value })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary" />
-                </label>
-                <label className="text-xs font-semibold text-muted block">Round details
-                  <textarea rows={3} value={formData.round1Desc} onChange={e => setFormData({ ...formData, round1Desc: e.target.value })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary" />
-                </label>
-                <label className="text-xs font-semibold text-muted block">Preparation tip
-                  <textarea rows={2} value={formData.tips} onChange={e => setFormData({ ...formData, tips: e.target.value })} className="mt-1 w-full px-3 py-2 rounded-xl bg-surface-2 border border-border text-xs text-primary" />
-                </label>
-                <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" onClick={() => setIsSubmitModalOpen(false)} className="px-4 py-2 rounded-xl text-xs text-muted hover:text-primary">Cancel</button>
-                  <button type="submit" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-1 text-white text-xs font-semibold"><Send size={13} /> Save debrief</button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Community discussions (T8.1) */}
       <GiscusEmbed />

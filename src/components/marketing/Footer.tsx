@@ -16,7 +16,7 @@ export function Footer() {
               <span>hirenza</span>
             </Link>
             <p className="text-sm text-secondary leading-relaxed mb-4">
-              The offline-first interview preparation workspace for engineers. No paywalls, no tracking.
+              Interview preparation workspace for engineers. No paywalls, no tracking.
             </p>
             <div className="flex items-center gap-2.5">
               <Link
@@ -53,7 +53,7 @@ export function Footer() {
                 </svg>
               </Link>
               <Link
-                href="https://github.com/yash23082007/hirenza/discussions"
+                href="https://github.com/yash23082007"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg bg-surface-2 border border-border text-secondary hover:text-primary transition-colors"
